@@ -18,7 +18,7 @@ TradingAgents Pro is a CS5351 course project that extends TradingAgents, a multi
 - `tests/` — existing test suite; document the course project's offline and live test locations once finalized.
 - `.github/workflows/` — GitHub Actions workflows.
 
-Add the course deliverable paths (D1–D9) as they are finalized.
+See the [CS5351 deliverable map](docs/README.md) for the planned D1–D9 paths. Course tests will be split into `test/offline/` and `test/live/`; the upstream source and tests stay in place during development.
 
 ## Setup and verification
 
