@@ -1,10 +1,10 @@
 # CS5351 deliverable map
 
-This is the project scaffold. The files are placeholders unless already implemented upstream. In particular, the empty schema and permissions objects do not implement course validation or enforcement.
+This branch provides D1–D4 requirements, architecture and governance, and the shared D9 launch prompt. D4 defines verification and evidence recording; planned cases and reported observations are not test results. D5–D8 course artifacts remain scaffolded unless separately implemented. Wiring the schema and verification checks into required CI gates is part of D7. Load the OpenCode policy explicitly as documented in the permission model and verify its effective permissions before use.
 
 | Deliverable | Planned location |
 | --- | --- |
-| D1 — Requirements | `docs/req/requirements.yaml`, `docs/req/req-schema.json` |
+| D1 — Requirements | `docs/req/product.yaml`, `docs/req/requirements.yaml`, `docs/req/req-schema.json` |
 | D2 — Architecture | `architecture-blueprint.md`, `docs/architecture/` (including ADRs, invariants, trace matrix, memory, permissions, evaluation and runtime policies) |
 | D3 — Coding governance | `AGENTS.md`, `docs/code-governance/`, `.opencode/`, `.agent/` |
 | D4 — Verification governance | `docs/code-governance/verification-constraints.md`, `docs/review-memo.md`, `docs/debt-register.md`, `docs/bug-diary.md` |

@@ -1,1 +1,168 @@
-{}
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CS5351 requirement registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "baseline",
+    "requirements"
+  ],
+  "properties": {
+    "baseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tag",
+        "commit"
+      ],
+      "properties": {
+        "tag": {
+          "$ref": "#/$defs/text"
+        },
+        "commit": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        }
+      }
+    },
+    "requirements": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/requirement"
+      }
+    }
+  },
+  "$defs": {
+    "text": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "requirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "type",
+        "priority",
+        "statement",
+        "source",
+        "tradeoff",
+        "fit"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^(FR|NFR|INV)-[0-9]{2,}$"
+        },
+        "type": {
+          "enum": [
+            "functional",
+            "invariant",
+            "quality",
+            "performance",
+            "cost",
+            "governance",
+            "security"
+          ]
+        },
+        "priority": {
+          "enum": [
+            "Must",
+            "Should",
+            "Could",
+            "Won't"
+          ]
+        },
+        "statement": {
+          "$ref": "#/$defs/text"
+        },
+        "source": {
+          "$ref": "#/$defs/text"
+        },
+        "tradeoff": {
+          "$ref": "#/$defs/text"
+        },
+        "fit": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "metric",
+            "threshold",
+            "verification"
+          ],
+          "properties": {
+            "metric": {
+              "$ref": "#/$defs/text"
+            },
+            "threshold": {
+              "$ref": "#/$defs/text"
+            },
+            "verification": {
+              "$ref": "#/$defs/text"
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "pattern": "^FR-"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "type": {
+                "const": "functional"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "pattern": "^INV-"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "type": {
+                "const": "invariant"
+              },
+              "priority": {
+                "const": "Must"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "pattern": "^NFR-"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "quality",
+                  "performance",
+                  "cost",
+                  "governance",
+                  "security"
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
