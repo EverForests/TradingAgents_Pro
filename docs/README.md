@@ -1,6 +1,6 @@
 # CS5351 deliverable map
 
-This is the project scaffold. The paths below identify planned deliverables, not completed work.
+This is the project scaffold. The files are placeholders unless already implemented upstream. In particular, the empty schema and permissions objects do not implement course validation or enforcement.
 
 | Deliverable | Planned location |
 | --- | --- |
