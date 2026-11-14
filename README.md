@@ -8,6 +8,8 @@ TradingAgents Pro is a CS5351 course project that extends TradingAgents, a multi
 
 ## Project scope and architecture
 
+**CS5351 team workflow:** use OpenCode 2.3.0 and follow the [operation manual](docs/operation-manual.md), including the permission checks before the first planning session.
+
 - **Scope (D1):** Add the agreed improvements, their requirement IDs, and measurable acceptance criteria.
 - **Architecture (D2):** Summarize the affected components, the analysis workflow, and where deterministic code constrains AI output. Link to the architecture documents when ready.
 
