@@ -1,6 +1,6 @@
 # TradingAgents Pro — CS5351 Group Project
 
-TradingAgents Pro is a CS5351 course project that extends TradingAgents, a multi-agent stock analysis framework. The team's enhancements and acceptance criteria will be documented here once the scope is agreed.
+Hello, tradingAgents Pro is a CS5351 course project that extends TradingAgents, a multi-agent stock analysis framework. The team's enhancements and acceptance criteria will be documented here once the scope is agreed.
 
 - **Team repository:** [EverForests/TradingAgents_Pro](https://github.com/EverForests/TradingAgents_Pro)
 - **Upstream project:** [TauricResearch/TradingAgents](https://github.com/TauricResearch/TradingAgents)
