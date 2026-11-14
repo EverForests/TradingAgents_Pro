@@ -24,12 +24,29 @@ See the [CS5351 deliverable map](docs/README.md) for the planned D1–D9 paths. 
 
 ## Setup and verification
 
-See [Installation and CLI](#installation-and-cli) below for the upstream setup. Add any project-specific configuration and a reproducible demo command here.
+From the repository root, create a local virtual environment with Python 3.11 or newer. Use the same Python minor version across the team when comparing baseline and enhanced runs.
+
+**macOS / Linux**
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements-dev.txt
+```
+
+**Windows (PowerShell)**
+
+```powershell
+py -3 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
+```
+
+[`requirements-dev.txt`](requirements-dev.txt) installs the local project in editable mode plus the `dev` extras (pytest and Ruff) declared in `pyproject.toml`, like the upstream CI. It does not lock exact package versions. On Windows, use `.\.venv\Scripts\python.exe` in place of `python` in test commands if you did not activate the environment. Keep `.venv/`, `.env` and any credentials local. See [Installation and CLI](#installation-and-cli) for model and data-source setup when running live tests.
 
 | Suite | Command |
 | --- | --- |
-| Upstream baseline | `pytest -q` (used by the upstream CI workflow) |
-| Project offline tests | TBD — no API credentials required. |
+| Upstream baseline | `python -m pytest -q tests` |
+| Project offline tests | `python -m pytest -q test/offline` once course tests are added; no API credentials required. |
 | Project live tests | TBD — document required providers and credentials. |
 | Full project suite | TBD — document how to run both suites. |
 
