@@ -1,8 +1,53 @@
+# TradingAgents Pro — CS5351 Group Project
+
+TradingAgents Pro is a CS5351 course project that extends TradingAgents, a multi-agent stock analysis framework. The team's enhancements and acceptance criteria will be documented here once the scope is agreed.
+
+- **Team repository:** [EverForests/TradingAgents_Pro](https://github.com/EverForests/TradingAgents_Pro)
+- **Upstream project:** [TauricResearch/TradingAgents](https://github.com/TauricResearch/TradingAgents)
+- **Unmodified baseline:** [`9fa1196fffbcfd9de5146d2dd2869df84ab99838`](https://github.com/TauricResearch/TradingAgents/commit/9fa1196fffbcfd9de5146d2dd2869df84ab99838). Use this revision for before-and-after comparisons.
+
+## Project scope and architecture
+
+- **Scope (D1):** Add the agreed improvements, their requirement IDs, and measurable acceptance criteria.
+- **Architecture (D2):** Summarize the affected components, the analysis workflow, and where deterministic code constrains AI output. Link to the architecture documents when ready.
+
+## Repository layout
+
+- `tradingagents/` — application source.
+- `cli/` — command-line interface.
+- `tests/` — existing test suite; document the course project's offline and live test locations once finalized.
+- `.github/workflows/` — GitHub Actions workflows.
+
+Add the course deliverable paths (D1–D9) as they are finalized.
+
+## Setup and verification
+
+See [Installation and CLI](#installation-and-cli) below for the upstream setup. Add any project-specific configuration and a reproducible demo command here.
+
+| Suite | Command |
+| --- | --- |
+| Upstream baseline | `pytest -q` (used by the upstream CI workflow) |
+| Project offline tests | TBD — no API credentials required. |
+| Project live tests | TBD — document required providers and credentials. |
+| Full project suite | TBD — document how to run both suites. |
+
+## CI and blocking gates (D7)
+
+The baseline workflow runs tests, a clean-install smoke check, and Ruff. Document the team's required checks and enforcement once configured: pre-implementation test approval evidence, static and safety checks, requirements schema validation, and semantic evaluation for prompt or model changes. Identify which checks must pass before merging or releasing.
+
+## Baseline comparison
+
+Record the fixed inputs, evaluation metrics, and reproduction steps here. Link the measured baseline and enhanced results once available.
+
+---
+
+## Upstream TradingAgents documentation
+
 <p align="center">
   <img src="tradingagents/assets/tauric-logo.svg" width="60%" alt="Tauric Research">
 </p>
 
-# TradingAgents: Multi-Agents LLM Financial Trading Framework
+**TradingAgents: Multi-Agents LLM Financial Trading Framework**
 
 <div align="center" style="line-height: 1;">
   <a href="https://arxiv.org/abs/2412.20138" target="_blank"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2412.20138-B31B1B?logo=arxiv"/></a>
