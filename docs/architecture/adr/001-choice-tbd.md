@@ -27,3 +27,10 @@ Teacher Project P5 additionally requires an input token cap and compaction thres
 Assemble identity/task, standing constraints, evidence/state, active tool exchanges, optional history and current request; prioritize/deduplicate optional groups, budget, compact, reinject standing constraints, and recount before send. Preserve critical content and tool pairs; if mandatory context cannot fit, refuse the scoped request. NFR-02 independently retains its 65536-message-byte fit criterion and two-call-site scope. A byte-gate implementation alone must not be reported as this token policy. Review whether a token guard is needed for the selected course release after the live probe; do not silently expand all five features.
 
 Reopen this ADR if approved fields, date semantics, token settings, scope or fallback actions change. Record the human decision, supporting test evidence and affected documents; no approval is supplied by this draft.
+
+
+## Interface v1.0 selection
+
+Use JSON-compatible shared records and the callable boundaries in C0–C5; private internal types remain replaceable through adapters. Extend the existing AgentState with separate owner keys instead of a common nested dictionary that parallel nodes could overwrite. Preserve legacy report strings as views, not alternative authority. At 0/3 sources, FR-03 skips the sentiment model and emits deterministic UNKNOWN/null. This is a proposed decision for team confirmation, not implementation or test approval.
+
+The product run-profile request limit starts at a configurable 40; limit 3 remains only a boundary-test fixture. Reproduction attempt caps of 16/20 belong to separate diagnostic tooling and user approvals. Checkpoint continuation in that tooling does not implement application budget resume. Profile thinking-disabled and 4096 output tokens are initial settings to verify, not teacher-prescribed thresholds. Changes justified by completed runs update configuration evidence; changes to shared authority/fields update this ADR and affected tests.

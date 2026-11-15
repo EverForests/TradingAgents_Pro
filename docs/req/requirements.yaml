@@ -72,7 +72,8 @@ requirements:
       on NO_DATA. Apply C3 source validity and date boundaries; distinguish vendor failure from no matching content.
       On 1/3 or 2/3, any measured score must use only valid evidence; unavailable or invalid model scores remain
       UNKNOWN/null without changing the coverage count. Enforce the same contract after structured and free-text
-      fallback paths.
+      fallback paths. The selected v1 NO_DATA path creates the missing-data result without a sentiment-model request;
+      other valid analysis may continue.
   status: proposed
   contracts:
   - C0
@@ -170,8 +171,9 @@ requirements:
   test_cases:
   - T-INV02-RACE
 revision:
-  id: predevelopment-v1
+  id: interface-v1.0
   status: proposed
-  approval: Pending team review; no implementation or test approval is implied.
+  approval: Concrete v1.0 interface proposal selected for team confirmation; individual feature plans/tests remain
+    unapproved.
   contracts: docs/architecture/interface-contracts.md
   preparation_base: ec1cb8b2177bafdf09c86cd8f072119c487fdce8

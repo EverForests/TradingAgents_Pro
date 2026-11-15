@@ -39,3 +39,10 @@ Read the readiness register in `docs/README.md` and `docs/architecture/interface
 Before production edits, the human approves the exact test-design revision; implementation approval and final PR approval are distinct. An ImportError, dependency failure, absent module or no collected tests is not the required failing-before behavior evidence. Record such setup gaps separately and obtain an approved approach to test the baseline behavior. After any approved fixture/expectation change, record why and renew review rather than silently moving the target.
 
 Only actual actions belong in the session record. Codex-assisted planning or document review must be identified as Codex; it cannot be relabeled OpenCode. If the team proposes replacing the course implementation tool, obtain the teacher/TA clarification and update governance explicitly before treating the replacement as accepted course evidence. This launch prompt does not grant authority to another assistant to bypass denied actions.
+
+
+## Applying interface v1.0
+
+Use the named shared records and callable boundaries in C0–C5; do not reopen or invent different field meanings per feature. A task plan lists exact integration adapters and tests the specified compatibility views. Internal class choices may vary without changing shared records. Separate individual pre-code readiness from merge/release tasks using docs/README.md; another feature's missing real-data fixture is not a reason to block unrelated offline work. A team's confirmation of this document is not automatic approval of every feature plan/test.
+
+Never copy a diagnostic 16/20 attempt cap into NFR-01 product logic. Use the explicitly approved run-profile limit and verify actual sends; a checkpoint diagnostic needs its own cumulative history. Distinguish known sends, unknown delivery and consumed safety slots in receipts. Do not describe all charged attempts as billed model requests.

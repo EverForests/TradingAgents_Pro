@@ -26,3 +26,18 @@ entries:
   - Live full-stock baseline and real-model FR-03 reproduction pending; independent fake-model probe passed 11 checks
     with zero network
   - No CI or runtime permission enforcement installed by this documentation revision
+- id: AI-DOC-INTERFACE-002
+  date: '2026-11-15'
+  tool: Codex
+  base_commit: cf626517b8e71158af7ad69f823258491484950d
+  scope: Select concrete interface v1.0, working defaults and stage-specific readiness; documentation only
+  human_direction: User requested a concrete shared interface version in the existing PR before FR-03 implementation.
+    Routine engineering choices may be selected; team confirmation and real test approvals remain distinct.
+  changes:
+  - Explicit shared record fields and callable boundaries C0-C5
+  - Separate diagnostic attempt caps from product/test limits
+  - Reduce global pre-build blockers to per-feature, pre-merge and pre-delivery checks
+  - Correct exact Feishu source hash
+  evidence: Executed 17 static documentation/schema/interface checks, all passed; 28 planned acceptance IDs remain
+    plans, not executed feature tests. No application, permission, test or CI source changed.
+  review_status: pending human team confirmation
