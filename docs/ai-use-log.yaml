@@ -82,3 +82,38 @@ entries:
   - Separate reviewer-provided annual data from independently inspected market-tool evidence
   evidence: Decimal recomputation, registry/schema/reference checks and preserved shared record signatures; receipts retained separately. No live calls or feature acceptance claimed.
   review_status: Pending review of this clarification; no feature plan/test approval recorded
+- id: AI-FR03-IMPLEMENTATION-006
+  date: '2026-11-16'
+  tool: OpenCode 2.3.0 with CS5351/DeepSeek-V4-Flash; Codex coordination and verification commands
+  base_commit: 486a9a5d74433aedd3c858c483a8d77bf0f7b897
+  requirements:
+  - FR-03
+  contracts:
+  - C0
+  - C3
+  scope: Source collection receipts, deterministic coverage and nullable assessment, sentiment node, run identity initialization, compatibility rendering and feature tests
+  human_direction: User delegated autonomous development, routine plan/test decisions and execution to Codex on 2026-11-16. Individual student review of the concrete plan and tests did not occur.
+  session_reference:
+    plan: ses_e1f7b6a43ffecmm2eVetv5Ay7V
+    test_design: ses_e1f7401d8ffeducdhZ9HLOoMfW
+    implementation_and_repairs: ses_e1f6630f2ffeopX5X1nTvOKFOG
+    raw_transcripts: Retained privately in the dedicated FR-03 task records
+  contributions:
+  - OpenCode generated application and executable test logic through the course roles.
+  - Codex reviewed plans, corrected interface/test-design errors, operated test commands and maintained exact-path permissions.
+  - Ruff 0.17.5 and Codex performed limited formatting and EOF whitespace maintenance.
+  - Two existing sentiment test files received a documented fixture-maintenance exception under the user's general authorization. The upstream baseline remains preserved.
+  evidence:
+  - Original offline baseline had 1407 passes and 6 platform/optional-dependency skips.
+  - The pre-change zero-source behavior test observed one model invocation where zero was required.
+  - Current combined offline verification has 1485 passes, 6 skips, 1 deselected case and 100 passing subtests. This includes 78 new feature cases.
+  - Changed Python files passed Ruff. The first live run exposed unsupported response_format and a fixture signature error. Both were corrected.
+  - Live r2 retained correct partial coverage with UNKNOWN and produced a measured Neutral/5.0 full-coverage control. Its tests remained failed because of the initial partial-case rubric and a client metadata-alias assertion.
+  - The final live candidate is frozen before the r3 run. Its partial-case criterion follows C3 and its full-coverage positive control still requires a measured answer.
+  limitations:
+  - Local command execution and delegated review are recorded as Codex actions. They are not student per-test approval or a human final verdict.
+  - Live model checks use fixed synthetic source receipts. Real-provider data quality and joint C1/C4 acceptance remain integration work.
+  - Transport attempts and observed model steps do not establish billed token usage.
+  - Independent OpenCode Verify upload was blocked before publication. Public-revision review remains pending.
+  review_status: Draft feature pending human review and final live receipt
+  ci_maintenance: Codex updated the existing pytest invocation to collect tests and test/offline. This single-line maintainer change makes the new feature cases run in the existing CI matrix. Coding roles retain denied CI edits.

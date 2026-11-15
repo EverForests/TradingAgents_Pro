@@ -1,6 +1,6 @@
 from typing import Any
 
-from tradingagents.agents.state import InvestDebateState, RiskDebateState
+from tradingagents.agents.state import InvestDebateState, RiskDebateState, new_course_run
 
 
 class Propagator:
@@ -26,6 +26,10 @@ class Propagator:
         ``TradingAgentsGraph.resolve_instrument_context``). When empty, agents
         fall back to ticker-only context via
         ``get_instrument_context_from_state``.
+
+        Every call mints a fresh ``course_run`` identity: records only resolve
+        inside the run that produced them, so two states never share IDs and a
+        restarted run never inherits a previous run's coverage or assessment.
         """
         return {
             "messages": [("human", company_name)],
@@ -36,6 +40,8 @@ class Propagator:
             "past_context": past_context,
             "memory_note": "",
             "portfolio_context": portfolio_context,
+            "course_run": new_course_run(company_name, str(trade_date)),
+            "sentiment_assessment": None,
             "investment_debate_state": InvestDebateState(
                 {
                     "bull_history": "",
