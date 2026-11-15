@@ -9,3 +9,7 @@ No MCP server is needed or approved for Plan, Build or Verify. Do not enable use
 | Verify | Same reads; inspect diffs and human-supplied command results | Edits, shell, delegation and network tools |
 
 The human runs test commands, controls Git, and records approvals and results. See the [permission model](../architecture/permission-model.md) for launch and verification.
+
+## Course workflow boundaries
+
+Application implementation follows the course OpenCode workflow. Record the actual tool and scope for any auxiliary preparation or review; those records are not implementation sessions. OpenCode policy does not constrain another tool environment automatically. Do not delegate forbidden shell, network, edits or approval decisions as a workaround. Human-controlled Git/test operations and course-agent operations remain distinct in the evidence.

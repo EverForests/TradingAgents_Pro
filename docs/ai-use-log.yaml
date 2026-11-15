@@ -1,1 +1,84 @@
-# Placeholder: populate the AI-use log as work proceeds.
+format_version: 1
+entries:
+- id: AI-DOC-PREDEV-001
+  date: '2026-11-15'
+  tool: Codex
+  scope: D1-D4 and D9 predevelopment documentation/schema review; no application implementation
+  base_commit: ec1cb8b2177bafdf09c86cd8f072119c487fdce8
+  requirements:
+  - FR-01
+  - FR-02
+  - FR-03
+  - NFR-01
+  - NFR-02
+  - INV-01
+  - INV-02
+  human_direction: Requested material alignment and first-version contracts before parallel development. Human team
+    approval of contracts/feature tests is pending.
+  evidence: 'Static preparation validation executed: registry schema valid; seven unchanged requirement IDs; 28
+    planned case references resolve; checked relative links and protected-file preservation; no credential-like
+    key pattern in changed text. These are documentation checks, not feature tests, runtime permission probes or
+    CI enforcement.'
+  session_reference: Codex preparation chat; full private transcript retained separately; not an OpenCode transcript
+  review_status: pending human review
+  limitations:
+  - New B3.1 package inspected selectively; SA new runtime-policy slide not confirmed in current PDF
+  - Live full-stock baseline and real-model FR-03 reproduction pending; independent fake-model probe passed 11 checks
+    with zero network
+  - No CI or runtime permission enforcement installed by this documentation revision
+- id: AI-DOC-INTERFACE-002
+  date: '2026-11-15'
+  tool: Codex
+  base_commit: cf626517b8e71158af7ad69f823258491484950d
+  scope: Select concrete interface v1.0, working defaults and stage-specific readiness; documentation only
+  human_direction: User requested a concrete shared interface version in the existing PR before FR-03 implementation.
+    Routine engineering choices may be selected; team confirmation and real test approvals remain distinct.
+  changes:
+  - Explicit shared record fields and callable boundaries C0-C5
+  - Separate diagnostic attempt caps from product/test limits
+  - Reduce global pre-build blockers to per-feature, pre-merge and pre-delivery checks
+  - Correct exact Feishu source hash
+  evidence: Executed 17 static documentation/schema/interface checks, all passed; 28 planned acceptance IDs remain
+    plans, not executed feature tests. No application, permission, test or CI source changed. Independent completion
+    receipt now confirms a market-only baseline flow, not all analysts; runtime diagnostic limits are separate from
+    product contracts.
+  review_status: pending human team confirmation
+- id: AI-DOC-LOCAL-REVIEW-003
+  date: '2026-11-15'
+  tool: Codex
+  scope: Local documentation wording review and a private Chinese reading guide; no application implementation
+  base_commit: 2e1bb68aff2ca48363293ca5e1bbc43970d2fab8
+  human_direction: User requested a Chinese explanation and personal review before any further PR publication.
+  changes:
+  - Focus normative governance wording on the course OpenCode workflow without repeated auxiliary brand discussion
+  - Preserve accurate tool identities and earlier preparation records in this log
+  - Keep the five requirements and interface semantics unchanged
+  evidence: Local edits only; no new feature tests or execution evidence claimed. No push, ready-for-review transition or merge.
+  review_status: pending the user's review of the Chinese guide; not team or feature approval
+- id: AI-DOC-EDITORIAL-004
+  date: '2026-11-15'
+  tool: Codex
+  scope: Editorial formalization of D1-D4, D9 and repository navigation; no application implementation
+  base_commit: 2e1bb68aff2ca48363293ca5e1bbc43970d2fab8
+  human_direction: Requested concise formal project specifications and delegated the local consistency review.
+  changes:
+  - Replace revision commentary in the documentation README with scope, document index and workflow
+  - Consolidate source provenance and open verification items in the PR review memo
+  - Standardize architecture and governance wording while preserving acceptance and shared records
+  - Update derived BUG-02 status from existing controlled evidence; preserve raw records
+  evidence: Local editorial validation is recorded separately against working-copy hashes. No new application tests or live calls.
+  review_status: Local editorial review; team approval and feature plan/test approval remain separate
+- id: AI-DOC-FR02-005
+  date: '2026-11-15'
+  tool: Codex
+  scope: FR-02 documentation clarification from owner review; no application or executable test changes
+  base_commit: d2fd388cef1d318ed05644d788aefc68b5d91992
+  requirements:
+  - FR-02
+  human_direction: User authorized checking merge/comment state and incorporating applicable review feedback in a follow-up PR.
+  changes:
+  - Correct AAPL Cost of Revenue terminology and record fiscal labels/units
+  - Fix the upper-band-minus-close operand mapping and both signed expectations
+  - Separate reviewer-provided annual data from independently inspected market-tool evidence
+  evidence: Decimal recomputation, registry/schema/reference checks and preserved shared record signatures; receipts retained separately. No live calls or feature acceptance claimed.
+  review_status: Pending review of this clarification; no feature plan/test approval recorded

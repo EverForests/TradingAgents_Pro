@@ -11,3 +11,7 @@ Extend the baseline; do not replace the graph, CLI, providers or package layout.
 | NFR-02 | Context limit owns payload sizing and deterministic reduction; it cannot bypass the budget or remove mandatory content. |
 
 For each new or modified module and function, document the associated requirement, ADR and invariant where applicable in a short comment or docstring. Integration code may orchestrate but cannot override an authoritative rejection. Preserve stable baseline behavior outside approved scope; do not add providers, packages or cross-layer imports without architecture review.
+
+## Contract ownership before parallel Build
+
+Use [C0–C5](../architecture/interface-contracts.md) for common records and failure meanings. The team must name a shared-file integration owner and exact paths for state/schema, reporting and dispatch changes. Each feature may use an approved fake producer/consumer for independent tests; integration tests must later replace those doubles with real connected components. Do not treat a mock-only pass as proof that the integrated graph satisfies the contract.

@@ -5,113 +5,114 @@
     ".agent/rules.md"
   ],
   "default_agent": "course-plan",
-  "permission": {
-    "*": "deny",
-    "read": {
-      "*": "deny",
-      "AGENTS.md": "allow",
-      "README.md": "allow",
-      "architecture-blueprint.md": "allow",
-      "docs/req/requirements.yaml": "allow",
-      "docs/req/req-schema.json": "allow",
-      "docs/architecture/*.md": "allow",
-      "docs/architecture/adr/*.md": "allow",
-      "docs/code-governance/*.md": "allow",
-      ".agent/rules.md": "allow",
-      ".opencode/rules.md": "allow",
-      "Prompt.md": "allow",
-      "pyproject.toml": "allow",
-      "tests/test_rating_integrity.py": "allow",
-      "tests/test_analyst_execution.py": "allow",
-      "tests/test_llm_max_retries.py": "allow",
-      "tradingagents/agents/state.py": "allow",
-      "tradingagents/agents/schemas.py": "allow",
-      "tradingagents/agents/structured.py": "allow",
-      "tradingagents/agents/analysts/fundamentals_analyst.py": "allow",
-      "tradingagents/agents/analysts/sentiment_analyst.py": "allow",
-      "tradingagents/agents/analysts/turn.py": "allow",
-      "tradingagents/agents/verified_metrics.py": "allow",
-      "tradingagents/agents/sentiment_coverage.py": "allow",
-      "tradingagents/agents/researchers/bear_researcher.py": "allow",
-      "tradingagents/agents/researchers/bull_researcher.py": "allow",
-      "tradingagents/agents/managers/portfolio_manager.py": "allow",
-      "tradingagents/agents/risk_mgmt/neutral_debator.py": "allow",
-      "tradingagents/graph/publication_gate.py": "allow",
-      "tradingagents/graph/propagation.py": "allow",
-      "tradingagents/graph/setup.py": "allow",
-      "tradingagents/graph/trading_graph.py": "allow",
-      "tradingagents/graph/conditional_logic.py": "allow",
-      "tradingagents/default_config.py": "allow",
-      "tradingagents/llm_clients/base_client.py": "allow",
-      "tradingagents/llm_clients/factory.py": "allow",
-      "tradingagents/llm_clients/request_budget.py": "allow",
-      "tradingagents/llm_clients/context_limit.py": "allow",
-      "tradingagents/reporting.py": "allow",
-      "tradingagents/report_html.py": "allow",
-      "cli/run.py": "allow",
-      "test/offline/test_*.py": "allow",
-      "test/live/test_*.py": "allow"
-    },
-    "external_directory": "deny",
-    "bash": "deny",
-    "task": "deny"
-  },
-  "agent": {
+  "permissions": [
+    { "action": "*", "resource": "*", "effect": "deny" },
+    { "action": "read", "resource": "*", "effect": "deny" },
+    { "action": "read", "resource": "AGENTS.md", "effect": "allow" },
+    { "action": "read", "resource": "README.md", "effect": "allow" },
+    { "action": "read", "resource": "architecture-blueprint.md", "effect": "allow" },
+    { "action": "read", "resource": "docs/req/requirements.yaml", "effect": "allow" },
+    { "action": "read", "resource": "docs/req/req-schema.json", "effect": "allow" },
+    { "action": "read", "resource": "docs/architecture/*.md", "effect": "allow" },
+    { "action": "read", "resource": "docs/architecture/adr/*.md", "effect": "allow" },
+    { "action": "read", "resource": "docs/code-governance/*.md", "effect": "allow" },
+    { "action": "read", "resource": ".agent/rules.md", "effect": "allow" },
+    { "action": "read", "resource": ".opencode/rules.md", "effect": "allow" },
+    { "action": "read", "resource": "Prompt.md", "effect": "allow" },
+    { "action": "read", "resource": "pyproject.toml", "effect": "allow" },
+    { "action": "read", "resource": "tests/test_rating_integrity.py", "effect": "allow" },
+    { "action": "read", "resource": "tests/test_analyst_execution.py", "effect": "allow" },
+    { "action": "read", "resource": "tests/test_llm_max_retries.py", "effect": "allow" },
+    { "action": "read", "resource": "tradingagents/agents/context.py", "effect": "allow" },
+    { "action": "read", "resource": "tradingagents/agents/rating.py", "effect": "allow" },
+    { "action": "read", "resource": "tradingagents/agents/state.py", "effect": "allow" },
+    { "action": "read", "resource": "tradingagents/agents/schemas.py", "effect": "allow" },
+    { "action": "read", "resource": "tradingagents/agents/structured.py", "effect": "allow" },
+    { "action": "read", "resource": "tradingagents/agents/analysts/fundamentals_analyst.py", "effect": "allow" },
+    { "action": "read", "resource": "tradingagents/agents/analysts/sentiment_analyst.py", "effect": "allow" },
+    { "action": "read", "resource": "tradingagents/agents/analysts/turn.py", "effect": "allow" },
+    { "action": "read", "resource": "tradingagents/agents/verified_metrics.py", "effect": "allow" },
+    { "action": "read", "resource": "tradingagents/agents/sentiment_coverage.py", "effect": "allow" },
+    { "action": "read", "resource": "tradingagents/agents/researchers/bear_researcher.py", "effect": "allow" },
+    { "action": "read", "resource": "tradingagents/agents/researchers/bull_researcher.py", "effect": "allow" },
+    { "action": "read", "resource": "tradingagents/agents/managers/portfolio_manager.py", "effect": "allow" },
+    { "action": "read", "resource": "tradingagents/agents/risk_mgmt/neutral_debator.py", "effect": "allow" },
+    { "action": "read", "resource": "tradingagents/graph/publication_gate.py", "effect": "allow" },
+    { "action": "read", "resource": "tradingagents/graph/propagation.py", "effect": "allow" },
+    { "action": "read", "resource": "tradingagents/graph/setup.py", "effect": "allow" },
+    { "action": "read", "resource": "tradingagents/graph/trading_graph.py", "effect": "allow" },
+    { "action": "read", "resource": "tradingagents/graph/conditional_logic.py", "effect": "allow" },
+    { "action": "read", "resource": "tradingagents/backtest.py", "effect": "allow" },
+    { "action": "read", "resource": "tradingagents/default_config.py", "effect": "allow" },
+    { "action": "read", "resource": "tradingagents/llm_clients/base_client.py", "effect": "allow" },
+    { "action": "read", "resource": "tradingagents/llm_clients/factory.py", "effect": "allow" },
+    { "action": "read", "resource": "tradingagents/llm_clients/request_budget.py", "effect": "allow" },
+    { "action": "read", "resource": "tradingagents/llm_clients/context_limit.py", "effect": "allow" },
+    { "action": "read", "resource": "tradingagents/memory/log.py", "effect": "allow" },
+    { "action": "read", "resource": "tradingagents/reporting.py", "effect": "allow" },
+    { "action": "read", "resource": "tradingagents/report_html.py", "effect": "allow" },
+    { "action": "read", "resource": "cli/display.py", "effect": "allow" },
+    { "action": "read", "resource": "cli/run.py", "effect": "allow" },
+    { "action": "read", "resource": "test/offline/test_*.py", "effect": "allow" },
+    { "action": "read", "resource": "test/live/test_*.py", "effect": "allow" },
+    { "action": "external_directory", "resource": "*", "effect": "deny" },
+    { "action": "shell", "resource": "*", "effect": "deny" },
+    { "action": "subagent", "resource": "*", "effect": "deny" }
+  ],
+  "agents": {
     "plan": {
-      "disable": true
+      "disabled": true
     },
     "build": {
-      "disable": true
+      "disabled": true
     },
     "course-plan": {
       "description": "Produce a read-only implementation and test plan; wait for human approval.",
       "mode": "primary",
-      "permission": {
-        "edit": "deny"
-      }
+      "permissions": [
+        { "action": "edit", "resource": "*", "effect": "deny" }
+      ]
     },
     "course-build": {
       "description": "Implement only the explicitly approved plan; request approval for each edit.",
       "mode": "primary",
-      "permission": {
-        "edit": {
-          "*": "deny",
-          "tradingagents/agents/state.py": "ask",
-          "tradingagents/agents/schemas.py": "ask",
-          "tradingagents/agents/structured.py": "ask",
-          "tradingagents/agents/analysts/fundamentals_analyst.py": "ask",
-          "tradingagents/agents/analysts/sentiment_analyst.py": "ask",
-          "tradingagents/agents/analysts/turn.py": "ask",
-          "tradingagents/agents/verified_metrics.py": "ask",
-          "tradingagents/agents/sentiment_coverage.py": "ask",
-          "tradingagents/agents/researchers/bear_researcher.py": "ask",
-          "tradingagents/agents/researchers/bull_researcher.py": "ask",
-          "tradingagents/agents/managers/portfolio_manager.py": "ask",
-          "tradingagents/agents/risk_mgmt/neutral_debator.py": "ask",
-          "tradingagents/graph/publication_gate.py": "ask",
-          "tradingagents/graph/propagation.py": "ask",
-          "tradingagents/graph/setup.py": "ask",
-          "tradingagents/graph/trading_graph.py": "ask",
-          "tradingagents/graph/conditional_logic.py": "ask",
-          "tradingagents/default_config.py": "ask",
-          "tradingagents/llm_clients/base_client.py": "ask",
-          "tradingagents/llm_clients/factory.py": "ask",
-          "tradingagents/llm_clients/request_budget.py": "ask",
-          "tradingagents/llm_clients/context_limit.py": "ask",
-          "tradingagents/reporting.py": "ask",
-          "tradingagents/report_html.py": "ask",
-          "cli/run.py": "ask",
-          "test/offline/test_*.py": "ask",
-          "test/live/test_*.py": "ask"
-        }
-      }
+      "permissions": [
+        { "action": "edit", "resource": "*", "effect": "deny" },
+        { "action": "edit", "resource": "tradingagents/agents/state.py", "effect": "ask" },
+        { "action": "edit", "resource": "tradingagents/agents/schemas.py", "effect": "ask" },
+        { "action": "edit", "resource": "tradingagents/agents/structured.py", "effect": "ask" },
+        { "action": "edit", "resource": "tradingagents/agents/analysts/fundamentals_analyst.py", "effect": "ask" },
+        { "action": "edit", "resource": "tradingagents/agents/analysts/sentiment_analyst.py", "effect": "ask" },
+        { "action": "edit", "resource": "tradingagents/agents/analysts/turn.py", "effect": "ask" },
+        { "action": "edit", "resource": "tradingagents/agents/verified_metrics.py", "effect": "ask" },
+        { "action": "edit", "resource": "tradingagents/agents/sentiment_coverage.py", "effect": "ask" },
+        { "action": "edit", "resource": "tradingagents/agents/researchers/bear_researcher.py", "effect": "ask" },
+        { "action": "edit", "resource": "tradingagents/agents/researchers/bull_researcher.py", "effect": "ask" },
+        { "action": "edit", "resource": "tradingagents/agents/managers/portfolio_manager.py", "effect": "ask" },
+        { "action": "edit", "resource": "tradingagents/agents/risk_mgmt/neutral_debator.py", "effect": "ask" },
+        { "action": "edit", "resource": "tradingagents/graph/publication_gate.py", "effect": "ask" },
+        { "action": "edit", "resource": "tradingagents/graph/propagation.py", "effect": "ask" },
+        { "action": "edit", "resource": "tradingagents/graph/setup.py", "effect": "ask" },
+        { "action": "edit", "resource": "tradingagents/graph/trading_graph.py", "effect": "ask" },
+        { "action": "edit", "resource": "tradingagents/graph/conditional_logic.py", "effect": "ask" },
+        { "action": "edit", "resource": "tradingagents/default_config.py", "effect": "ask" },
+        { "action": "edit", "resource": "tradingagents/llm_clients/base_client.py", "effect": "ask" },
+        { "action": "edit", "resource": "tradingagents/llm_clients/factory.py", "effect": "ask" },
+        { "action": "edit", "resource": "tradingagents/llm_clients/request_budget.py", "effect": "ask" },
+        { "action": "edit", "resource": "tradingagents/llm_clients/context_limit.py", "effect": "ask" },
+        { "action": "edit", "resource": "tradingagents/reporting.py", "effect": "ask" },
+        { "action": "edit", "resource": "tradingagents/report_html.py", "effect": "ask" },
+        { "action": "edit", "resource": "cli/run.py", "effect": "ask" },
+        { "action": "edit", "resource": "test/offline/test_*.py", "effect": "ask" },
+        { "action": "edit", "resource": "test/live/test_*.py", "effect": "ask" }
+      ]
     },
     "course-verify": {
       "description": "Inspect evidence; request human-run checks; never write files.",
       "mode": "primary",
-      "permission": {
-        "edit": "deny"
-      }
+      "permissions": [
+        { "action": "edit", "resource": "*", "effect": "deny" }
+      ]
     }
   }
 }

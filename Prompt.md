@@ -29,3 +29,20 @@ Work read-only. Inspect the diff or changed files supplied by the human and map 
 Return a proposed review summary: requirement IDs, reviewed revision, tests and results, unmet criteria, risks and recommended verdict. Stop for human review. If evidence shows a defect, propose a repair and repeat the appropriate approval and verification gates. Only the human makes the final verdict and controls Git, publishing and merge.
 
 Keep the actual session and mark human interruptions, redirects, approvals and rejections with their rationale. Give the human a summary for the review memo and AI-use log. Never invent evidence, and keep credentials, student identifiers and raw sessions out of the public repository.
+
+## Task header and handoff required before Gate 1
+
+The human supplies: selected requirement/invariant IDs; common starting SHA and current feature HEAD; contract revision C0–C5; developer and human reviewer; exact read/edit paths; planned case IDs and fixture revision; Python/dependency and OpenCode versions; offline/live scope; and the place to retain private raw sessions. Missing information is an open item, never filled with a fictional approval.
+
+Read the documentation index, open review items in `docs/review-memo.md`, and `docs/architecture/interface-contracts.md`. If required material is denied by the current allowlist, report the exact missing paths and stop for human maintenance. The registry status `proposed` is not Build approval. Freeze shared fields/signatures with affected owners first. Use mocks to develop independently, then require integrated evidence with the real components.
+
+Before production edits, the human approves the exact test-design revision; implementation approval and final PR approval are distinct. An ImportError, dependency failure, absent module or no collected tests is not the required failing-before behavior evidence. Record such setup gaps separately and obtain an approved approach to test the baseline behavior. After any approved fixture/expectation change, record why and renew review rather than silently moving the target.
+
+Only actual actions belong in the session record. Keep planning and document review distinct from OpenCode implementation sessions, and record the actual tool, scope and session reference in the AI-use log. Follow the course OpenCode implementation workflow. This launch prompt does not authorize another tool to bypass denied actions or turn advisory output into human approval.
+
+
+## Applying interface v1.0
+
+Use the named shared records and callable boundaries in C0–C5; do not reopen or invent different field meanings per feature. A task plan lists exact integration adapters and tests the specified compatibility views. Internal class choices may vary without changing shared records. Apply task-specific entry criteria from the review memo; independent offline work may use approved fixtures. A team's confirmation of this document is not automatic approval of every feature plan/test.
+
+Use the approved product run-profile limit and verify outbound attempts at the transport boundary. Distinguish charged safety slots, known sends and unknown delivery in receipts. Diagnostic limits are separate from product acceptance; charged attempts do not establish billed model usage.

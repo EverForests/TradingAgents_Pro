@@ -2,73 +2,183 @@ baseline:
   tag: upstream-baseline
   commit: 9fa1196fffbcfd9de5146d2dd2869df84ab99838
 requirements:
-  - id: FR-01
-    type: functional
-    priority: Must
-    statement: Publish a single-stock recommendation only if its rating is allowed and it references at least one accepted argument backed by a resolvable evidence ID from the same run.
-    source: "Team proposals: evidence chain and release gate; upstream portfolio_manager.py supports free-text fallback."
-    tradeoff: Verify reference integrity, not semantic support or investment correctness.
-    fit:
-      metric: Release outcome and evidence resolution across CLI, Python API, official report and decision memory.
-      threshold: Only the valid-rating and valid-evidence case publishes; zero false releases in the rejection fixture set.
-      verification: "Replay valid input, invalid rating, missing reference and unknown/cross-run reference. Rejected candidates return BLOCKED with a reason; missing or unresolved evidence uses INSUFFICIENT_EVIDENCE. Resolve the accepted recommendation back to its argument and source material."
-  - id: FR-02
-    type: functional
-    priority: Must
-    statement: Compute agreed metrics from operands with provenance, period and unit; controlled downstream fields and the final metrics table reference the same immutable verified record by metric_id.
-    source: "Team observations: NVDA revenue YoY, AAPL operating cost YoY and price difference, MSFT capex-to-operating-cash-flow ratio."
-    tradeoff: Scope to YoY, financial ratios and signed price differences; arbitrary prose, basis-point changes and underlying source truth are excluded.
-    fit:
-      metric: Absolute numerical error against fixed operands and acceptance of invalid records.
-      threshold: "Expected values: 105.85%, 10.98%, 63.38%, 4.526; percentage error <= 0.1 percentage points; price difference error <= 0.01 price units; zero invalid records in verified fields."
-      verification: "Freeze source operands before accepting the target values. Check YoY = 100*(current/prior-1) on comparable quarters or full years, ratio = 100*numerator/denominator, and signed difference = current-reference. Require positive ratio/YoY denominators. Reject missing provenance, incompatible periods/units and nonfinite operands as UNVERIFIABLE; verify unknown IDs, modified values and new IDs cannot bypass recomputation."
-  - id: FR-03
-    type: functional
-    priority: Should
-    statement: Distinguish sentiment unavailable from neutral using coverage and per-source missing reasons for the three existing sentiment sources. Preserve the status in downstream input and the report.
-    source: "Team observations: all three sources missing, yet upstream reports displayed Neutral/5.0."
-    tradeoff: Allow an unknown score while continuing usable market and financial analysis.
-    fit:
-      metric: Agreement of coverage, status and score across structured output, downstream input and report.
-      threshold: "0/3: NO_DATA and UNKNOWN with null score; 1/3 or 2/3: PARTIAL_DATA; 3/3: AVAILABLE."
-      verification: "Exercise all coverage levels, empty responses, errors and wrong ticker/window. Verify missing-source reasons, no null imputation or averaging, a valid Neutral/5.0 case, and continued market/financial analysis on NO_DATA."
-  - id: NFR-01
-    type: performance
-    priority: Must
-    statement: Enforce a configurable shared limit on actual model requests within a single stock-analysis main flow.
-    source: "Team proposals: run-wide LLM budget; upstream per-loop limits do not bound all requests collectively."
-    tradeoff: Accept unfinished analysis on exhaustion. Disable automatic retries for supported course runs; exclude historical settlement from the metered main flow.
-    fit:
-      metric: Actual outgoing model requests per run in scope, including application-level retries.
-      threshold: At most the configured positive integer limit.
-      verification: "With fake transport and limit 3, an exactly-three-call flow succeeds; a four-call flow sends only three and returns BUDGET_EXHAUSTED without a rating. Check parallel reservations atomically and verify counters isolate concurrent runs."
-  - id: NFR-02
-    type: performance
-    priority: Should
-    statement: Bound final serialized message size for analyst closure and one designated risk discussion role using deterministic removal of optional history.
-    source: "Team observations: analyst closure and risk discussion calls had large input contexts."
-    tradeoff: Drop optional context; do not send when required context cannot fit. UTF-8 message bytes exclude separately bound tool schemas and are not tokens.
-    fit:
-      metric: Serialized UTF-8 message bytes and retention of predeclared required blocks.
-      threshold: At most 65536 bytes in the proposed test configuration and 100% required-block retention on successfully prepared requests.
-      verification: "Use short, reducible, irreducible and multibyte fixtures. Assert deterministic reduction, intact role/task/rules/evidence and paired tool calls/results (or tool name/args/result in text), and CONTEXT_TOO_LARGE with zero sends and no budget debit on rejection."
-  - id: INV-01
-    type: invariant
-    priority: Must
-    statement: A candidate rejected by the deterministic publication gate never appears as an official decision or enters decision memory.
-    source: FR-01
-    tradeoff: Fail closed rather than publish an unverifiable recommendation.
-    fit:
-      metric: Rejected candidates released as official decisions or persisted in decision memory.
-      threshold: Zero.
-      verification: Inject rejected Buy candidates through CLI and Python; inspect returned rating, official report, display and decision memory.
-  - id: INV-02
-    type: invariant
-    priority: Must
-    statement: Requests in the metered analysis scope never exceed the run's configured call limit, including under concurrent dispatch.
-    source: NFR-01
-    tradeoff: Refuse a dispatch when a slot cannot be reserved.
-    fit:
-      metric: Outbound requests above the configured limit.
-      threshold: Zero.
-      verification: Race fake transport calls for the last available slot and assert at most one dispatch.
+- id: FR-01
+  type: functional
+  priority: Must
+  statement: Publish a single-stock recommendation only if its rating is allowed and it references at least
+    one accepted argument backed by a resolvable evidence ID from the same run.
+  source: 'Team proposals: evidence chain and release gate; upstream portfolio_manager.py supports free-text
+    fallback.'
+  tradeoff: Verify reference integrity, not semantic support or investment correctness.
+  fit:
+    metric: Release outcome and evidence resolution across CLI, Python API, official report and decision memory.
+    threshold: Only the valid-rating and valid-evidence case publishes; zero false releases in the rejection
+      fixture set.
+    verification: Replay valid input, invalid rating, missing reference and unknown/cross-run reference. Rejected
+      candidates return BLOCKED with a reason; missing or unresolved evidence uses INSUFFICIENT_EVIDENCE. Resolve
+      the accepted recommendation back to its argument and source material.
+  status: proposed
+  contracts:
+  - C0
+  - C1
+  test_cases:
+  - T-FR01-VALID
+  - T-FR01-RATING
+  - T-FR01-MISSING
+  - T-FR01-REFERENCE
+  - T-FR01-SINKS
+- id: FR-02
+  type: functional
+  priority: Must
+  statement: Compute agreed metrics from operands with provenance, period and unit; controlled downstream fields
+    and the final metrics table reference the same immutable verified record by metric_id.
+  source: 'Team observations: NVDA revenue YoY, AAPL Cost of Revenue YoY and Bollinger upper-band-minus-close
+    gap, MSFT capex-to-operating-cash-flow ratio; SRC-06/SRC-07 in docs/review-memo.md.'
+  tradeoff: Scope to YoY, financial ratios and signed price differences; arbitrary prose, basis-point changes
+    and underlying source truth are excluded.
+  fit:
+    metric: Absolute numerical error against fixed operands and acceptance of invalid records.
+    threshold: 'Expected values: NVDA revenue YoY 105.85%; AAPL Cost of Revenue YoY 10.98%; MSFT capex-to-operating-cash-flow
+      ratio 63.38%; AAPL Bollinger upper band minus close +4.526 USD, reverse -4.526 USD. Percentage error
+      <= 0.1 percentage points; price difference error <= 0.01 price units; zero invalid records in verified
+      fields.'
+    verification: Freeze source operands before accepting the target values. Check YoY = 100*(current/prior-1)
+      on comparable quarters or full years, ratio = 100*numerator/denominator, and signed difference = current-reference.
+      Require positive ratio/YoY denominators. Reject missing provenance, incompatible periods/units and nonfinite
+      operands as UNVERIFIABLE; verify unknown IDs, modified values and new IDs cannot bypass recomputation.
+      Retain operand precision independently of display rounding. Missing original operand fixtures remain
+      a blocked example, not a passing test with invented real-company data. For the AAPL annual YoY example
+      use the Cost of Revenue field. For the 2026-11-10 price gap assign current to the Bollinger upper band
+      and reference to the close; reverse the operands to verify the negative result. Exact values, units,
+      fiscal labels and evidence status are specified in the D4 AAPL acceptance examples.
+  status: proposed
+  contracts:
+  - C0
+  - C2
+  test_cases:
+  - T-FR02-YOY
+  - T-FR02-RATIO
+  - T-FR02-DELTA
+  - T-FR02-INVALID
+  - T-FR02-IDENTITY
+- id: FR-03
+  type: functional
+  priority: Should
+  statement: Distinguish sentiment unavailable from neutral using coverage and per-source missing reasons for
+    the three existing sentiment sources. Preserve the status in downstream input and the report.
+  source: Team consolidated proposal (original REQ-TA-FR-002); BUG-02; SRC-02 and SRC-03 in docs/review-memo.md.
+  tradeoff: Allow an unknown score while continuing usable market and financial analysis.
+  fit:
+    metric: Agreement of coverage, status and score across structured output, downstream input and report.
+    threshold: '0/3: NO_DATA and UNKNOWN with null score; 1/3 or 2/3: PARTIAL_DATA; 3/3: AVAILABLE.'
+    verification: Exercise all coverage levels, empty responses, errors and wrong ticker/window. Verify missing-source
+      reasons, no null imputation or averaging, a valid Neutral/5.0 case, and continued market/financial analysis
+      on NO_DATA. Apply C3 source validity and date boundaries; distinguish vendor failure from no matching
+      content. On 1/3 or 2/3, any measured score must use only valid evidence; unavailable or invalid model
+      scores remain UNKNOWN/null without changing the coverage count. Enforce the same contract after structured
+      and free-text fallback paths. The selected v1 NO_DATA path creates the missing-data result without a
+      sentiment-model request; other valid analysis may continue.
+  status: proposed
+  contracts:
+  - C0
+  - C3
+  test_cases:
+  - T-FR03-COVERAGE
+  - T-FR03-INVALID
+  - T-FR03-NEUTRAL
+  - T-FR03-PROPAGATION
+  - T-FR03-SCORE
+- id: NFR-01
+  type: performance
+  priority: Must
+  statement: Enforce a configurable shared limit on actual model requests within a single stock-analysis main
+    flow.
+  source: 'Team proposals: run-wide LLM budget; upstream per-loop limits do not bound all requests collectively.'
+  tradeoff: Accept unfinished analysis on exhaustion. Disable automatic retries for supported course runs;
+    exclude historical settlement from the metered main flow.
+  fit:
+    metric: Actual outgoing model requests per run in scope, including application-level retries.
+    threshold: At most the configured positive integer limit.
+    verification: With fake transport and limit 3, an exactly-three-call flow succeeds; a four-call flow sends
+      only three and returns BUDGET_EXHAUSTED without a rating. Check parallel reservations atomically and
+      verify counters isolate concurrent runs.
+  status: proposed
+  contracts:
+  - C0
+  - C4
+  test_cases:
+  - T-NFR01-BOUNDARY
+  - T-NFR01-RETRY
+  - T-NFR01-ISOLATION
+  - T-NFR01-FAILURE
+  - T-NFR01-RESUME
+- id: NFR-02
+  type: performance
+  priority: Should
+  statement: Bound final serialized message size for analyst closure and one designated risk discussion role
+    using deterministic removal of optional history.
+  source: 'Team observations: analyst closure and risk discussion calls had large input contexts.'
+  tradeoff: Drop optional context; do not send when required context cannot fit. UTF-8 message bytes exclude
+    separately bound tool schemas and are not tokens.
+  fit:
+    metric: Serialized UTF-8 message bytes and retention of predeclared required blocks.
+    threshold: At most 65536 bytes in the proposed test configuration and 100% required-block retention on
+      successfully prepared requests.
+    verification: Use short, reducible, irreducible and multibyte fixtures. Assert deterministic reduction,
+      intact role/task/rules/evidence and paired tool calls/results (or tool name/args/result in text), and
+      CONTEXT_TOO_LARGE with zero sends and no budget debit on rejection. Freeze the C5 serialization and required-block
+      list before tests are approved. This byte criterion does not establish the separate D2 token-budget design.
+  status: proposed
+  contracts:
+  - C0
+  - C4
+  - C5
+  test_cases:
+  - T-NFR02-SHORT
+  - T-NFR02-REDUCE
+  - T-NFR02-REJECT
+  - T-NFR02-UTF8
+  - T-NFR02-PAIRING
+  - T-NFR02-ORDER
+- id: INV-01
+  type: invariant
+  priority: Must
+  statement: A candidate rejected by the deterministic publication gate never appears as an official decision
+    or enters decision memory.
+  source: FR-01
+  tradeoff: Fail closed rather than publish an unverifiable recommendation.
+  fit:
+    metric: Rejected candidates released as official decisions or persisted in decision memory.
+    threshold: Zero.
+    verification: Inject rejected Buy candidates through CLI and Python; inspect returned rating, official
+      report, display and decision memory.
+  status: proposed
+  contracts:
+  - C0
+  - C1
+  test_cases:
+  - T-INV01-BYPASS
+- id: INV-02
+  type: invariant
+  priority: Must
+  statement: Requests in the metered analysis scope never exceed the run's configured call limit, including
+    under concurrent dispatch.
+  source: NFR-01
+  tradeoff: Refuse a dispatch when a slot cannot be reserved.
+  fit:
+    metric: Outbound requests above the configured limit.
+    threshold: Zero.
+    verification: Race fake transport calls for the last available slot and assert at most one dispatch.
+  status: proposed
+  contracts:
+  - C0
+  - C4
+  test_cases:
+  - T-INV02-RACE
+revision:
+  id: interface-v1.0
+  status: proposed
+  approval: Team contract approval and per-feature plan/test approval are recorded separately in the review
+    memo.
+  contracts: docs/architecture/interface-contracts.md
+  preparation_base: ec1cb8b2177bafdf09c86cd8f072119c487fdce8

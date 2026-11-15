@@ -9,3 +9,9 @@
 | NFR-02 | Reduction is per request; optional context may be dropped from the sent payload only, not silently erased from approved evidence records. |
 
 Reuse the upstream user-owned decision log for approved decisions only and retain its configured rotation/deletion behavior. Keep course fixtures isolated from users' local caches and memory. Reports may contain nonsecret source metadata; users control local retention. No credentials, raw model sessions or student identifiers belong in public logs. Repeatability claims require a new run or an explicitly versioned snapshot, not a retained LLM answer.
+
+## Shared state contract
+
+Use C0 identity and C1–C3 authoritative records from [interface-contracts.md](interface-contracts.md). Add coverage/assessment state beside existing sentiment text; downstream readers use authoritative fields rather than reparsing a Neutral placeholder. Keep data coverage, assessment failure, execution completion and publication approval separate. New runs never inherit prior scores, references or counters.
+
+Raw prompts, account details, personal API keys and complete vendor/social responses stay out of public logs and repository fixtures. Keep original private run receipts separately from shareable, synthetic test fixtures; record only approved references/hashes in public artifacts. Determine the team's actual retention duration before collecting new live payloads; no indefinite retention is implied.
