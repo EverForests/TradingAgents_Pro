@@ -30,7 +30,7 @@ These IDs are referenced by D1. They are test-design identifiers, not executable
 | --- | --- |
 | T-FR01-VALID, T-FR01-RATING, T-FR01-MISSING, T-FR01-REFERENCE, T-FR01-SINKS | One current-run evidence E1 and accepted argument A1 -> legal rating publishes; illegal rating, absent argument, unknown/cross-run E1 -> refusal. Inspect CLI/API/report/memory, not just the gate return. |
 | T-FR02-YOY, T-FR02-RATIO, T-FR02-DELTA | Synthetic controls: comparable prior 100/current 125 -> 25%; same-period numerator 20/denominator 80 -> 25%; same-unit current 10.125/reference 5.599 -> +4.526, reverse -> -4.526. These are not real-company source reproductions. |
-| T-FR02-INVALID, T-FR02-IDENTITY | Zero/negative denominator, NaN/Inf, missing provenance, period/unit mismatch -> UNVERIFIABLE; changed value, unknown ID and newly forged record cannot enter verified fields. Original four company examples remain pending their operands. |
+| T-FR02-INVALID, T-FR02-IDENTITY | Zero/negative denominator, NaN/Inf, missing provenance, period/unit mismatch -> UNVERIFIABLE; changed value, unknown ID and newly forged record cannot enter verified fields. Real-company examples require the primary-source provenance specified below. |
 | T-FR03-COVERAGE | All source-validity combinations (8 combinations for 3 sources): 0 -> NO_DATA/UNKNOWN/null; 1 or 2 -> PARTIAL_DATA with exact count; 3 -> AVAILABLE. Reddit subreddits never increase denominator above 3. |
 | T-FR03-INVALID | Empty payload, explicit vendor error placeholder, unsupported history, wrong ticker, before-start/at-end-boundary timestamps and unverifiable metadata do not count; test C3 inclusive calendar days and frozen clock. Reasons remain distinguishable. |
 | T-FR03-NEUTRAL | Valid in-window evidence and an actual measured Neutral/5.0 remain legal; do not reject all scores to satisfy missingness. |
@@ -42,6 +42,19 @@ These IDs are referenced by D1. They are test-design identifiers, not executable
 | T-NFR02-PAIRING, T-NFR02-ORDER | Required-block hashes and tool pairs survive; both designated sites tested; rejected context produces zero actual sends/reservations/debits, even when only one budget slot remains. |
 | T-INV01-BYPASS | Deliberately bypass one official sink's gate in a controlled test: the negative assertion must fail. Restore code; never merge the deliberate violation. |
 | T-INV02-RACE | Deterministically synchronize two contenders for one remaining slot; only one fake transport send is allowed, independent of scheduler luck. |
+
+## FR-02 AAPL acceptance examples
+
+Sources: [SRC-06/SRC-07](../review-memo.md#source-register). Preserve the synthetic controls above as independent formula tests.
+
+| Case ID | Field and operand roles | Period and unit | Expected result |
+|---|---|---|---|
+| T-FR02-YOY | `Cost of Revenue`: `current = 245232` (FY2026), `prior = 220960` (FY2025) | Comparable annual fiscal statements; USD_millions | `100 * (245232 / 220960 - 1) = 10.9847936278...%`; display 10.98% |
+| T-FR02-DELTA | `current = boll_ub = 352.771`, `reference = Close = 348.245` | AAPL snapshot and latest trading row 2026-11-10; USD | Upper band minus close: +4.526 USD; reversed operands: -4.526 USD |
+
+Use decimal-compatible source values without pre-rounding. Percentage tolerance remains 0.1 percentage points; price-difference tolerance remains 0.01 price units. Assert both subtraction directions so an absolute-value implementation fails the negative-direction case. The same metric ID/value must reach controlled downstream fields and the final metrics table.
+
+The annual-statement operands and fiscal labels are reviewer-provided; archive the original statement tool return before claiming primary-source verification or real-company acceptance. Price operands were independently matched to the retained original `get_verified_market_snapshot` return. These arithmetic checks do not establish implementation acceptance or the correctness of model-generated narrative. NVDA/MSFT source fixtures remain required.
 
 ## Execution, collection and semantic changes
 

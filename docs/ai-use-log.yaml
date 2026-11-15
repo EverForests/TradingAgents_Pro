@@ -68,3 +68,17 @@ entries:
   - Update derived BUG-02 status from existing controlled evidence; preserve raw records
   evidence: Local editorial validation is recorded separately against working-copy hashes. No new application tests or live calls.
   review_status: Local editorial review; team approval and feature plan/test approval remain separate
+- id: AI-DOC-FR02-005
+  date: '2026-11-15'
+  tool: Codex
+  scope: FR-02 documentation clarification from owner review; no application or executable test changes
+  base_commit: d2fd388cef1d318ed05644d788aefc68b5d91992
+  requirements:
+  - FR-02
+  human_direction: User authorized checking merge/comment state and incorporating applicable review feedback in a follow-up PR.
+  changes:
+  - Correct AAPL Cost of Revenue terminology and record fiscal labels/units
+  - Fix the upper-band-minus-close operand mapping and both signed expectations
+  - Separate reviewer-provided annual data from independently inspected market-tool evidence
+  evidence: Decimal recomputation, registry/schema/reference checks and preserved shared record signatures; receipts retained separately. No live calls or feature acceptance claimed.
+  review_status: Pending review of this clarification; no feature plan/test approval recorded

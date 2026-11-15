@@ -26,7 +26,7 @@ Add one dated entry per PR. Link pre-code plan/test approval and the actual resu
 ## DOC-REVIEW-001 — Interface 1.0
 
 - **PR:** https://github.com/EverForests/TradingAgents_Pro/pull/3
-- **Specification status:** Proposed; awaiting human team review.
+- **PR workflow:** Merged by EverForests into `feat/course-deliverables` on 2026-11-15; merge commit `d2fd388cef1d318ed05644d788aefc68b5d91992`. D1 retains its recorded specification status.
 - **Preparation base:** `ec1cb8b2177bafdf09c86cd8f072119c487fdce8`.
 - **Pre-edit reference:** `2e1bb68aff2ca48363293ca5e1bbc43970d2fab8`; the submitted editorial revision is identified by the PR head.
 - **Scope:** D1–D4 and D9 documentation/schema; requirement IDs, acceptance criteria and shared interface semantics are retained.
@@ -41,6 +41,8 @@ Add one dated entry per PR. Link pre-code plan/test approval and the actual resu
 | SRC-03 | Teammate AAPL sentiment report; SHA256 `d425e9f0eb2b4c076b555e5f0ba95f48d7714a4684a036bae2c0f55b86c54450` | Reported missing sources with Neutral/5.0; report content is distinct from raw provider evidence |
 | SRC-04 | Teammate five-stock summary; SHA256 `56f72230defd62aaa56c7b93631167b51ab55b5701cd82973593e2878df2dedc` | Reported headings and 18–21 calls; complete raw request traces were not supplied |
 | SRC-05 | Teacher B3.1 example; SHA256 `fe1211a3ebaeff9c15380b07e3aa920987d5aa0d6c0eb305ca3df9fd4d6b46e5` | Reference for separated roles, failure actions and evidence discipline; not an application baseline |
+| SRC-06 | [FR-02 owner review](https://github.com/EverForests/TradingAgents_Pro/pull/3#issuecomment-6896458912), KyrieT331 | AAPL Cost of Revenue FY2025/FY2026 operands, USD_millions and signed gap definition; annual-statement primary return pending |
+| SRC-07 | Retained baseline `get_verified_market_snapshot`, AAPL/2026-11-10; raw tool-return receipt SHA256 `fa8a4b651c5e7db3a09811e2873999f5dc4c1cad6dd9c9b0ad385b06f58a365f` | `boll_ub = 352.771`, `Close = 348.245` USD; values/date independently checked against retained tool output |
 
 Original materials and raw sessions remain in the private course archive. Public artifacts retain sanitized references and hashes. Diagnostic attempt limits are recorded with their runs and do not define the product request budget.
 
@@ -56,7 +58,7 @@ BUG-02 records the independent sentiment evidence. A separate original market-on
 |---|---|---|
 | Interface compatibility and common starting SHA | Integrator and affected feature owners | Dependent implementation |
 | Exact-path permissions and actual role guard probes | Governance maintainer | Affected OpenCode task |
-| Real-company operands, periods, units and provenance | FR-02 owner | Real-company acceptance |
+| Original AAPL annual-statement return and NVDA/MSFT operand provenance | FR-02 owner | Real-company acceptance |
 | Tokenizer, model capacity and input-token policy validation | Context owner and integrator | Token-compliance claim |
 | Six blocking gates and branch protection | CI maintainer and repository administrator | Applicable merge |
 | Functional/nonfunctional count interpretation in Introduction | Team coordinator | Final scope compliance review |

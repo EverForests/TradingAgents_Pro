@@ -49,7 +49,7 @@ Input: metric kind (YoY, ratio or signed difference), raw operands, source locat
 
 Only the owner registry creates authoritative verified records. Consumers resolve IDs against it; a model-supplied value, changed value, unknown ID or new arbitrary ID must not create verification authority. Retain original records for the run and reject conflicting writes.
 
-The four company examples in D1 require archived source operands and independent recomputation before acceptance. Synthetic fixtures verify formulas separately. Basis-point calculations and arbitrary narrative-math parsing are outside scope.
+Real-company acceptance requires archived source operands and independent recomputation. The AAPL YoY field is `Cost of Revenue`. For its signed price-gap example, `current` is the Bollinger upper band and `reference` is the closing price; reversing these roles negates the result. The formula remains `current - reference`, with no absolute-value conversion. Exact operands and evidence status are in the [D4 AAPL examples](../code-governance/verification-constraints.md#fr-02-aapl-acceptance-examples). Synthetic fixtures verify formulas separately. Basis-point calculations and arbitrary narrative-math parsing are outside scope.
 
 ## C3 — sentiment source coverage and nullable score
 
