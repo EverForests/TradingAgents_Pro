@@ -114,6 +114,18 @@ entries:
   - Local command execution and delegated review are recorded as Codex actions. They are not student per-test approval or a human final verdict.
   - Live model checks use fixed synthetic source receipts. Real-provider data quality and joint C1/C4 acceptance remain integration work.
   - Transport attempts and observed model steps do not establish billed token usage.
-  - Independent OpenCode Verify upload was blocked before publication. Public-revision review remains pending.
-  review_status: Draft feature pending human review and final live receipt
+  - Independent OpenCode Verify completed on the published candidate and found no blocking defect. A manual malformed-outcome validation suggestion remains recorded for later hardening.
+  review_status: Draft feature verified locally, pending human PR review
   ci_maintenance: Codex updated the existing pytest invocation to collect tests and test/offline. This single-line maintainer change makes the new feature cases run in the existing CI matrix. Coding roles retain denied CI edits.
+  final_verification:
+    tested_code_commit: 5e118b7cc5b45831beb78c6b67363ab624a41fd1
+    offline: 1485 passed, 6 skipped, 1 deselected, 100 passing subtests
+    new_offline_cases: 78
+    live_r3: 3 passed using two HTTP attempts, with an effective limit of two
+    live_observation: Zero sources produced UNKNOWN/null with zero requests. One and three valid sources each produced measured Neutral/5.0 in the final synthetic run.
+    live_criteria_revision: Before r3, the partial-case criterion was corrected to permit the UNKNOWN branch explicitly allowed by C3. The full-source positive control still required measurement. Earlier failed test results were retained.
+    controlled_live_total_attempts: 8
+    public_code_review: OpenCode course-verify reviewed the published candidate. Its observations and the operator dispositions are retained with the private task receipts.
+    ci_run: https://github.com/EverForests/TradingAgents_Pro/actions/runs/43761048809
+    ci_conclusion: success
+    pr: https://github.com/EverForests/TradingAgents_Pro/pull/6
