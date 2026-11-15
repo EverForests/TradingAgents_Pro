@@ -62,7 +62,9 @@ requirements:
     three existing sentiment sources. Preserve the status in downstream input and the report.
   source: 'Team consolidated proposal (Feishu PDF pp. 2, 5): originally REQ-TA-FR-002; teammate AAPL sentiment.md
     SHA256 d425e9f0eb2b4c076b555e5f0ba95f48d7714a4684a036bae2c0f55b86c54450 shows unavailable sources but Neutral/5.0.
-    The five-stock summary is teammate-reported, not independently reproduced.'
+    The five-stock summary is teammate-reported, not independently reproduced. Independent real-school sentiment-node
+    diagnostic reproduced unavailable sources with Neutral/5.0; it added a 160-word brevity instruction, and is
+    not a full unchanged-config baseline.'
   tradeoff: Allow an unknown score while continuing usable market and financial analysis.
   fit:
     metric: Agreement of coverage, status and score across structured output, downstream input and report.

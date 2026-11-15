@@ -39,5 +39,7 @@ entries:
   - Reduce global pre-build blockers to per-feature, pre-merge and pre-delivery checks
   - Correct exact Feishu source hash
   evidence: Executed 17 static documentation/schema/interface checks, all passed; 28 planned acceptance IDs remain
-    plans, not executed feature tests. No application, permission, test or CI source changed.
+    plans, not executed feature tests. No application, permission, test or CI source changed. Independent completion
+    receipt now confirms a market-only baseline flow, not all analysts; runtime diagnostic limits are separate from
+    product contracts.
   review_status: pending human team confirmation
