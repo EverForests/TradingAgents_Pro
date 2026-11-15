@@ -32,20 +32,25 @@ requirements:
   priority: Must
   statement: Compute agreed metrics from operands with provenance, period and unit; controlled downstream fields
     and the final metrics table reference the same immutable verified record by metric_id.
-  source: 'Team observations: NVDA revenue YoY, AAPL operating cost YoY and price difference, MSFT capex-to-operating-cash-flow
-    ratio.'
+  source: 'Team observations: NVDA revenue YoY, AAPL Cost of Revenue YoY and Bollinger upper-band-minus-close
+    gap, MSFT capex-to-operating-cash-flow ratio; SRC-06/SRC-07 in docs/review-memo.md.'
   tradeoff: Scope to YoY, financial ratios and signed price differences; arbitrary prose, basis-point changes
     and underlying source truth are excluded.
   fit:
     metric: Absolute numerical error against fixed operands and acceptance of invalid records.
-    threshold: 'Expected values: 105.85%, 10.98%, 63.38%, 4.526; percentage error <= 0.1 percentage points;
-      price difference error <= 0.01 price units; zero invalid records in verified fields.'
+    threshold: 'Expected values: NVDA revenue YoY 105.85%; AAPL Cost of Revenue YoY 10.98%; MSFT capex-to-operating-cash-flow
+      ratio 63.38%; AAPL Bollinger upper band minus close +4.526 USD, reverse -4.526 USD. Percentage error
+      <= 0.1 percentage points; price difference error <= 0.01 price units; zero invalid records in verified
+      fields.'
     verification: Freeze source operands before accepting the target values. Check YoY = 100*(current/prior-1)
       on comparable quarters or full years, ratio = 100*numerator/denominator, and signed difference = current-reference.
       Require positive ratio/YoY denominators. Reject missing provenance, incompatible periods/units and nonfinite
       operands as UNVERIFIABLE; verify unknown IDs, modified values and new IDs cannot bypass recomputation.
       Retain operand precision independently of display rounding. Missing original operand fixtures remain
-      a blocked example, not a passing test with invented real-company data.
+      a blocked example, not a passing test with invented real-company data. For the AAPL annual YoY example
+      use the Cost of Revenue field. For the 2026-11-10 price gap assign current to the Bollinger upper band
+      and reference to the close; reverse the operands to verify the negative result. Exact values, units,
+      fiscal labels and evidence status are specified in the D4 AAPL acceptance examples.
   status: proposed
   contracts:
   - C0
