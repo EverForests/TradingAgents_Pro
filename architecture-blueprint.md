@@ -1,6 +1,6 @@
 # Architecture blueprint
 
-Status: proposed design for human review. Canonical scope and fit criteria: [D1 registry](docs/req/requirements.yaml). Extend TradingAgents at `upstream-baseline` (`9fa1196fffbcfd9de5146d2dd2869df84ab99838`); retain the single-stock graph, providers, CLI and Python entry points. No brokerage execution, arbitrary prose arithmetic, or new external provider is in scope.
+Status: Proposed. Interface version: 1.0. Scope and fit criteria: [D1 registry](docs/req/requirements.yaml). Extend TradingAgents at `upstream-baseline` (`9fa1196fffbcfd9de5146d2dd2869df84ab99838`); retain the single-stock graph, providers, CLI and Python entry points. No brokerage execution, arbitrary prose arithmetic, or new external provider is in scope.
 
 | Requirement | Planned owner module | Contract and authority |
 | --- | --- | --- |
@@ -15,3 +15,9 @@ Integrate at existing graph and client seams. At dispatch: prepare final message
 Use fixed fixtures and fake transports for deterministic tests, then separately smoke-test configured live integration. Emit run ID, publication status/reason, verified metric counts, sentiment coverage, request count and message byte size without credentials or raw prompts. See [trace matrix](docs/architecture/trace-matrix.md) and [runtime policies](docs/architecture/runtime-policy-catalog.md).
 
 Plan is read-only. A human approves scope, interface and tests before Build starts. A separate reviewer runs verification and records a verdict. Amend D1/D2, tests and governance together when a contract changes; changes to safety enforcement require an ADR and explicit human approval.
+
+## Integration and change control
+
+[C0–C5](docs/architecture/interface-contracts.md) defines shared records, function boundaries, state keys and failure precedence. Each component owns its authoritative records; legacy report strings remain compatible views. Shared-file changes are integrated by the designated coordinator.
+
+The application retains the upstream package layout. Verify the final submission mapping to the required `src/` and `test/` layout before packaging. Approval and outstanding verification items are recorded in [review records](docs/review-memo.md).
