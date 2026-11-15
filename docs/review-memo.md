@@ -24,3 +24,9 @@ Add one dated entry per PR. Link pre-code plan/test approval and the actual resu
 - **Verdict:** APPROVE / CHANGES REQUIRED / REJECT
 
 The team reported that a baseline and a test PR were completed. Add the verified link, observed check results and actual reviewer decision when available. That PR tests the merge mechanism; it does not establish implementation of every course gate. No PR verdict is recorded here without review evidence.
+
+## Preparation revision under review
+
+Scope: D1–D4/D9 documentation and schema; no application source, tests, runtime prompts, permission configurations or human-only rules are changed. Contracts C0–C5 and the readiness register are proposals for team review. Document authoring is not feature implementation approval. Record the eventual PR link, exact reviewed SHA and real human verdict after review; no APPROVE is supplied here.
+
+For each future feature PR, add the base SHA, contract/fixture versions, shared-file owner and failing-before assertion. In Files changed, ensure the selected base excludes unrelated course scaffolding. If based on an unmerged document branch, target that branch initially; after its merge, retarget main and recheck the diff. Link raw evidence privately and only share redacted summaries publicly.

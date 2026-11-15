@@ -5,7 +5,8 @@
   "additionalProperties": false,
   "required": [
     "baseline",
-    "requirements"
+    "requirements",
+    "revision"
   ],
   "properties": {
     "baseline": {
@@ -30,6 +31,40 @@
       "minItems": 1,
       "items": {
         "$ref": "#/$defs/requirement"
+      },
+      "$comment": "Cross-entry requirement-ID uniqueness and resolution of test/contract references need the semantic validation gate; uniqueItems alone cannot enforce unique IDs."
+    },
+    "revision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "status",
+        "approval",
+        "contracts",
+        "preparation_base"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/text"
+        },
+        "status": {
+          "enum": [
+            "proposed",
+            "approved",
+            "superseded"
+          ]
+        },
+        "approval": {
+          "$ref": "#/$defs/text"
+        },
+        "contracts": {
+          "$ref": "#/$defs/text"
+        },
+        "preparation_base": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        }
       }
     }
   },
@@ -48,7 +83,10 @@
         "statement",
         "source",
         "tradeoff",
-        "fit"
+        "fit",
+        "status",
+        "contracts",
+        "test_cases"
       ],
       "properties": {
         "id": {
@@ -101,6 +139,33 @@
             "verification": {
               "$ref": "#/$defs/text"
             }
+          }
+        },
+        "status": {
+          "enum": [
+            "proposed",
+            "approved",
+            "implemented",
+            "verified",
+            "deferred"
+          ]
+        },
+        "contracts": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^C[0-5]$"
+          }
+        },
+        "test_cases": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^T-(FR|NFR|INV)[0-9]{2}-[A-Z0-9]+$"
           }
         }
       },

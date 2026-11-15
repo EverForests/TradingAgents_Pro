@@ -15,3 +15,9 @@ Integrate at existing graph and client seams. At dispatch: prepare final message
 Use fixed fixtures and fake transports for deterministic tests, then separately smoke-test configured live integration. Emit run ID, publication status/reason, verified metric counts, sentiment coverage, request count and message byte size without credentials or raw prompts. See [trace matrix](docs/architecture/trace-matrix.md) and [runtime policies](docs/architecture/runtime-policy-catalog.md).
 
 Plan is read-only. A human approves scope, interface and tests before Build starts. A separate reviewer runs verification and records a verdict. Amend D1/D2, tests and governance together when a contract changes; changes to safety enforcement require an ADR and explicit human approval.
+
+## Shared contracts and readiness
+
+[Interface contracts C0–C5](docs/architecture/interface-contracts.md) define identity, authoritative records, source validity, error semantics and the two shared boundaries. They are proposed, not implemented. Owners must agree exact signatures and shared-file integration responsibility before Build; do not independently redefine shared fields. In particular, sentiment coverage is not execution state, nullable scores reach every consumer, and context rejection precedes budget reservation. The [readiness register](docs/README.md) tracks evidence and unresolved team decisions.
+
+The application source remains in the existing upstream layout. Do not relocate modules to `src/` during individual feature work merely to match the submission diagram. Decide and verify a portable submission mapping before final packaging; an empty `src/` folder is not D8 completion.

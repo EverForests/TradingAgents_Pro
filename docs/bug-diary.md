@@ -17,3 +17,11 @@ The large model inputs cited in D1 motivate NFR-02; reproduce them under fixed s
 - **Classification:** defect class, affected requirement and severity
 - **Root cause and invariant gap:** evidence or unknown; invariant ID or rationale for N/A
 - **Fix and regression evidence:** PR, failing-before/passing-after check and remaining limitations
+
+## BUG-02 evidence intake — 2026-11-15
+
+The teammate-provided AAPL report (2026-11-03 through 2026-11-10; SHA256 `d425e9f0eb2b4c076b555e5f0ba95f48d7714a4684a036bae2c0f55b86c54450`) opens with Neutral/5.0 and low confidence while explicitly describing three unavailable sources. It describes Yahoo YFDataException, StockTwits history-window limits and Reddit fetch failure. These explanations are report contents, not independently inspected raw provider receipts. The five-stock summary repeats this heading observation; only the AAPL narrative has been supplied here. Numbered duplicate files have identical hashes and are not independent runs.
+
+Pinned source inspection: `agents/schemas.py` defines six SentimentBand values without UNKNOWN, requires `overall_score: float` between 0 and 10, and renders it using numeric formatting. `analysts/sentiment_analyst.py` feeds the three prefetched text blocks to structured/free-text paths and stores report text. This establishes a representation limitation; it does not prove every live model must emit 5.0 or that real-world sentiment was neutral.
+
+Status: artifact inspected and code mechanism identified. Independent controlled-node probe on 9fa1196 completed: 11 checks passed, zero external requests; null/UNKNOWN rejected, and an explicitly injected fake Neutral/5.0 flowed through the real node/renderer into a real bull-research prompt. A valid-data neutral synthetic control also passed. This demonstrates the missing guard, not a real model naturally choosing 5.0. Full live reproduction and fix remain pending. Preserve separate labels for teammate observations, fake-model probes and real-model results. FR-03/C3 is the proposed remedy; no fix or passing acceptance result is claimed.

@@ -1,1 +1,28 @@
-# Placeholder: populate the AI-use log as work proceeds.
+format_version: 1
+entries:
+- id: AI-DOC-PREDEV-001
+  date: '2026-11-15'
+  tool: Codex
+  scope: D1-D4 and D9 predevelopment documentation/schema review; no application implementation
+  base_commit: ec1cb8b2177bafdf09c86cd8f072119c487fdce8
+  requirements:
+  - FR-01
+  - FR-02
+  - FR-03
+  - NFR-01
+  - NFR-02
+  - INV-01
+  - INV-02
+  human_direction: Requested material alignment and first-version contracts before parallel development. Human team
+    approval of contracts/feature tests is pending.
+  evidence: 'Static preparation validation executed: registry schema valid; seven unchanged requirement IDs; 28
+    planned case references resolve; checked relative links and protected-file preservation; no credential-like
+    key pattern in changed text. These are documentation checks, not feature tests, runtime permission probes or
+    CI enforcement.'
+  session_reference: Codex preparation chat; full private transcript retained separately; not an OpenCode transcript
+  review_status: pending human review
+  limitations:
+  - New B3.1 package inspected selectively; SA new runtime-policy slide not confirmed in current PDF
+  - Live full-stock baseline and real-model FR-03 reproduction pending; independent fake-model probe passed 11 checks
+    with zero network
+  - No CI or runtime permission enforcement installed by this documentation revision

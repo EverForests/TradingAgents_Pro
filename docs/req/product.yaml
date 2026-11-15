@@ -4,19 +4,26 @@ baseline_tag: upstream-baseline
 goal: Produce traceable research recommendations and bound in-scope model dispatch.
 registry: requirements.yaml
 scope:
-  - FR-01
-  - FR-02
-  - FR-03
-  - NFR-01
-  - NFR-02
+- FR-01
+- FR-02
+- FR-03
+- NFR-01
+- NFR-02
 release_constraints:
-  - INV-01
-  - INV-02
+- INV-01
+- INV-02
 out_of_scope:
-  - Brokerage execution or return prediction
-  - Verification of arbitrary arithmetic in narrative text
-  - New providers or orchestration redesign
-  - Dedicated replay and comparison tooling
+- Brokerage execution or return prediction
+- Verification of arbitrary arithmetic in narrative text
+- New providers or orchestration redesign
+- Dedicated replay and comparison tooling
 acceptance:
   mode: Offline fixtures and fake transport, with separate live integration checks
   baseline_comparison: Same input, model settings and completion status recorded for both versions
+  evidence_status: Teammate observations, local offline baseline results and live access probes are separate evidence
+    layers; a short API response is not a completed stock analysis.
+  ready_to_build: Only after team review of contracts, exact-path plan/test approval and effective permission checks;
+    open items are in docs/README.md.
+baseline_commit: 9fa1196fffbcfd9de5146d2dd2869df84ab99838
+status: proposed; review pending
+interface_contracts: ../architecture/interface-contracts.md

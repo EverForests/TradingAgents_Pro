@@ -14,3 +14,10 @@ The initial entries are review candidates from the design. Confirm exposure and 
 | TD-08 | Human/cognitive debt | All | Approval rationale can disappear when work is handed over. Link the reviewed plan, tests and final verdict in each PR memo. |
 
 For each confirmed entry add: **status**, **evidence/PR**, **impact**, **owner**, **next review trigger**, **mitigation**, and **closure proof**. Do not classify failure of a mandatory safety invariant as accepted debt; block the affected release and record a defect.
+
+## Preparation follow-ups
+
+- TD-06: original financial operands and full five-run configurations/raw traces are still absent. One supplied AAPL narrative and a summary do not replace them. Close only with reproducible fixtures and receipts.
+- TD-07: actual OpenCode guard probes and all course CI gates remain unverified; adding prose does not close this debt. Resolve exact-path omissions before affected Build tasks.
+- TD-08: five independent Codex chats may drift on interfaces or claim approvals from summaries. Use one contract revision and real human review links; keep actual tool identity and shared-file ownership explicit.
+- Context architecture: proposed token budget in ADR-001 still needs tokenizer/model-capacity validation; a 64 KiB message check alone cannot close it.
