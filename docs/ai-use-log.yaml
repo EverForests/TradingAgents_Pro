@@ -43,3 +43,28 @@ entries:
     receipt now confirms a market-only baseline flow, not all analysts; runtime diagnostic limits are separate from
     product contracts.
   review_status: pending human team confirmation
+- id: AI-DOC-LOCAL-REVIEW-003
+  date: '2026-11-15'
+  tool: Codex
+  scope: Local documentation wording review and a private Chinese reading guide; no application implementation
+  base_commit: 2e1bb68aff2ca48363293ca5e1bbc43970d2fab8
+  human_direction: User requested a Chinese explanation and personal review before any further PR publication.
+  changes:
+  - Focus normative governance wording on the course OpenCode workflow without repeated auxiliary brand discussion
+  - Preserve accurate tool identities and earlier preparation records in this log
+  - Keep the five requirements and interface semantics unchanged
+  evidence: Local edits only; no new feature tests or execution evidence claimed. No push, ready-for-review transition or merge.
+  review_status: pending the user's review of the Chinese guide; not team or feature approval
+- id: AI-DOC-EDITORIAL-004
+  date: '2026-11-15'
+  tool: Codex
+  scope: Editorial formalization of D1-D4, D9 and repository navigation; no application implementation
+  base_commit: 2e1bb68aff2ca48363293ca5e1bbc43970d2fab8
+  human_direction: Requested concise formal project specifications and delegated the local consistency review.
+  changes:
+  - Replace revision commentary in the documentation README with scope, document index and workflow
+  - Consolidate source provenance and open verification items in the PR review memo
+  - Standardize architecture and governance wording while preserving acceptance and shared records
+  - Update derived BUG-02 status from existing controlled evidence; preserve raw records
+  evidence: Local editorial validation is recorded separately against working-copy hashes. No new application tests or live calls.
+  review_status: Local editorial review; team approval and feature plan/test approval remain separate

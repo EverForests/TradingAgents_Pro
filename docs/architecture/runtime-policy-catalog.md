@@ -18,6 +18,6 @@ A provider failure after dispatch consumes the slot; no implicit retries are all
 4. On nonzero source coverage but failed assessment, keep PARTIAL_DATA/AVAILABLE and record assessment failure with UNKNOWN/null. Coverage is collection state, not model confidence.
 5. Gate any resulting candidate at every official sink. A source placeholder is not substantive evidence. Publication passes only when C1 succeeds, regardless of a model's requested rating.
 
-A user retry after a terminal failure is a new run with a new identity; do not resume the same metered identity with a fresh counter. Invalid configuration or unknown contract version blocks the affected task before live dispatch. These policies are proposed and require the relevant case evidence before being claimed as implemented.
+A user retry after a terminal failure is a new run with a new identity; do not resume the same metered identity with a fresh counter. Invalid configuration or unknown contract version blocks the affected task before live dispatch. Record implementation and case evidence for each failure path.
 
-The evidence fields above are planned receipt fields, not existing dashboards/counters. Implementers must show where each is produced; absent evidence remains a verification gap. This follows the new B3.1 catalog discipline of separating intended, implemented and unimplemented behavior.
+Each enforcing component emits the specified receipt fields. Verification records identify the producing path, implementation revision and observed result.

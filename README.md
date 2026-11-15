@@ -1,6 +1,6 @@
 # TradingAgents Pro — CS5351 Group Project
 
-TradingAgents Pro is a CS5351 course project that extends TradingAgents, a multi-agent stock analysis framework. The team's enhancements and acceptance criteria will be documented here once the scope is agreed.
+TradingAgents Pro is a CS5351 course project that extends TradingAgents, a multi-agent stock analysis framework. The course extension targets traceable publication, verified metrics, explicit sentiment coverage, request budgeting and scoped message control. The version 1.0 specification is under team review.
 
 - **Team repository:** [EverForests/TradingAgents_Pro](https://github.com/EverForests/TradingAgents_Pro)
 - **Upstream project:** [TauricResearch/TradingAgents](https://github.com/TauricResearch/TradingAgents)
@@ -10,8 +10,8 @@ TradingAgents Pro is a CS5351 course project that extends TradingAgents, a multi
 
 **CS5351 team workflow:** use OpenCode 2.3.0 and run the [permission checks](docs/architecture/permission-model.md) before the first planning session.
 
-- **Scope (D1):** Add the agreed improvements, their requirement IDs, and measurable acceptance criteria.
-- **Architecture (D2):** Summarize the affected components, the analysis workflow, and where deterministic code constrains AI output. Link to the architecture documents when ready.
+- **Scope (D1):** [Requirements and acceptance criteria](docs/req/requirements.yaml) define FR-01–FR-03, NFR-01–NFR-02 and two safety invariants.
+- **Architecture (D2):** [Blueprint](architecture-blueprint.md) and [shared contracts](docs/architecture/interface-contracts.md) define component ownership, dispatch control and publication authority.
 
 ## Repository layout
 

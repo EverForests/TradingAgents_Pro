@@ -56,7 +56,7 @@ The current default `testpaths = ["tests"]` does not collect `test/offline`. D7 
 
 Before any application prompt/model change merges, freeze an evaluation revision in Git with exact inputs and expected facts, plus the model/config/prompt revisions. Proposed initial semantic set: valid citation, unknown citation, zero sentiment sources, genuine neutral, partial coverage, synthetic YoY and invalid metric provenance. Supply complete synthetic content and expected fact/rubric annotations, not only scenario names; these executable/evaluation fixtures are still to be prepared and approved. Proposed thresholds: 100% required-field/coverage agreement, 100% citation resolvability where publication is allowed, zero safety escapes and zero contradiction of declared missing-data facts; human source-support review uses a predeclared rubric and threshold before the first evaluation. Reference existence alone is not semantic faithfulness. Do not tune thresholds after seeing a result or count early refusal as a quality/performance gain.
 
-## D7 gate handoff — not implemented by this document
+## D7 blocking-gate integration
 
 | Teacher gate (Project P10) | Required integration/evidence before applicable merge |
 | --- | --- |
@@ -67,11 +67,11 @@ Before any application prompt/model change merges, freeze an evaluation revision
 | Regression | Upstream and all previous course offline suites collected, no unexplained missing/skipped acceptance cases |
 | AI-use log | Code/application-prompt PR updates the log with real tool/session and scope; missing entry blocks |
 
-Human administrators must configure required checks and safety review/ADR protection, and verify them with a controlled failing PR. Six green upstream checks do not establish these six course gates. This documentation PR does not install new checks or claim branch protection is active.
+Repository administrators configure required checks and safety review/ADR protection, then verify enforcement with a controlled failing PR. Record each gate's implementation and enforcement evidence in the review memo.
 
 
 ## Interface-v1 conformance
 
 Before implementing the selected feature, freeze fixtures for its v1 record fields and call boundaries. Check run/version isolation, required fields, null semantics and compatibility views. C3's 0/3 branch must make zero sentiment-model requests, while allowing other valid analysis to proceed; include this in T-FR03-COVERAGE/PROPAGATION. C1 refuses incomplete/terminal runs without leaking a candidate. C4 dispatch preserves the sender's normal response type on success and exposes typed failure instead of inventing a rating. C5 tests canonical JSON message sizing and never counts grouping metadata or treats an unscoped call as a 64 KiB scoped call.
 
-Working-profile defaults are not measured improvements. In particular, limit 3 is a boundary fixture, 40 is a configurable initial product suggestion, and 16/20 are separately approved reproduction attempt guards. A diagnostic checkpoint continuation is not proof of production resume compliance. Test-model output, real-model diagnostic output with extra brevity instructions, and an unchanged-config full baseline remain distinct comparisons.
+Use the approved run profile and fixed acceptance fixtures. Product request limits, boundary fixtures and diagnostic limits are distinct configurations. Keep synthetic results, controlled live diagnostics and unchanged-configuration baseline comparisons separately identified. Resume compliance requires counter-restoration evidence from the application.

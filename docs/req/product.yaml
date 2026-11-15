@@ -20,10 +20,8 @@ out_of_scope:
 acceptance:
   mode: Offline fixtures and fake transport, with separate live integration checks
   baseline_comparison: Same input, model settings and completion status recorded for both versions
-  evidence_status: Teammate observations, local offline baseline results and live access probes are separate evidence
-    layers; a short API response is not a completed stock analysis.
-  ready_to_build: Only after team review of contracts, exact-path plan/test approval and effective permission checks;
-    open items are in docs/README.md.
+  evidence_status: Baseline observations, controlled tests and live integration results are recorded separately.
+  ready_to_build: Requires approved contracts, task plan/test revision and effective exact-path permissions.
 baseline_commit: 9fa1196fffbcfd9de5146d2dd2869df84ab99838
 status: proposed; review pending
 interface_contracts: ../architecture/interface-contracts.md

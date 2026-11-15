@@ -1,6 +1,6 @@
 # Architecture blueprint
 
-Status: proposed design for human review. Canonical scope and fit criteria: [D1 registry](docs/req/requirements.yaml). Extend TradingAgents at `upstream-baseline` (`9fa1196fffbcfd9de5146d2dd2869df84ab99838`); retain the single-stock graph, providers, CLI and Python entry points. No brokerage execution, arbitrary prose arithmetic, or new external provider is in scope.
+Status: Proposed. Interface version: 1.0. Scope and fit criteria: [D1 registry](docs/req/requirements.yaml). Extend TradingAgents at `upstream-baseline` (`9fa1196fffbcfd9de5146d2dd2869df84ab99838`); retain the single-stock graph, providers, CLI and Python entry points. No brokerage execution, arbitrary prose arithmetic, or new external provider is in scope.
 
 | Requirement | Planned owner module | Contract and authority |
 | --- | --- | --- |
@@ -16,11 +16,8 @@ Use fixed fixtures and fake transports for deterministic tests, then separately 
 
 Plan is read-only. A human approves scope, interface and tests before Build starts. A separate reviewer runs verification and records a verdict. Amend D1/D2, tests and governance together when a contract changes; changes to safety enforcement require an ADR and explicit human approval.
 
-## Shared contracts and readiness
+## Integration and change control
 
-[Interface contracts C0–C5](docs/architecture/interface-contracts.md) define identity, authoritative records, source validity, error semantics and the two shared boundaries. They are proposed, not implemented. Owners must agree exact signatures and shared-file integration responsibility before Build; do not independently redefine shared fields. In particular, sentiment coverage is not execution state, nullable scores reach every consumer, and context rejection precedes budget reservation. The [readiness register](docs/README.md) tracks evidence and unresolved team decisions.
+[C0–C5](docs/architecture/interface-contracts.md) defines shared records, function boundaries, state keys and failure precedence. Each component owns its authoritative records; legacy report strings remain compatible views. Shared-file changes are integrated by the designated coordinator.
 
-The application source remains in the existing upstream layout. Do not relocate modules to `src/` during individual feature work merely to match the submission diagram. Decide and verify a portable submission mapping before final packaging; an empty `src/` folder is not D8 completion.
-
-
-Interface version 1.0 now fixes shared record fields, callable boundaries and graph handoff keys in C0–C5. Use JSON-compatible mappings with owner adapters, preserve legacy reports as views, and keep shared records authoritative. The v1 working defaults and staged readiness are in docs/README.md; diagnostic limits never become product acceptance thresholds implicitly. This selects a concrete proposal for team confirmation; no feature implementation, runtime guard or human approval is claimed.
+The application retains the upstream package layout. Verify the final submission mapping to the required `src/` and `test/` layout before packaging. Approval and outstanding verification items are recorded in [review records](docs/review-memo.md).

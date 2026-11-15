@@ -1,6 +1,6 @@
 # Shared interface contracts
 
-Status: **interface v1.0 — selected proposal for team confirmation**. This file fixes the shared record names, fields, defaults and callable boundaries below. They are documentation contracts, not implemented classes or passing tests. Preserve the five D1 requirements. Use JSON-compatible mappings at shared boundaries; internal dataclasses, TypedDict or existing Pydantic models are permitted through adapters that preserve these exact fields and semantics. ADR-001 governs the choice. Team confirmation does not replace each feature plan/test approval.
+Version: 1.0. Status: Proposed. Shared boundaries use JSON-compatible records. Internal dataclasses, TypedDict or Pydantic models may use adapters that preserve these fields and semantics. ADR-001 records the design decision.
 
 ## Ownership and integration
 
@@ -13,7 +13,7 @@ Status: **interface v1.0 — selected proposal for team confirmation**. This fil
 | C4 dispatch budget | NFR-01 request-budget component | Both model tiers and every in-scope transport send |
 | C5 prepared context | NFR-02 context component | Analyst closure and neutral risk debater, then C4 |
 
-Shared-file edits (`agents/state.py`, `agents/schemas.py`, graph/client adapters and reporting) need an integration owner agreed by the team. Feature owners propose narrow patches; the coordinator preserves all approved contracts when combining them. Contract IDs and the v1 callable boundaries below are stable for the proposed first release. Per-task plans identify exact adapter paths. Follow the meeting arrangement of LIU Huansong as integrator unless the team changes it; feature owners do not independently replace shared state/schema/report files.
+Shared-file integration owner: LIU Huansong. Feature owners submit narrow patches for state, schema, graph/client and reporting adapters. Task plans identify exact paths. The integrator preserves approved contracts across patches; shared files must not be independently replaced by feature branches.
 
 ## C0 — identity, state and errors
 
@@ -49,7 +49,7 @@ Input: metric kind (YoY, ratio or signed difference), raw operands, source locat
 
 Only the owner registry creates authoritative verified records. Consumers resolve IDs against it; a model-supplied value, changed value, unknown ID or new arbitrary ID must not create verification authority. Retain original records for the run and reject conflicting writes.
 
-The reported 105.85%, 10.98%, 63.38% and 4.526 remain provisional examples until original operands are supplied and independently recomputed. Synthetic formula tests may run first, but cannot be reported as reproductions of those companies' original observations. No basis-point feature or arbitrary narrative-math parser is added.
+The four company examples in D1 require archived source operands and independent recomputation before acceptance. Synthetic fixtures verify formulas separately. Basis-point calculations and arbitrary narrative-math parsing are outside scope.
 
 ## C3 — sentiment source coverage and nullable score
 
@@ -89,13 +89,13 @@ Canonical v1 measurement: the final provider-facing message array encoded as JSO
 
 Required blocks: role/task identity; standing safety/publication rules; ticker/date/run identity; current required evidence/verified metrics/source coverage; and the active tool-call/result exchange. Optional blocks: explicitly marked older discussion/history. A tool-call/result pair is indivisible; if a member is required, preserve the whole pair. Text-wrapped tools retain name, arguments and corresponding result. Removing context cannot delete authoritative evidence/state from storage.
 
-At the proposed 65536-byte test cap: short input passes unchanged. If oversized, remove optional groups oldest first (stable original index for ties), reassemble, reinject critical constraints and remeasure. Do not summarize required evidence with another unmetered model call. If required blocks cannot fit or pairing cannot be preserved, return CONTEXT_TOO_LARGE; zero send, reservation and debit. Same normalized input/config produces identical prepared output. Run final retention/pairing checks before C4.
+At the configured 65536-byte acceptance cap: short input passes unchanged. If oversized, remove optional groups oldest first (stable original index for ties), reassemble, reinject critical constraints and remeasure. Do not summarize required evidence with another unmetered model call. If required blocks cannot fit or pairing cannot be preserved, return CONTEXT_TOO_LARGE; zero send, reservation and debit. Same normalized input/config produces identical prepared output. Run final retention/pairing checks before C4.
 
 This byte cap does not implement the separate D2 token-budget requirement. ADR-001 records that architecture design and the remaining tokenizer/model-capacity validation. Do not infer token counts from bytes/4 or claim provider safety from 64 KiB alone.
 
 ## Contract-change and approval record
 
-Before implementation, record requirement IDs, contract revision, baseline SHA, exact read/edit paths, fixture/case revision, reviewer and approval time. Approval is a human decision about that revision, not an agent summary or a default assent. Document-only preparation may propose contracts; it does not approve feature implementation. Reapprove changes to shared fields, thresholds, test expectations, safety paths or dependencies. Feature PRs link the approved plan and actual evidence; the coordinator runs integrated regressions before release.
+Before implementation, record requirement IDs, contract revision, baseline SHA, exact read/edit paths, fixture/case revision, reviewer and approval time. The human approval record identifies the reviewed revision and scope. Reapprove changes to shared fields, thresholds, test expectations, safety paths or dependencies. Feature PRs link the approved plan and actual evidence; the coordinator runs integrated regressions before release.
 
 
 ## V1 shared record layout
@@ -151,7 +151,7 @@ Publication evaluation first respects C0 terminal failure/incomplete execution (
 
 Add the following keys to the existing AgentState through narrow integration edits: course_run (RunContext), evidence_index, argument_index, verified_metrics, sentiment_assessment and publication_result. These are separate state keys; do not have parallel nodes overwrite an entire common nested dictionary. Existing nodes own their existing report strings. New owner records are not reconstructed from those strings. Avoid new dependencies or replacement of the orchestrator.
 
-For sentiment, the analyst emits sentiment_assessment and renders its legacy sentiment_report from that same record, including the model-message/report views. At 0/3, the selected v1 path skips the sentiment model call and creates a deterministic missing-data narrative with UNKNOWN/null. This is an FR-03 implementation decision, not an extra feature. With data, finalize the model assessment while preserving coverage; provider/free-text fallback cannot restore a made-up default score. The FR-03 task plan tests schema/renderer compatibility before selecting the internal Pydantic adaptation. FR-01 can publish from valid non-sentiment evidence when its own gate passes.
+For sentiment, the analyst emits sentiment_assessment and renders its legacy sentiment_report from that same record, including the model-message/report views. At 0/3, the selected v1 path skips the sentiment model call and creates a deterministic missing-data narrative with UNKNOWN/null. With data, finalize the model assessment while preserving coverage; provider/free-text fallback cannot restore a made-up default score. The FR-03 task plan tests schema/renderer compatibility before selecting the internal Pydantic adaptation. FR-01 can publish from valid non-sentiment evidence when its own gate passes.
 
 The shared model client receives PreparedRequest. At the two NFR-02 sites use prepare_context; elsewhere use a nonreducing READY adapter so NFR-01 covers all sends without accidentally applying a 64 KiB cap to every call. All branches then use the same C4 dispatch boundary. Tests can use fixed fake producers/consumers until integration, but combined graph acceptance needs the real connected owner modules.
 
@@ -167,10 +167,9 @@ The shared model client receives PreparedRequest. At the two NFR-02 sites use pr
 | NFR-01 boundary fixture | limit 3, exactly-three succeeds, fourth refuses | Fixed test condition; not the normal application's default |
 | NFR-02 message cap | 65536 bytes at analyst closure and neutral risk role | Normal configurable setting; changes update the affected fixtures/contracts |
 | Token architecture proposal | 16384 input tokens, 80% trigger remains unactivated design pending counting/capacity evidence | Not an automatic global gate or an extra feature |
-| Reproduction guard | A separately approved attempt cap (initial 16; 20 only when the user approves), including conservative unknown-delivery attempts | Temporary diagnostic control, not teacher requirement or NFR-01 implementation |
 
-A reproduction checkpoint continuation must preserve its cumulative attempt history. It is external diagnostic tooling on unchanged baseline source; it does not establish production C4 checkpoint-resume compliance. Production metered resume remains disabled until restoration is implemented/tested.
+Production metered resume remains disabled until counter restoration is implemented and verified.
 
-## Confirmation and change policy for v1
+## Change control
 
-Team review can accept this version as the common first contract. Do not reopen settled choices merely because the implementation has not yet been written. A feature owner may adapt internal class/function organization without changing these record names, field types, authority or failure meanings. Public changes, source-validity changes, thresholds and shared dispatch/sink edits need an explained contract/test revision and affected-owner review. Exact file approvals and each feature's independent test approval still occur before its implementation.
+Internal class and function organization may vary while preserving shared record names, types, authority and failure semantics. Changes to public fields, source-validity rules, thresholds or shared dispatch/publication paths require a versioned contract/test revision and affected-owner review. Each feature requires its own approved plan, exact file scope and independent test design before implementation.
