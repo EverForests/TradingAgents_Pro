@@ -13,6 +13,7 @@ import pytest
 
 import cli.run as cli_run
 from tradingagents.agents.rating import RATING_REVIEW, extract_rating, parse_rating
+from tradingagents.graph.trading_graph import TradingAgentsGraph
 
 INVERTED = ("The aggressive analyst pushed hard for a Buy on the AI backlog, but the "
             "conservative case on margin compression carried the debate. "
@@ -121,6 +122,7 @@ def test_the_cli_says_when_a_run_produced_no_usable_rating(monkeypatch, tmp_path
 
     class _Graph:
         graph = propagator = None
+        publish = TradingAgentsGraph.publish
 
         def create_run_state(self, *a, **k):
             return {"messages": []}
@@ -144,7 +146,7 @@ def test_the_cli_says_when_a_run_produced_no_usable_rating(monkeypatch, tmp_path
             pass
 
         def stream_run(self, *a, **k):
-            yield [], {"messages": [], "final_trade_decision": REFUSAL, "final_rating": RATING_REVIEW}
+            yield [], {"messages": [], "candidate_decision": REFUSAL, "candidate_rating": RATING_REVIEW}
 
     fake = _Graph()
     fake.graph = fake
@@ -167,7 +169,8 @@ def test_the_cli_says_when_a_run_produced_no_usable_rating(monkeypatch, tmp_path
 
     cli_run.run_analysis()
 
-    assert any("review" in line.lower() for line in printed), printed[-5:]
+    assert any("BLOCKED" in line and "INVALID_RATING" in line for line in printed), printed[-5:]
+    assert not any(REFUSAL in line for line in printed)
 
 
 @pytest.mark.unit

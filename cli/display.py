@@ -432,7 +432,16 @@ def display_complete_report(final_state):
                 console.print(Panel(Markdown(content), title=title, border_style="blue", padding=(1, 2)))
 
     # V. Portfolio Manager Decision
-    if final_state.get("final_trade_decision"):
+    # FR-01: show the official recommendation only when the publication gate
+    # approved it; otherwise show the BLOCKED status and reason, never the body.
+    if final_state.get("publication_status") == "BLOCKED":
+        reason = final_state.get("publication_reason") or "BLOCKED"
+        console.print(Panel("[bold]V. Portfolio Manager Decision[/bold]", border_style="red"))
+        console.print(Panel(
+            f"[red]Publication BLOCKED ({reason}).[/red] No official recommendation was released.",
+            title="Portfolio Manager", border_style="red", padding=(1, 2),
+        ))
+    elif final_state.get("final_trade_decision"):
         console.print(Panel("[bold]V. Portfolio Manager Decision[/bold]", border_style="green"))
         console.print(Panel(Markdown(final_state["final_trade_decision"]), title="Portfolio Manager", border_style="blue", padding=(1, 2)))
 

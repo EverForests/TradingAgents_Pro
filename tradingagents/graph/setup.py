@@ -50,6 +50,36 @@ def _tools_or_done(state) -> str:
     return "tools" if state["messages"][-1].tool_calls else END
 
 
+def _new_run_id() -> str:
+    """A fresh identifier minted once per run, unique across runs.
+
+    Not derived from ticker+date: two independent runs on the same instrument and
+    day must have different ids so one cannot cite the other's evidence. It is
+    generated with ``uuid4`` and stored in the serializable graph state, then
+    reused verbatim on resume (see ``_index_evidence_node``), so a resumed run keeps
+    the same id.
+    """
+    import uuid
+
+    return uuid.uuid4().hex
+
+
+def _index_evidence_node(state) -> dict:
+    """FR-01: build this run's evidence index before the debate starts.
+
+    The run id is minted here once and stored on the state; a resumed run reuses
+    the id already present instead of minting a new one, so ids stay stable across
+    an interruption. The index is stored as plain, msgpack-safe data
+    (``index_to_state``) so the checkpoint can serialize it; ``accepted_arguments``
+    starts empty and is filled as researchers submit validated evidence ids.
+    """
+    from tradingagents.graph.publication_gate import build_evidence_index, index_to_state
+
+    run_id = state.get("run_id") or _new_run_id()
+    index = build_evidence_index(run_id, state)
+    return {"run_id": run_id, "evidence_index": index_to_state(index), "accepted_arguments": []}
+
+
 def _analyst_graph(spec, agent, max_tool_rounds: int):
     """One analyst as a graph of its own: the model and its tools, on a private message history.
 
@@ -161,9 +191,16 @@ class GraphSetup:
         if memory_node is not None:
             workflow.add_node("Memory Log", memory_node)
             first_steps.append("Memory Log")
+
+        # FR-01: index this run's evidence after the analysts converge and
+        # before the first Bull turn, so every cited evidence id exists in the
+        # run. The index is stored on the state for the researchers to validate
+        # against and for the publication gate to verify.
+        workflow.add_node("Index Evidence", _index_evidence_node)
         for node in first_steps:
             workflow.add_edge(START, node)
-        workflow.add_edge(first_steps, "Bull Researcher")
+        workflow.add_edge(first_steps, "Index Evidence")
+        workflow.add_edge("Index Evidence", "Bull Researcher")
 
         # Both research-debate edges share the complete DEBATE_PATH_MAP (#1088).
         for debate_node in ("Bull Researcher", "Bear Researcher"):

@@ -4,9 +4,19 @@ from tradingagents.agents.context import (
     opponent_argument_or_opening,
     report_or_absent,
 )
+from tradingagents.agents.schemas import DebateArgument
+from tradingagents.agents.structured import bind_structured, invoke_structured
+from tradingagents.graph.publication_gate import (
+    ArgumentRecord,
+    as_index,
+    evidence_menu,
+    index_to_state,
+)
 
 
 def create_bear_researcher(llm):
+    structured_llm = bind_structured(llm, DebateArgument, "Bear Researcher")
+
     def bear_node(state) -> dict:
         investment_debate_state = state["investment_debate_state"]
         history = investment_debate_state.get("history", "")
@@ -27,6 +37,9 @@ def create_bear_researcher(llm):
             if asset_type == "stock"
             else "Asset fundamentals report (may be unavailable for crypto)"
         )
+        # FR-01: give the model this run's evidence IDs and material together, so
+        # a cited ID resolves to real run material.
+        evidence_block = evidence_menu(state.get("evidence_index"))
 
         prompt = f"""You are a Bear Analyst making the case against investing in the {target_label}. Your goal is to present a well-reasoned argument emphasizing risks, challenges, and negative indicators. Leverage the provided research and data to highlight potential downsides and counter bullish arguments effectively.
 
@@ -47,12 +60,24 @@ Latest world affairs news: {news_report}
 {fundamentals_label}: {fundamentals_report}
 Conversation history of the debate: {history}
 Last bull argument: {current_response}
+
+Available evidence (cite these exact IDs in evidence_ids; do not invent IDs):
+{evidence_block}
+
 Use this information to deliver a compelling bear argument, refute the bull's claims, and engage in a dynamic debate that demonstrates the risks and weaknesses of investing in the {target_label}.
 """ + get_language_instruction()
 
-        response = llm.invoke(prompt)
+        # FR-01: prefer a structured argument (captures evidence IDs in one call);
+        # plain fallback carries no IDs and mints no argument.
+        evidence_ids = ()
+        structured = invoke_structured(structured_llm, prompt, "Bear Researcher")
+        if structured is not None:
+            evidence_ids = tuple(structured.evidence_ids or ())
+            content = structured.argument
+        else:
+            content = llm.invoke(prompt).content
 
-        argument = f"Bear Analyst: {response.content}"
+        argument = f"Bear Analyst: {content}"
 
         new_investment_debate_state = {
             "history": history + "\n" + argument,
@@ -62,6 +87,34 @@ Use this information to deliver a compelling bear argument, refute the bull's cl
             "count": investment_debate_state["count"] + 1,
         }
 
-        return {"investment_debate_state": new_investment_debate_state}
+        # FR-01: validate cited evidence against this run's index; only a
+        # resolvable submission is accepted and gets a run-bound argument id.
+        # The index is plain state data, so read it as a view and write the
+        # augmented records back as primitives (checkpoint-safe).
+        accepted = list(state.get("accepted_arguments") or [])
+        evidence_state = state.get("evidence_index")
+        if evidence_state is not None and evidence_ids:
+            index = as_index(evidence_state)
+            argument_id = f"arg:bear:{index.run_id}:{new_investment_debate_state['count']}"
+            if index.accept(ArgumentRecord(
+                argument_id=argument_id, speaker="Bear Analyst",
+                text=argument, evidence_ids=tuple(evidence_ids),
+            )):
+                accepted.append({
+                    "argument_id": argument_id, "speaker": "Bear Analyst",
+                    "evidence_ids": list(evidence_ids),
+                })
+                evidence_state = index_to_state(index)
+
+        return {
+            "evidence_index": evidence_state,
+            "investment_debate_state": new_investment_debate_state,
+            "pending_argument": {
+                "speaker": "Bear Analyst",
+                "text": argument,
+                "evidence_ids": list(evidence_ids),
+            },
+            "accepted_arguments": accepted,
+        }
 
     return bear_node

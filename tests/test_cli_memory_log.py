@@ -12,6 +12,11 @@ from __future__ import annotations
 import pytest
 
 import cli.run as cli_run
+from tradingagents.graph.publication_gate import (
+    ArgumentRecord,
+    build_evidence_index,
+    index_to_state,
+)
 from tradingagents.graph.trading_graph import TradingAgentsGraph
 from tradingagents.memory import TradingMemoryLog
 
@@ -45,6 +50,8 @@ def test_record_decision_skips_a_run_without_a_decision(tmp_path):
 class _FakeGraph:
     """Records the lifecycle calls run_analysis makes."""
 
+    publish = TradingAgentsGraph.publish
+
     def __init__(self, resuming=None):
         self.calls = []
         self.graph = self
@@ -77,7 +84,16 @@ class _FakeGraph:
 
     def stream_run(self, graph_input, **kwargs):
         yield [], {"messages": [], "market_report": "M"}
-        yield [], {"messages": [], "final_trade_decision": "Rating: Buy\n\nBuy NVDA.", "final_rating": "Buy"}
+        index = build_evidence_index("cli-run", {"market_report": "M"})
+        argument = ArgumentRecord("arg:bull:cli-run:1", "Bull Analyst", "Thesis", index.evidence_ids)
+        assert index.accept(argument)
+        yield [], {
+            "messages": [],
+            "evidence_index": index_to_state(index),
+            "candidate_decision": "Rating: Buy\n\nBuy NVDA.",
+            "candidate_rating": "Buy",
+            "candidate_argument_ids": [argument.argument_id],
+        }
 
 
 class _NullLive:

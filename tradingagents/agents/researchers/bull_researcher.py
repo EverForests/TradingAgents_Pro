@@ -4,9 +4,19 @@ from tradingagents.agents.context import (
     opponent_argument_or_opening,
     report_or_absent,
 )
+from tradingagents.agents.schemas import DebateArgument
+from tradingagents.agents.structured import bind_structured, invoke_structured
+from tradingagents.graph.publication_gate import (
+    ArgumentRecord,
+    as_index,
+    evidence_menu,
+    index_to_state,
+)
 
 
 def create_bull_researcher(llm):
+    structured_llm = bind_structured(llm, DebateArgument, "Bull Researcher")
+
     def bull_node(state) -> dict:
         investment_debate_state = state["investment_debate_state"]
         history = investment_debate_state.get("history", "")
@@ -27,6 +37,9 @@ def create_bull_researcher(llm):
             if asset_type == "stock"
             else "Asset fundamentals report (may be unavailable for crypto)"
         )
+        # FR-01: give the model this run's evidence IDs and material together, so
+        # a cited ID resolves to real run material.
+        evidence_block = evidence_menu(state.get("evidence_index"))
 
         prompt = f"""You are a Bull Analyst advocating for investing in the {target_label}. Your task is to build a strong, evidence-based case emphasizing growth potential, competitive advantages, and positive market indicators. Leverage the provided research and data to address concerns and counter bearish arguments effectively.
 
@@ -45,12 +58,26 @@ Latest world affairs news: {news_report}
 {fundamentals_label}: {fundamentals_report}
 Conversation history of the debate: {history}
 Last bear argument: {current_response}
+
+Available evidence (cite these exact IDs in evidence_ids; do not invent IDs):
+{evidence_block}
+
 Use this information to deliver a compelling bull argument, refute the bear's concerns, and engage in a dynamic debate that demonstrates the strengths of the bull position.
 """ + get_language_instruction()
 
-        response = llm.invoke(prompt)
+        # FR-01: prefer a structured argument so the evidence IDs are captured in
+        # the same call; fall back to plain prose only for the debate text (that
+        # plain path carries no evidence IDs, so it mints no argument and cannot
+        # back a published recommendation).
+        evidence_ids = ()
+        structured = invoke_structured(structured_llm, prompt, "Bull Researcher")
+        if structured is not None:
+            evidence_ids = tuple(structured.evidence_ids or ())
+            content = structured.argument
+        else:
+            content = llm.invoke(prompt).content
 
-        argument = f"Bull Analyst: {response.content}"
+        argument = f"Bull Analyst: {content}"
 
         new_investment_debate_state = {
             "history": history + "\n" + argument,
@@ -60,6 +87,34 @@ Use this information to deliver a compelling bull argument, refute the bear's co
             "count": investment_debate_state["count"] + 1,
         }
 
-        return {"investment_debate_state": new_investment_debate_state}
+        # FR-01: validate the cited evidence against this run's index and, only
+        # if it resolves, mint a run-bound argument id the Portfolio Manager may
+        # cite. The index is plain state data, so read it as a view and write the
+        # augmented records back as primitives (checkpoint-safe).
+        accepted = list(state.get("accepted_arguments") or [])
+        evidence_state = state.get("evidence_index")
+        if evidence_state is not None and evidence_ids:
+            index = as_index(evidence_state)
+            argument_id = f"arg:bull:{index.run_id}:{new_investment_debate_state['count']}"
+            if index.accept(ArgumentRecord(
+                argument_id=argument_id, speaker="Bull Analyst",
+                text=argument, evidence_ids=tuple(evidence_ids),
+            )):
+                accepted.append({
+                    "argument_id": argument_id, "speaker": "Bull Analyst",
+                    "evidence_ids": list(evidence_ids),
+                })
+                evidence_state = index_to_state(index)
+
+        return {
+            "evidence_index": evidence_state,
+            "investment_debate_state": new_investment_debate_state,
+            "pending_argument": {
+                "speaker": "Bull Analyst",
+                "text": argument,
+                "evidence_ids": list(evidence_ids),
+            },
+            "accepted_arguments": accepted,
+        }
 
     return bull_node

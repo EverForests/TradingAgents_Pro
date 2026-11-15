@@ -22,7 +22,12 @@ def _header(ticker: str, final_state: dict, settings: dict | None) -> str:
     lines = [f"# Trading Analysis Report: {ticker}", ""]
     if final_state.get("trade_date"):
         lines.append(f"- Analysis date: {final_state['trade_date']}")
-    if final_state.get("final_trade_decision"):
+    if final_state.get("publication_status") == "BLOCKED":
+        # FR-01: a blocked run carries no official rating to print.
+        lines.append(
+            f"- Publication: BLOCKED ({final_state.get('publication_reason') or 'BLOCKED'})"
+        )
+    elif final_state.get("final_trade_decision"):
         lines.append(f"- Rating: {run_rating(final_state)}")
     lines.append(f"- Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     if settings:

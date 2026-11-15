@@ -68,6 +68,18 @@ class AgentState(MessagesState):
     ]
     final_trade_decision: Annotated[str, "Final decision from the Portfolio Manager"]
     final_rating: Annotated[str, "The Portfolio Manager's 5-tier rating, or REVIEW when it has none"]
+    # FR-01 / INV-01: the publication gate's single release result, written by
+    # publication_gate.apply() before any sink reads the run.
+    publication_status: Annotated[str, "APPROVED or BLOCKED, set by the publication gate"]
+    publication_reason: Annotated[str, "INVALID_RATING or INSUFFICIENT_EVIDENCE when BLOCKED, else empty"]
+    publication_chain: Annotated[list, "Resolved (argument_id, evidence_id, source) links when APPROVED"]
+    evidence_index: Annotated[dict, "Run-scoped evidence and accepted arguments as msgpack-safe data (FR-01)"]
+    candidate_decision: Annotated[str, "Internal candidate body, never read by an official sink"]
+    candidate_rating: Annotated[str, "Internal candidate 5-tier rating, only promoted to final_rating by the gate"]
+    pending_argument: Annotated[dict, "The most recent Bull/Bear argument awaiting evidence validation (FR-01)"]
+    accepted_arguments: Annotated[list, "Accepted (argument_id, speaker, evidence_ids) records for the Portfolio Manager (FR-01)"]
+    candidate_argument_ids: Annotated[list, "Argument IDs the Portfolio Manager cited for its candidate (FR-01)"]
+    run_id: Annotated[str, "This run's stable identifier, minted once and reused on resume (FR-01)"]
     past_context: Annotated[str, "Memory log context for the Portfolio Manager (same-ticker decisions + cross-ticker lessons), written by the Memory Log step"]
     memory_note: Annotated[str, "What the Memory Log step could not settle or read this run, for the report; empty when all went well"]
     portfolio_context: Annotated[str, "Caller-supplied holdings and cash, rendered at run start; empty when not provided"]

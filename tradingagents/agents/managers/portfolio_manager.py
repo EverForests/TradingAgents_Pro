@@ -1,11 +1,14 @@
 """Portfolio Manager: synthesises the risk-analyst debate into the final decision.
 
 Uses LangChain's ``with_structured_output`` so the LLM produces a typed
-``PortfolioDecision`` directly, in a single call. Its rating is the run's
-``final_rating``, and the decision is rendered to markdown as
-``final_trade_decision`` for the memory log, CLI display and saved reports.
+``PortfolioDecision`` directly, in a single call. FR-01 / INV-01: the manager
+writes **only** the internal candidate (``candidate_decision``,
+``candidate_rating``, ``candidate_argument_ids``); the publication gate promotes
+it to the official ``final_trade_decision`` / ``final_rating`` on approval, so a
+refused candidate never reaches the memory log, CLI display or saved reports.
 When a provider does not expose structured output, the agent falls back to
-free-text generation and the rating is read from that text.
+free-text generation and the rating is read from that text — but with no
+argument ids, so the gate blocks it.
 """
 
 from __future__ import annotations
@@ -39,6 +42,17 @@ def create_portfolio_manager(llm):
             else ""
         )
 
+        # FR-01: the decision must rest on arguments the program accepted. The
+        # accepted argument IDs are injected here so the manager can cite them.
+        accepted = state.get("accepted_arguments") or []
+        accepted_line = ""
+        if accepted:
+            listed = "\n".join(
+                f"- {a['argument_id']} ({a['speaker']}; evidence {', '.join(a['evidence_ids'])})"
+                for a in accepted
+            )
+            accepted_line = f"\n**Accepted arguments** (cite their IDs in argument_ids):\n{listed}\n"
+
         prompt = f"""As the Portfolio Manager, synthesize the risk analysts' debate and deliver the final trading decision.
 
 {instrument_context}
@@ -60,6 +74,7 @@ def create_portfolio_manager(llm):
 {lessons_line}
 **Risk Analysts Debate History:**
 {history}
+{accepted_line}
 
 ---
 
@@ -79,11 +94,16 @@ Write these sections, in this order, starting with the rating on its own line:
         # Read back from text, a rating the thesis quotes could replace it.
         decision = invoke_structured(structured_llm, prompt, "Portfolio Manager")
         if decision is not None:
-            final_trade_decision = render_pm_decision(decision)
-            final_rating = decision.rating.value
+            candidate_body = render_pm_decision(decision)
+            candidate_rating = decision.rating.value
+            argument_ids = list(decision.argument_ids or [])
         else:
-            final_trade_decision = llm.invoke(prompt).content
-            final_rating = parse_rating(final_trade_decision)
+            # FR-01: no free-text rating fallback around the gate. A free-text
+            # answer carries no structured argument_ids, so the candidate decision
+            # is kept but cannot publish — the gate blocks it for lack of evidence.
+            candidate_body = llm.invoke(prompt).content
+            candidate_rating = parse_rating(candidate_body)
+            argument_ids = []
 
         new_risk_debate_state = {
             "history": risk_debate_state["history"],
@@ -97,10 +117,14 @@ Write these sections, in this order, starting with the rating on its own line:
             "count": risk_debate_state["count"],
         }
 
+        # FR-01 / INV-01: the Portfolio Manager writes only the internal candidate.
+        # The publication gate promotes it to the official fields on approval; on
+        # refusal nothing here can reach an official sink.
         return {
             "risk_debate_state": new_risk_debate_state,
-            "final_trade_decision": final_trade_decision,
-            "final_rating": final_rating,
+            "candidate_decision": candidate_body,
+            "candidate_rating": candidate_rating,
+            "candidate_argument_ids": argument_ids,
         }
 
     return portfolio_manager_node

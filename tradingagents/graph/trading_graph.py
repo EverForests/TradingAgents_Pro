@@ -358,8 +358,19 @@ class TradingAgentsGraph:
 
     def record_decision(self, company_name, trade_date, final_state):
         """Record a finished run: its state log, and its decision in the memory log
-        for reflection on the next same-ticker run. propagate() and the CLI both end here."""
+        for reflection on the next same-ticker run. propagate() and the CLI both end here.
+
+        FR-01 / INV-01: a run the publication gate blocked writes nothing to
+        decision memory — not a rating, not even a REVIEW entry — and its state log
+        omits the candidate body.
+        """
         self._log_state(trade_date, final_state)
+        if final_state.get("publication_status") == "BLOCKED":
+            logger.warning(
+                "Publication blocked for %s on %s (%s); nothing added to the memory log",
+                company_name, trade_date, final_state.get("publication_reason"),
+            )
+            return
         decision = final_state.get("final_trade_decision")
         if not decision:
             logger.warning("No final decision for %s on %s; nothing added to the memory log",
@@ -397,12 +408,49 @@ class TradingAgentsGraph:
         else:
             final_state = self.graph.invoke(graph_input, **args)
 
+        self.publish(final_state)
+
         self.record_decision(company_name, trade_date, final_state)
 
         # Clear checkpoint on successful completion to avoid stale state.
         self.clear_checkpoint_on_success(company_name, trade_date, asset_type, portfolio)
 
         return final_state, run_rating(final_state)
+
+    def publish(self, final_state: dict) -> str:
+        """FR-01 / INV-01: decide whether this run's candidate may publish.
+
+        Single deterministic gate, called once per run before any sink reads it
+        (CLI display, API return, report save, memory write). Verifies the chain
+        recommendation -> accepted argument -> this run's material using the
+        evidence index the graph already built; it never re-builds the index or
+        accepts new arguments. Writes the outcome onto ``final_state`` and returns
+        the publication status.
+
+        The Portfolio Manager writes only internal candidate fields; on refusal
+        ``apply`` removes the candidate body and sets no official rating, so no
+        official field carries it.
+        """
+        # FR-01 / INV-01: read the Portfolio Manager's *candidate* (internal
+        # fields only), not any official field. The gate's apply() is the sole
+        # writer of the official rating/body.
+        from tradingagents.graph.publication_gate import (
+            apply,
+            build_evidence_index,
+            evaluate,
+        )
+
+        index = final_state.get("evidence_index")
+        if index is None:
+            # No index means nothing can be verified; fall back to an empty one.
+            index = build_evidence_index("no-index", final_state)
+        outcome = evaluate(
+            index,
+            final_state.get("candidate_rating"),
+            final_state.get("candidate_argument_ids") or (),
+        )
+        apply(outcome, final_state)
+        return outcome.status
 
     def stream_run(self, graph_input, **args):
         """Stream a run as ``(messages, state)`` pairs.
@@ -436,10 +484,18 @@ class TradingAgentsGraph:
             context.run(stream.close)
 
     def _log_state(self, trade_date, final_state):
-        """Write a run's final state to JSON under the run's own ticker."""
+        """Write a run's final state to JSON under the run's own ticker.
+
+        FR-01 / INV-01: the log records the publication status and reason. A run the
+        gate blocked carries no official rating or decision, and no candidate body or
+        candidate rating — those fields are empty in the returned state already; the
+        log never re-adds them.
+        """
         entry = {
             "company_of_interest": final_state["company_of_interest"],
             "trade_date": final_state["trade_date"],
+            "publication_status": final_state.get("publication_status"),
+            "publication_reason": final_state.get("publication_reason"),
             "market_report": final_state["market_report"],
             "sentiment_report": final_state["sentiment_report"],
             "news_report": final_state["news_report"],
@@ -460,8 +516,8 @@ class TradingAgentsGraph:
                 "history": final_state["risk_debate_state"]["history"],
             },
             "investment_plan": final_state["investment_plan"],
-            "final_trade_decision": final_state["final_trade_decision"],
-            "final_rating": run_rating(final_state),
+            "final_trade_decision": final_state.get("final_trade_decision", ""),
+            "final_rating": final_state.get("final_rating") or "",
             "run_settings": self.run_settings(),
         }
 

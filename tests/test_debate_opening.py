@@ -18,6 +18,7 @@ from tradingagents.agents.researchers.bull_researcher import create_bull_researc
 from tradingagents.agents.risk_mgmt.aggressive_debator import create_aggressive_debator
 from tradingagents.agents.risk_mgmt.conservative_debator import create_conservative_debator
 from tradingagents.agents.risk_mgmt.neutral_debator import create_neutral_debator
+from tradingagents.agents.schemas import DebateArgument
 
 _REPORTS = {
     "company_of_interest": "AAPL", "asset_type": "stock",
@@ -31,6 +32,11 @@ def _capturing_llm(captured: dict):
     llm.invoke.side_effect = lambda prompt: (
         captured.__setitem__("prompt", prompt) or MagicMock(content="argument")
     )
+    structured = MagicMock()
+    structured.invoke.side_effect = lambda prompt: (
+        captured.__setitem__("prompt", prompt) or DebateArgument(argument="argument", evidence_ids=[])
+    )
+    llm.with_structured_output.return_value = structured
     return llm
 
 

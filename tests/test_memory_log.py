@@ -806,9 +806,7 @@ class TestPortfolioManagerInjection:
         assert "Lessons from prior decisions" not in captured["prompt"]
 
     def test_pm_returns_rendered_markdown_with_rating(self):
-        """The structured PortfolioDecision is rendered to markdown that
-        downstream consumers (memory log, signal processor, CLI display)
-        can parse without any extra LLM call."""
+        """The structured PortfolioDecision renders a candidate without an extra LLM call."""
         captured = {}
         decision = PortfolioDecision(
             rating=PortfolioRating.OVERWEIGHT,
@@ -820,7 +818,10 @@ class TestPortfolioManagerInjection:
         llm = _structured_pm_llm(captured, decision)
         pm_node = create_portfolio_manager(llm)
         result = pm_node(_make_pm_state())
-        md = result["final_trade_decision"]
+        assert result["candidate_rating"] == "Overweight"
+        assert "final_trade_decision" not in result
+        assert "final_rating" not in result
+        md = result["candidate_decision"]
         assert "**Rating**: Overweight" in md
         assert "**Executive Summary**: Build position gradually" in md
         assert "**Investment Thesis**: AI capex cycle" in md
@@ -829,15 +830,17 @@ class TestPortfolioManagerInjection:
 
     def test_pm_falls_back_to_freetext_when_structured_unavailable(self):
         """If a provider does not support with_structured_output, the agent
-        falls back to a plain invoke and returns whatever prose the model
-        produced, so the pipeline never blocks."""
+        falls back to a plain invoke for the candidate, with no publishable references."""
         plain_response = "**Rating**: Sell\n\nExit ahead of guidance."
         llm = MagicMock()
         llm.with_structured_output.side_effect = NotImplementedError("provider unsupported")
         llm.invoke.return_value = MagicMock(content=plain_response)
         pm_node = create_portfolio_manager(llm)
         result = pm_node(_make_pm_state())
-        assert result["final_trade_decision"] == plain_response
+        assert result["candidate_decision"] == plain_response
+        assert result["candidate_argument_ids"] == []
+        assert "final_trade_decision" not in result
+        assert "final_rating" not in result
 
     # get_past_context ordering and limits
 
