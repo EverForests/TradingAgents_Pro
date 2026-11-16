@@ -82,3 +82,170 @@ entries:
   - Separate reviewer-provided annual data from independently inspected market-tool evidence
   evidence: Decimal recomputation, registry/schema/reference checks and preserved shared record signatures; receipts retained separately. No live calls or feature acceptance claimed.
   review_status: Pending review of this clarification; no feature plan/test approval recorded
+
+- id: AI-NFR01-PLAN-006
+  date: '2026-11-16'
+  tool: OpenCode 2.3.0 (course-plan role, read-only)
+  base_commit: 486a9a5d74433aedd3c858c483a8d77bf0f7b897
+  requirements:
+  - NFR-01
+  - INV-02
+  scope: 'Gate 1 task plan for NFR-01 only: owner module tradingagents/llm_clients/request_budget.py and offline suite test/offline/test_request_budget.py; no production wiring and no CI changes.'
+  human_direction: 'Requirement owner instructed completion of the NFR-01 deliverable against the updated baseline (message 2026-11-16). Plan produced read-only; owner reviewed the 8 open questions and issued decisions D-NFR01-01 to D-NFR01-08 before any code generation.'
+  changes:
+  - Five-section plan (traceability, interface contracts, scope, verification, steps/rollback) mapped every NFR-01 criterion and INV-02 to C4 and a frozen case ID
+  - Declared the pre-update draft implementation unapproved and scheduled a rewrite to C4 v1.0 instead of incremental patching
+  - Recorded integration exclusions explicitly (graph wiring, C0 mapping, settlement code, CI edits, new dependencies)
+  evidence: 'Plan session ses_e1cce6943ffeM6m8a640UGrQql terminated with WAITING FOR PLAN AND TEST APPROVAL. Three earlier attempts failed with provider authorization errors before the key-loading defect was fixed; they produced no file changes.'
+  session_reference: ses_e1cce6943ffeM6m8a640UGrQql (title "NFR-01 gate1 plan (baseline 486a9a5)")
+  review_status: 'Approved by owner on 2026-11-16 15:12 with decisions D-NFR01-01..08'
+  limitations:
+  - Read-only plan; no execution evidence claimed
+  - Permit configuration of the real model client (SDK retry settings) not inspected at plan time
+- id: AI-NFR01-TESTS-007
+  date: '2026-11-16'
+  tool: OpenCode 2.3.0 (course-build role)
+  base_commit: 486a9a5d74433aedd3c858c483a8d77bf0f7b897
+  requirements:
+  - NFR-01
+  - INV-02
+  scope: 'Tests first, per Prompt.md gate 2: wrote only test/offline/test_request_budget.py (38 tests) before any implementation existed.'
+  human_direction: Owner approved the Gate 1 plan and delegated test authoring to course-build with the exception that production code stay untouched.
+  changes:
+  - Inline fixtures only (LIMIT 3, thread-safe fake transport with send counter, prepared-request stub)
+  - Six frozen case IDs in test names and docstrings; module-level import so collection succeeds while the API is absent
+  - Snapshot identity assertions (charged = known + unknown; charged + active <= limit) applied on every snapshot read
+  evidence: 'Human-run pre-change baseline: 37 failed, 1 passed. The single pass is the static source guard test_t_nfr01_resume_no_settlement_coupling_in_module_source, expected green before and after; all other failures were missing-contract-API (TypeError on the run_id keyword, AttributeError on dispatch).'
+  session_reference: ses_e1cccc9f2ffeeYPMCG5yAtO7Ri (title "NFR-01 gate2 tests (C4 v1.0)")
+  review_status: 'Approved for implementation after D-NFR01-01 narrowed two false-passing assertions'
+  limitations:
+  - Pre-change failures are API-absence failures, not semantic assertion failures; semantic discrimination is evidenced later by three mutation experiments
+- id: AI-NFR01-IMPL-008
+  date: '2026-11-16'
+  tool: OpenCode 2.3.0 (course-build role)
+  base_commit: 486a9a5d74433aedd3c858c483a8d77bf0f7b897
+  requirements:
+  - NFR-01
+  - INV-02
+  scope: 'Gate 3 implementation of the single owner module tradingagents/llm_clients/request_budget.py (253 lines) against C4 v1.0.'
+  human_direction: 'Owner approved implementation after the red baseline was recorded; scope limited to one file, standard library only, no new dependencies, tests untouched.'
+  changes:
+  - RequestBudget(run_id, limit) with atomic try_reserve/charge_attempt/cancel_before_send/snapshot under one lock
+  - dispatch(prepared, budget, send) requiring READY, charging at the attempt boundary, sending exactly once, mapping failures to BudgetExhausted/ContextTooLarge/ProviderFailure
+  - Unknown-delivery accounting so an ambiguous provider error keeps the slot charged and is never refunded
+  - No UNMETERED mode, no reset/restore/refill/renew API, resume disabled by design
+  evidence: 'Human-run after implementation: pytest -q test/offline -> 38 passed; pytest -q tests test/offline -> 1450 passed, 1 skipped, 1 deselected; ruff check . -> clean.'
+  session_reference: ses_e1cc653a7ffehmuDFjT84hozEK (title "NFR-01 gate3 implement C4 metered dispatch")
+  review_status: 'Accepted after D-NFR01-05 (race assertion) and D-NFR01-06/07/08 (lint and wording) corrections'
+  limitations:
+  - Module not wired into the graph; no C0 terminal mapping yet (tracked as TD-10)
+- id: AI-NFR01-FIX-009
+  date: '2026-11-16'
+  tool: OpenCode 2.3.0 (course-build role)
+  base_commit: 486a9a5d74433aedd3c858c483a8d77bf0f7b897
+  requirements:
+  - NFR-01
+  - INV-02
+  scope: 'Post-verification corrections in the two approved files: one test assertion (D-NFR01-05) and two lint defects (D-NFR01-06).'
+  human_direction: 'Owner reviewed the human-run failure (1 failed, 37 passed) and ruled the race assertion a test defect, not an implementation bug: the worker uses the primitives and therefore bypasses dispatch() delivery confirmation.'
+  changes:
+  - 'Race test now asserts known_sends == LIMIT - 1, unknown_delivery == 1 and the identity known + unknown == LIMIT, keeping transport.send_count == LIMIT as the real INV-02 proof'
+  - Replaced try/except/pass with contextlib.suppress (SIM105) and moved Callable to collections.abc (UP035)
+  evidence: 'After correction: 38 passed; ruff clean. The agent initially declined to edit a test, citing covenant freeze, and required an explicit approval record before proceeding.'
+  session_reference: ses_e1cc528f0ffet72lN0NK1p1ohA (title "NFR-01 gate3 fix race assertion and lint")
+  review_status: 'Accepted; both changes reviewed as test/evidence corrections, not requirement changes'
+  limitations:
+  - Lint corrections were style-only and were re-run through the full suite
+- id: AI-NFR01-VERIFY-010
+  date: '2026-11-16'
+  tool: OpenCode 2.3.0 (course-verify role, read-only)
+  base_commit: 486a9a5d74433aedd3c858c483a8d77bf0f7b897
+  requirements:
+  - NFR-01
+  - INV-02
+  scope: Read-only compliance review of the NFR-01 change set against D1/D2/D4, Prompt.md and AGENTS.md.
+  human_direction: Owner supplied the human-run evidence set and requested an independent verdict with explicit overclaims and documentation deficits.
+  changes:
+  - 'Verdict: conditionally compliant; 12 findings (1 delivery blocker, 3 major, 3 minor, 5 notes)'
+  - Confirmed decisions D-NFR01-01..05 match the code and flagged that the module is not enforced in production
+  - Listed required records (AI-use, review memo, bug diary, debt register, trace matrix, transcripts) and refused to sign off six overclaims
+  evidence: 'Verify session found no code defect requiring a fix; its only actionable code item (missing ADR citation, F8) was closed by D-NFR01-08. Documentation deficits were closed by this record set.'
+  session_reference: ses_e1cc3cde9ffev4PHpzLJ9n611D (title "NFR-01 gate5 verify (read-only)")
+  review_status: 'Verdict carried into review memo PR-NFR01-001; integration items moved to the debt register'
+  limitations:
+  - Verify role is denied read access to docs/review-memo.md, docs/README.md and docs/ai-use-log.yaml by the current permission allowlist, so it could not confirm those records itself
+- id: AI-NFR01-EVIDENCE-011
+  date: '2026-11-16'
+  tool: Human-run shell (pytest 9.2.0, ruff 0.17.5, Python 3.11.18) plus OpenCode 2.3.0 docstring sessions
+  base_commit: 486a9a5d74433aedd3c858c483a8d77bf0f7b897
+  requirements:
+  - NFR-01
+  - INV-02
+  scope: 'Evidence collection and two documentation-only edits (D-NFR01-07 wording, D-NFR01-08 ADR citation) in tradingagents/llm_clients/request_budget.py.'
+  human_direction: Owner ran every check command and authorised the two docstring edits to remove the reserved decision word and add the ADR citation required by structural constraints.
+  changes:
+  - Module docstring now cites Requirement NFR-01, Invariant INV-02, Contract C4 and ADR-001
+  - Reserved decision vocabulary (hold) removed from module prose
+  evidence: 'diff --check clean; 38 offline cases collected; three mutation experiments all produced failing tests (capacity bound 8 failed, cancel neutralised 3 failed, delivery confirmation removed 1 failed, each follow-up run restored green). Mutation plugins lived only in /tmp and were deleted.'
+  session_reference: ses_e1cc4499fffeZbo0u61VgIjKcA (wording), ses_e1cc29b21ffen2sr32O58Fh5Aj (ADR citation)
+  review_status: Accepted by owner
+  limitations:
+  - Mutation evidence covers capacity, cancellation and delivery accounting only; isolation and context-first paths rely on their own negative cases
+- id: AI-NFR01-REPLAN-012
+  date: '2026-11-16'
+  tool: OpenCode 2.3.0 (course-plan role, read-only)
+  base_commit: 3d5ce620e7da497e09c986ef6cbc957b490de632
+  requirements:
+  - NFR-01
+  - INV-02
+  scope: 'Gate 1 re-plan for NFR-01 on the 3d5ce62 baseline; plan only, no file writes and no shell.'
+  human_direction: "Owner moved the branch from 486a9a5 to 3d5ce62 and required the gate sequence to be re-run with the agent reading the mandatory documents itself, because the round-1 plan session had been refused read on docs/README.md and docs/review-memo.md. Content was no longer pasted into the session."
+  changes:
+  - Read twelve required documents with its own read tool, including docs/README.md, docs/review-memo.md and docs/req/product.yaml, with no denied read
+  - Produced the seven-section plan and stopped for recorded approval, asking four questions instead of inventing the human-run results
+  - Found that all race cases exercised the primitives directly or bypassed last-slot contention, and proposed one appended dispatch-level race test
+  evidence: 'Plan session ses_e1cb0bce4ffeSMiYzgvWzPty3y read AGENTS.md, Prompt.md, docs/README.md, docs/review-memo.md, docs/req/product.yaml, requirements.yaml, invariants.md, interface-contracts.md, runtime-policy-catalog.md, verification-constraints.md, adr/001 and trace-matrix.md. No permission denial was reported, which is the direct evidence that baseline fix 1a54b9c works.'
+  session_reference: ses_e1cb0bce4ffeSMiYzgvWzPty3y (title "NFR-01 gate1 re-plan (baseline 3d5ce62)")
+  review_status: 'Plan approved 2026-11-16 15:52 with decisions D-NFR01-09..15'
+  limitations:
+  - Read-only plan; no execution evidence claimed
+  - The role ran no tests; every count quoted to it was human-run and is labelled as such
+  - An interim local edit adding the same two read entries was reverted once 1a54b9c was found to contain them, so no configuration change is claimed for this feature branch
+- id: AI-NFR01-BUILD-013
+  date: '2026-11-16'
+  tool: OpenCode 2.3.0 (course-build role)
+  base_commit: 3d5ce620e7da497e09c986ef6cbc957b490de632
+  requirements:
+  - NFR-01
+  - INV-02
+  scope: 'Two approved edits on the re-baselined tree: one module docstring line and one appended acceptance test. No other file touched.'
+  human_direction: 'Owner approved D-NFR01-09..15 and restricted writes to tradingagents/llm_clients/request_budget.py (docstring only) and test/offline/test_request_budget.py (append only, lines 1-740 frozen). Each edit was reported and stopped for human verification.'
+  changes:
+  - Appended test_t_inv02_race_dispatch_two_contenders_last_slot_once at lines 741-806, driving dispatch from two barrier-synchronised threads for the last slot
+  - Replaced the stale docstring revision string 486a9a5 with the contract label Contract C4 v1.0 (interface-v1.0), after the owner rejected the first draft wording that read revision Contract C4
+  evidence: 'The first append was refused by the permission layer because edit on the acceptance test is ask-level and this non-interactive run cannot prompt; the run was retried with auto-approval of ask-level permissions only, under the approval already recorded in the session. Human-run after the append: 39 passed, 1 test in the appended file passing alone, ruff clean. Mutation M3p then failed 5 cases including the new one, and the module was restored.'
+  session_reference: ses_e1caf1566ffeefvZW8dDBgx8mJ (title "NFR-01 gate2 add dispatch-level race test")
+  review_status: 'Approved by owner; both edits reviewed line by line before the next step'
+  limitations:
+  - The appended test was green on arrival by design; its discrimination is proven only by mutation M3p, not by a red-before run
+  - The role ran no commands, so all counts are human-run
+- id: AI-NFR01-VERIFY-014
+  date: '2026-11-16'
+  tool: OpenCode 2.3.0 (course-verify role, read-only)
+  base_commit: 3d5ce620e7da497e09c986ef6cbc957b490de632
+  requirements:
+  - NFR-01
+  - INV-02
+  scope: 'Gate 4 read-only compliance review of the owner module, the 39-case suite and the governance records at 3d5ce62.'
+  human_direction: 'Owner supplied the human-run evidence, the four mutation results, both rounds of session IDs and an explicit instruction to report any refused read instead of working around it.'
+  changes:
+  - Confirmed contract conformance for all six C4 v1.0 calls and found no bypass path inside the module
+  - Traced every frozen case ID to covering tests and found no non-discriminating case, confirming the D-NFR01-09 clarification
+  - Found three record defects: stale 486a9a5 figures, PR-NFR01-001 missing the 39th case, and two unreconciled session-ID sets
+  - Reported denied reads on five record files and refused to bypass them, so check D was returned as partial
+  evidence: 'Verdict CONDITIONALLY COMPLIANT for the owner module, not compliant for NFR-01 delivery, with eight missing items listed. Session ses_e1cab4f89ffed8ePmZwWo5Ljy0 ran no commands; the report states explicitly that the pasted results are human-run and unverified by the reviewer.'
+  session_reference: ses_e1cab4f89ffed8ePmZwWo5Ljy0 (title "NFR-01 gate4 verification (baseline 3d5ce62)")
+  review_status: 'Accepted by owner; the three record defects were fixed in PR-NFR01-002, BUG-09 and TD-15'
+  limitations:
+  - Static review only; pytest, ruff and mutation runs were not re-executed by the role
+  - Record-integrity check D covered only the files the allowlist permits, so ai-use-log, bug-diary, debt-register, transcripts and Report.md were human-reviewed instead
