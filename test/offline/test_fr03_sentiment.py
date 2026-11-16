@@ -80,6 +80,64 @@ def _all_valid():
     )
 
 
+@pytest.mark.unit
+def test_prompt_neutral_requires_valid_observations():
+    """The Neutral rule must describe observed balance, not silence.
+
+    The prompt previously told the model "Neutral only when all sources are
+    genuinely silent", which asks for a Neutral call on data that was never
+    observed -- the exact direction the coverage boundary forbids. This reads
+    the rendered instruction line directly; no model and no fetch is involved.
+    """
+    from tradingagents.agents.analysts.sentiment_analyst import _build_system_message
+
+    news_block = "Synthetic AAPL news block: steady quarter, no directional claim"
+    stocktwits_block = "Synthetic AAPL StockTwits block: balanced chatter, no-label"
+    reddit_block = "Synthetic AAPL Reddit block: balanced discussion, no directional claim"
+
+    prompt = _build_system_message(
+        ticker=TICKER,
+        start_date=WINDOW_START,
+        end_date=WINDOW_END,
+        news_block=news_block,
+        stocktwits_block=stocktwits_block,
+        reddit_block=reddit_block,
+        valid_sources=3,
+        news_vendor="yfinance",
+    )
+
+    band_line = prompt.split("- **overall_band**:", 1)[1].split("\n", 1)[0]
+
+    # 1. The defect: silence is not a Neutral observation.
+    assert "Neutral only when all sources are genuinely silent" not in band_line
+
+    # 2. The required rule, stated in the same instruction line.
+    assert (
+        "Use Neutral when valid observations support a balanced or non-directional"
+        in band_line
+    )
+    assert "Missing sources do not imply Neutral." in band_line
+    assert "With zero valid sources, the program produces UNKNOWN with a null score" in band_line
+    assert "skips the sentiment model." in band_line
+
+    # 3. Format positive control: nothing else about the prompt changed shape.
+    for band in (
+        "Bullish",
+        "Mildly Bullish",
+        "Neutral",
+        "Mixed",
+        "Mildly Bearish",
+        "Bearish",
+    ):
+        assert band in band_line
+    assert "<start_of_news>" in prompt and news_block in prompt
+    assert "<start_of_stocktwits>" in prompt and stocktwits_block in prompt
+    assert "<start_of_reddit>" in prompt and reddit_block in prompt
+    assert "## Output format for plain-text responses" in prompt
+    for field in ("overall_band", "overall_score", "confidence", "narrative"):
+        assert field in prompt
+
+
 # ---------------------------------------------------------------------------
 # BASELINE COMPATIBLE (fails on the reference: the model is called)
 # ---------------------------------------------------------------------------
