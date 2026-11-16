@@ -18,7 +18,9 @@ In a disposable checkout, check that Plan/Verify can read a whitelisted file but
 
 ## Configuration review items
 
-The current allowlist requires maintainer review for missing reads of `docs/README.md`, `docs/req/product.yaml`, `docs/ai-use-log.yaml`, review/bug/debt records and upstream vendor/date adapters; new JSON fixtures are also outside the existing `.py` course-test patterns. Before a task depends on one, the human maintainer must review its exact path and update both configuration copies consistently. Do not add a broad `docs/**`, vendor-tree or repository-wide write rule. C0–C5 is already under the existing architecture Markdown read pattern.
+The documentation index (`docs/README.md`), product scope (`docs/req/product.yaml`) and review memo (`docs/review-memo.md`) have exact read-only allowlist entries. C0–C5 is covered by the existing architecture Markdown read pattern.
+
+The AI-use log, bug and debt records, upstream vendor/date adapters and non-Python fixtures are not generally allowlisted. Before a task depends on one, the human maintainer must review its exact path and update both configuration copies consistently if access is needed. Do not add a broad `docs/**`, vendor-tree or repository-wide write rule.
 
 For FR-03, proposed additional reads to review include `tradingagents/dataflows/date_window.py`, `tradingagents/dataflows/vendors/stocktwits.py`, `tradingagents/dataflows/vendors/reddit.py` and `tradingagents/dataflows/vendors/yahoo/news.py`; resolve any further imports in the approved plan. Approve fixture reads/writes by exact filename (or a justified bounded task directory). Read access is not edit approval.
 
