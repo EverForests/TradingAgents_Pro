@@ -26,6 +26,7 @@
     { "action": "read", "resource": "tests/test_rating_integrity.py", "effect": "allow" },
     { "action": "read", "resource": "tests/test_analyst_execution.py", "effect": "allow" },
     { "action": "read", "resource": "tests/test_llm_max_retries.py", "effect": "allow" },
+    { "action": "read", "resource": "tests/test_graph_end_to_end.py", "effect": "allow" },
     { "action": "read", "resource": "tradingagents/agents/context.py", "effect": "allow" },
     { "action": "read", "resource": "tradingagents/agents/rating.py", "effect": "allow" },
     { "action": "read", "resource": "tradingagents/agents/state.py", "effect": "allow" },
