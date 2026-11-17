@@ -129,3 +129,33 @@ entries:
     ci_run: https://github.com/EverForests/TradingAgents_Pro/actions/runs/43761048809
     ci_conclusion: success
     pr: https://github.com/EverForests/TradingAgents_Pro/pull/6
+- id: AI-FR03-PAIRED-007
+  date: '2026-11-17'
+  tool: OpenCode 2.3.0 with school DeepSeek; Codex plan review, execution and records
+  base_commit: 06d160a70f41b5a7b81b5b6f7f332680b2381cc9
+  requirements:
+  - FR-03
+  contracts:
+  - C0
+  - C3
+  scope: New isolated baseline/candidate diagnostic only; no application or existing test changes
+  human_direction: User requested actual progress, evidence of changed/improved behavior and continued development under the earlier autonomous delegation. Individual student plan/test review did not occur.
+  session_reference: ses_e1f6630f2ffeopX5X1nTvOKFOG
+  contributions:
+  - OpenCode generated the new diagnostic and repaired concrete defects found in Codex pre-execution review.
+  - Codex fixed one joined declaration by restoring its newline, ran Ruff import formatting, froze the test hash and executed validation. No case expectation changed after execution.
+  - Codex maintained this AI-use entry and retained raw sessions, plans, hashes and receipts privately.
+  evidence:
+  - Paired original 9fa1196fffbcfd9de5146d2dd2869df84ab99838 and current application 06d160a on 16 identical synthetic collector-boundary fixtures; 33 assertions passed.
+  - Five zero-valid-source cases rendered injected Neutral/5.0 in the baseline and UNKNOWN/null without model binding or calls in the candidate.
+  - Eleven valid-source controls retained Neutral/5.0 in both versions. Fake sentiment model calls were 16 versus 11. Report, AIMessage and actual bull prompt propagation agreed in all cases.
+  - Both workers used the same fixture digest and Python, verified their actual import paths and source hashes, and observed zero blocked network attempts. The original worktree stayed clean.
+  - The unchanged existing school harness verified the current 06d160a prompt in a new independent run; three cases passed with two actual HTTP attempts under a four-attempt cap. Zero sources made zero requests; one and three sources each measured Neutral/5.0.
+  - Observed school request settings were function-calling client, thinking disabled, 4096 output tokens and streaming. Two HTTP 200 responses were recorded; billed usage was not measured.
+  - Without an explicitly configured baseline checkout, the 33 paired checks skip clearly. Those skips are not counted as acceptance passes. Ruff and staged diff checks were run separately.
+  limitations:
+  - The paired model answer is deliberately fixed and source fetchers are replaced. This validates deterministic missing-data behavior, not natural-model error rates or a raw adapter replay.
+  - Real-model checks use synthetic source receipts and are not a paired natural-model study, real-provider quality evaluation or investment backtest.
+  - Earlier official 20-attempt and FR03 eight-attempt runs remain closed and separately recorded. The new two attempts are not charged against or used to rewrite them.
+  - Full combined regression was not repeated for this diagnostic-only addition; earlier 1485-pass evidence remains tied to its earlier code revision.
+  review_status: Operator-verified diagnostic proposed in existing draft PR; formal human and shared C1/C4 integration review remain separate
