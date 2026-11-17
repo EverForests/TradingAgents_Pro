@@ -159,3 +159,35 @@ entries:
   - Earlier official 20-attempt and FR03 eight-attempt runs remain closed and separately recorded. The new two attempts are not charged against or used to rewrite them.
   - Full combined regression was not repeated for this diagnostic-only addition; earlier 1485-pass evidence remains tied to its earlier code revision.
   review_status: Operator-verified diagnostic proposed in existing draft PR; formal human and shared C1/C4 integration review remain separate
+- id: AI-FR03-HARDENING-008
+  date: '2026-11-17'
+  tool: OpenCode 2.3.0 with school DeepSeek; Codex coordination and verification
+  base_commit: 0aebc95c8fa5c99271d624877f507c6e1ebda845
+  requirements:
+  - FR-03
+  contracts:
+  - C0
+  - C3
+  scope: Coverage-boundary validation and numeric-overflow handling in sentiment_coverage.py, plus one new independent offline test file
+  human_direction: User asked to continue until no worthwhile improvement remains. Codex selected and reviewed the concrete bounded plan under autonomous delegation; no individual student review or execution was invented.
+  session_reference: ses_e1f6630f2ffeopX5X1nTvOKFOG
+  contributions:
+  - OpenCode generated the new tests and application patch. Existing tests, prompts, adapters, schemas and shared components were not edited.
+  - Codex corrected fixture design before execution, froze the reviewed tests, ran and confirmed actual failing behavior, then authorized only the narrow implementation.
+  - Codex maintained this entry and retained raw sessions, hashes and red/green evidence privately.
+  evidence:
+  - The first 40 new checks on the preceding application had 27 failures and 13 passes, including blank receipt content counted as valid and the real node binding the model when it should skip.
+  - Before implementation, two further giant-integer score cases were added as a documented design extension; both failed with OverflowError. The original 40 expectations were preserved.
+  - After implementation, all 42 frozen checks passed. Test hash stayed unchanged during the source fix.
+  - Full combined offline regression passed 1528 tests and 100 subtests, with 39 skips and one deselected integration case. The skips comprise six existing platform/optional-dependency cases and 33 paired checks requiring an explicit baseline checkout.
+  - Changed source and test passed Ruff and git diff checks. The original baseline worktree was preserved.
+  behavior:
+  - Empty or anchored error-only bodies cannot become evidence merely through metadata; the word unavailable inside genuine content remains valid.
+  - Malformed receipts, inconsistent record counts or refs, invalid contract versions and blank identities cannot inflate source coverage or cause the tested crashes.
+  - Valid mixed collections retain their valid items and additive reasons, and valid Neutral/5.0 remains supported.
+  - Oversized integer scores become UNKNOWN/null with SCORE_INVALID while valid coverage remains intact.
+  limitations:
+  - These are deterministic boundary tests, not real-market accuracy or investment-return measurements.
+  - No new runtime model or vendor call was made for this patch. Earlier online results remain attributed to their recorded revision; the prompt and model client are unchanged here.
+  - Paired replay and independent review evidence are retained separately with exact candidate revisions. Formal human and joint C1/C4 acceptance remain separate.
+  review_status: Operator-verified bounded repair proposed in the existing draft PR

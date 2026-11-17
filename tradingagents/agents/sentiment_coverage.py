@@ -67,6 +67,7 @@ _UNVERIFIABLE = "UNVERIFIABLE_METADATA"
 # post is never a placeholder, so only anchored matches classify the source.
 _ERROR_PLACEHOLDERS: tuple[re.Pattern, ...] = (
     re.compile(r"^<[a-z_]+ unavailable:[^>]*>$", re.IGNORECASE),
+    re.compile(r"^<unavailable>$", re.IGNORECASE),
     re.compile(r"^<reddit unavailable:[^>]*>$", re.IGNORECASE),
     re.compile(r"^data_unavailable:", re.IGNORECASE),
     re.compile(r"^<fetch_error[^>]*>$", re.IGNORECASE),
@@ -130,7 +131,21 @@ def _identity(run: Any) -> dict[str, str]:
     return fields
 
 
+def _has_identity(identity: dict[str, str]) -> bool:
+    """Whether every identity field is a non-blank string.
+
+    A blank field is not an identity: two records that share blanks must never
+    accept each other, so blanks are rejected rather than stripped or matched.
+    """
+    return all(
+        isinstance(identity.get(key), str) and identity[key].strip()
+        for key in ("run_id", "ticker", "as_of_date")
+    )
+
+
 def _same_identity(left: dict[str, str], right: dict[str, str]) -> bool:
+    if not (_has_identity(left) and _has_identity(right)):
+        return False
     return all(left[key] == right[key] for key in ("run_id", "ticker", "as_of_date"))
 
 
@@ -188,16 +203,28 @@ def _ordered_reasons(reasons: set[str]) -> list[str]:
     return known + extra
 
 
+def _valid_reason_list(value: Any) -> bool:
+    """Whether ``value`` is a list/tuple of non-blank strings."""
+    return isinstance(value, (list, tuple)) and all(
+        isinstance(code, str) and code.strip() for code in value
+    )
+
+
 def _adapter_reasons(receipt: SourceReceipt) -> set[str]:
-    """Receipt reason codes the adapter reported, mapped to known vocabulary."""
+    """Receipt reason codes the adapter reported, mapped to known vocabulary.
+
+    Reasons are additive: a valid item keeps the source available even when the
+    adapter also reports a failed item. Malformed containers are rejected by
+    ``normalize_source`` before this runs.
+    """
     found: set[str] = set()
     for code in receipt.reason_codes:
-        normalized = str(code).strip().upper()
+        normalized = code.strip().upper()
         if normalized in _REASON_ORDER:
             found.add(normalized)
         elif "ERROR" in normalized or "UNAVAILABLE" in normalized:
             found.add(FETCH_ERROR)
-        elif normalized:
+        else:
             found.add(UNVERIFIABLE_METADATA)
     return found
 
@@ -266,6 +293,11 @@ def normalize_source(raw_result: Any, source_id: str, run: Any,
     reasons: set[str] = set()
     text = str(raw_result) if isinstance(raw_result, str) else ""
 
+    if not _has_identity(identity):
+        # A blank run identity cannot bind any record: nothing blank is accepted.
+        reasons.add(IDENTITY_MISMATCH)
+        return _unavailable_outcome(identity, source_id, window_start, window_end, reasons)
+
     if not isinstance(raw_result, SourceText):
         # Distinguish an actual empty answer or adapter placeholder from opaque
         # content before rejecting it: the placeholder is anchored and exact,
@@ -280,6 +312,11 @@ def normalize_source(raw_result: Any, source_id: str, run: Any,
 
     if receipt.source_id != source_id:
         reasons.add(SOURCE_ID_MISMATCH)
+        return _unavailable_outcome(identity, source_id, window_start, window_end, reasons)
+
+    if not isinstance(receipt.items, (list, tuple)) or not _valid_reason_list(receipt.reason_codes):
+        # A malformed container is unverifiable data, never a crash.
+        reasons.add(UNVERIFIABLE_METADATA)
         return _unavailable_outcome(identity, source_id, window_start, window_end, reasons)
 
     reasons |= _adapter_reasons(receipt)
@@ -305,14 +342,27 @@ def normalize_source(raw_result: Any, source_id: str, run: Any,
             identity, source_id, receipt.window_start, receipt.window_end, reasons
         )
 
+    # A receipt can carry valid metadata while the body itself is blank or an
+    # anchored placeholder: the body then contradicts the metadata it claims.
+    body_reason = _placeholder_reason(text)
+    if body_reason is not None:
+        reasons.add(body_reason)
+        return _unavailable_outcome(
+            identity, source_id, receipt.window_start, receipt.window_end, reasons
+        )
+
     ticker = identity.get("ticker", "")
     start, end = _baseline_window(identity)
     evidence_refs: list[str] = []
     for item in receipt.items:
-        if not isinstance(item, ItemMeta) or not isinstance(item.item_id, str) or not item.item_id:
+        if not isinstance(item, ItemMeta):
             reasons.add(UNVERIFIABLE_METADATA)
             continue
-        if not item.substantive:
+        if not isinstance(item.item_id, str) or not item.item_id.strip():
+            reasons.add(UNVERIFIABLE_METADATA)
+            continue
+        if item.substantive is not True:
+            # Only an explicit True is substantive: 1 and "false" are not.
             reasons.add(UNVERIFIABLE_METADATA)
             continue
         if item.ticker is not None and item.ticker != ticker:
@@ -348,34 +398,58 @@ def normalize_source(raw_result: Any, source_id: str, run: Any,
 # ---------------------------------------------------------------------------
 
 
+def _safe_reasons(value: Any) -> set[str]:
+    """Only the safe, well-formed reason strings carried by a record.
+
+    A malformed field (an int, a list of lists, ...) contributes nothing, so a
+    rejected copy never crashes and never copies invalid data through.
+    """
+    if not _valid_reason_list(value):
+        return set()
+    return set(value)
+
+
+def _window_field(outcome: dict[str, Any], key: str) -> Any:
+    """A window field as plain data, so a rejected copy stays JSON-shaped."""
+    value = outcome.get(key)
+    return value if isinstance(value, str) else None
+
+
 def _rejected_outcome(outcome: dict[str, Any], identity: dict[str, str],
                       reasons: set[str]) -> dict[str, Any]:
     """A copy of ``outcome`` marked unavailable for the current run.
 
     The input is never modified: the caller keeps its own record intact, and
     the coverage mapping holds an unavailable copy with an explicit reason
-    instead of silently dropping a source that claimed evidence.
+    instead of silently dropping a source that claimed evidence. The copy always
+    has the standard C3 fields for the current identity: only safe reason strings
+    survive, plus the rejection reason.
     """
-    rejected = dict(outcome)
-    rejected.update({
-        "run_id": identity.get("run_id", ""),
-        "ticker": identity.get("ticker", ""),
-        "as_of_date": identity.get("as_of_date", ""),
-        "available": False,
-        "valid_record_count": 0,
-        "evidence_refs": [],
-        "reason_codes": _ordered_reasons(set(outcome.get("reason_codes") or []) | reasons),
-    })
-    return rejected
+    return _unavailable_outcome(
+        identity, str(outcome.get("source_id") or ""),
+        _window_field(outcome, "window_start"), _window_field(outcome, "window_end"),
+        _safe_reasons(outcome.get("reason_codes")) | reasons,
+    )
 
 
 def _accepted_outcome(outcome: dict[str, Any], identity: dict[str, str],
                       window_start: Any, window_end: Any) -> dict[str, Any]:
     """The outcome as it may stand for the current run, or a rejected copy."""
+    reject = _rejected_outcome(outcome, identity, {UNVERIFIABLE_METADATA})
     if set(outcome) != set(_OUTCOME_FIELDS):
-        return _rejected_outcome(outcome, identity, {UNVERIFIABLE_METADATA})
+        return reject
+    if not _has_identity(identity):
+        return reject
+    if outcome.get("contract_version") != CONTRACT_VERSION:
+        return reject
     if not isinstance(outcome.get("available"), bool):
-        return _rejected_outcome(outcome, identity, {UNVERIFIABLE_METADATA})
+        return reject
+    if not _valid_reason_list(outcome.get("reason_codes")):
+        return reject
+    refs = outcome.get("evidence_refs")
+    if not (isinstance(refs, list)
+            and all(isinstance(ref, str) and ref.strip() for ref in refs)):
+        return reject
 
     outcome_identity = {
         key: str(outcome.get(key) or "") for key in ("run_id", "ticker", "as_of_date")
@@ -388,17 +462,16 @@ def _accepted_outcome(outcome: dict[str, Any], identity: dict[str, str],
     if None in outcome_window or outcome_window != accepted_window:
         return _rejected_outcome(outcome, identity, {WINDOW_UNSUPPORTED})
 
-    refs = outcome.get("evidence_refs")
     count = outcome.get("valid_record_count")
     consistent = (
-        isinstance(refs, list)
-        and len(refs) == len(set(map(str, refs)))
+        len(refs) == len(set(refs))
         and isinstance(count, int)
         and not isinstance(count, bool)
         and count >= 0
+        and count == len(refs)
     )
-    if not consistent or bool(outcome["available"]) != (count > 0):
-        return _rejected_outcome(outcome, identity, {UNVERIFIABLE_METADATA})
+    if not consistent or outcome["available"] != (count > 0):
+        return reject
     if count == 0:
         return _rejected_outcome(outcome, identity, {EMPTY})
     return outcome
@@ -486,6 +559,10 @@ def _text(value: Any) -> str:
 def _measured_score(value: Any) -> float | None:
     """A finite 0-10 score, or None. Booleans and strings are not measurements."""
     if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return None
+    # Compare in the value's own type first: an int far outside 0-10 is rejected
+    # without a float conversion, which would overflow for huge integers.
+    if value < 0 or value > 10:
         return None
     number = float(value)
     if not math.isfinite(number) or number < 0.0 or number > 10.0:
