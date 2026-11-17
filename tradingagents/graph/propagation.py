@@ -1,6 +1,6 @@
 from typing import Any
 
-from tradingagents.agents.state import InvestDebateState, RiskDebateState
+from tradingagents.agents.state import InvestDebateState, RiskDebateState, new_course_run
 
 
 class Propagator:
@@ -62,6 +62,9 @@ class Propagator:
             "fundamentals_report": "",
             "sentiment_report": "",
             "news_report": "",
+            "course_run": new_course_run(company_name, str(trade_date)),
+            "verified_metrics": {},
+            "portfolio_verified_metrics": [],
         }
 
     def get_graph_args(self, callbacks: list | None = None) -> dict[str, Any]:
