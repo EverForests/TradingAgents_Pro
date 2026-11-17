@@ -950,7 +950,6 @@ def test_vendor_unavailable_placeholder_creates_no_record(monkeypatch, tmp_path)
     """
     _require_collector()
     import tradingagents.dataflows.vendors.yahoo.snapshot as snapshot
-
     from tradingagents.dataflows.config import run_config
     from tradingagents.dataflows.errors import VendorUnavailableError
 
@@ -979,7 +978,6 @@ def test_no_market_data_placeholder_creates_no_record(monkeypatch, tmp_path):
     """A "no data" placeholder is also absent evidence, not a positive snapshot."""
     _require_collector()
     import tradingagents.dataflows.vendors.yahoo.snapshot as snapshot
-
     from tradingagents.dataflows.config import run_config
     from tradingagents.dataflows.errors import NoMarketDataError
 

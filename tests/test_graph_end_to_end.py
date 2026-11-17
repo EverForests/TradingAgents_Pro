@@ -269,7 +269,8 @@ class LoopingModel(ScriptedModel):
             self.last_turns.append(messages)
             return super()._generate(messages, stop, run_manager, **kwargs)
         self.tool_turns.append(1)
-        tool = self.tools[0]
+        tool = next((tool for tool in self.tools if tool.name == "get_verified_market_snapshot"),
+                    self.tools[0])
         call = {"name": tool.name, "id": f"call_{len(self.tool_turns)}",
                 "args": {k: v for k, v in ARGS.items()
                          if k in tool.tool_call_schema.model_json_schema()["properties"]}}

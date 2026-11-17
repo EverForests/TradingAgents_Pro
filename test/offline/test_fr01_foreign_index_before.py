@@ -33,10 +33,7 @@ import copy
 import pytest
 from langchain_core.callbacks import CallbackManagerForLLMRun
 from langchain_core.language_models.chat_models import BaseChatModel
-from langchain_core.messages import AIMessage
-from langchain_core.outputs import ChatGeneration, ChatResult
-
-from tradingagents.graph import publication_gate as gate
+from langchain_core.outputs import ChatResult
 
 # Labels from C1/C0 (approved interface contract v1.0).
 APPROVED = "APPROVED"

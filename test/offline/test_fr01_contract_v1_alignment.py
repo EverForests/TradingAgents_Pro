@@ -996,7 +996,7 @@ def test_valid_run_approves_with_identity_and_resolved_references(results):
     assert record["ticker"] == TICKER
     assert record["as_of_date"] == AS_OF_DATE
     assert record["contract_version"] == CONTRACT_VERSION
-    assert SNAPSHOT_MATERIAL == _read_content(results, record["content_ref"])
+    assert _read_content(results, record["content_ref"]) == SNAPSHOT_MATERIAL
 
     result = _evaluate(argument_ids=(argument_id,), results_dir=results)
 

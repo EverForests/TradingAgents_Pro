@@ -12,11 +12,6 @@ from __future__ import annotations
 import pytest
 
 import cli.run as cli_run
-from tradingagents.graph.publication_gate import (
-    ArgumentRecord,
-    build_evidence_index,
-    index_to_state,
-)
 from tradingagents.graph.trading_graph import TradingAgentsGraph
 from tradingagents.memory import TradingMemoryLog
 
@@ -31,9 +26,10 @@ def _bare_graph(tmp_path):
 
 
 @pytest.mark.unit
-def test_record_decision_appends_a_pending_entry(tmp_path):
+def test_record_decision_appends_a_pending_entry(tmp_path, publication_state):
     graph = _bare_graph(tmp_path)
-    graph.record_decision("NVDA", "2026-01-10", {"final_trade_decision": "Rating: Buy\n\nBuy NVDA."})
+    state = publication_state("NVDA", "2026-01-10", "Buy", "Rating: Buy\n\nBuy NVDA.")
+    graph.record_decision("NVDA", "2026-01-10", state)
     entries = graph.memory_log.load_entries()
     assert [(e["ticker"], e["pending"], e["rating"]) for e in entries] == [("NVDA", True, "Buy")]
 
@@ -51,6 +47,7 @@ class _FakeGraph:
     """Records the lifecycle calls run_analysis makes."""
 
     publish = TradingAgentsGraph.publish
+    complete_run = TradingAgentsGraph.complete_run
 
     def __init__(self, resuming=None):
         self.calls = []
@@ -84,16 +81,7 @@ class _FakeGraph:
 
     def stream_run(self, graph_input, **kwargs):
         yield [], {"messages": [], "market_report": "M"}
-        index = build_evidence_index("cli-run", {"market_report": "M"})
-        argument = ArgumentRecord("arg:bull:cli-run:1", "Bull Analyst", "Thesis", index.evidence_ids)
-        assert index.accept(argument)
-        yield [], {
-            "messages": [],
-            "evidence_index": index_to_state(index),
-            "candidate_decision": "Rating: Buy\n\nBuy NVDA.",
-            "candidate_rating": "Buy",
-            "candidate_argument_ids": [argument.argument_id],
-        }
+        yield [], self.candidate_state
 
 
 class _NullLive:
@@ -132,11 +120,17 @@ class _FakeBuffer:
         self.agent_status[agent] = status
 
 
-def _run_cli(monkeypatch, tmp_path, fake):
+def _run_cli(monkeypatch, tmp_path, fake, publication_state):
     """Drive run_analysis against ``fake``; returns the message buffer."""
     import cli.main as m
     from cli.models import AnalystType
 
+    results_dir = tmp_path / "results"
+    fake.config = {"results_dir": str(results_dir)}
+    fake.candidate_state = publication_state(
+        "NVDA", "2026-01-10", "Buy", "Rating: Buy\n\nBuy NVDA.",
+        results_dir=results_dir, publish=False,
+    )
     buffer = _FakeBuffer()
     monkeypatch.setattr(cli_run, "TradingAgentsGraph", lambda *a, **k: fake)
     monkeypatch.setattr(cli_run, "message_buffer", buffer)
@@ -156,9 +150,9 @@ def _run_cli(monkeypatch, tmp_path, fake):
 
 
 @pytest.mark.unit
-def test_cli_run_uses_the_memory_log_like_propagate(tmp_path, monkeypatch):
+def test_cli_run_uses_the_memory_log_like_propagate(tmp_path, monkeypatch, publication_state):
     fake = _FakeGraph()
-    _run_cli(monkeypatch, tmp_path, fake)
+    _run_cli(monkeypatch, tmp_path, fake, publication_state)
 
     assert fake.calls == [
         ("create_run_state", "NVDA", "2026-01-10"),
@@ -171,16 +165,16 @@ def test_cli_run_uses_the_memory_log_like_propagate(tmp_path, monkeypatch):
 
 @pytest.mark.unit
 @pytest.mark.parametrize("resuming, said", [(True, "resuming"), (False, "starting fresh")])
-def test_the_cli_run_says_whether_it_resumed(tmp_path, monkeypatch, resuming, said):
+def test_the_cli_run_says_whether_it_resumed(tmp_path, monkeypatch, resuming, said, publication_state):
     """The README promises the run view tells a resumed run from a fresh one."""
-    buffer = _run_cli(monkeypatch, tmp_path, _FakeGraph(resuming=resuming))
+    buffer = _run_cli(monkeypatch, tmp_path, _FakeGraph(resuming=resuming), publication_state)
 
     assert any(said in text.lower() for _, kind, text in buffer.messages if kind == "System")
 
 
 @pytest.mark.unit
-def test_a_run_without_checkpointing_says_nothing_about_resuming(tmp_path, monkeypatch):
-    buffer = _run_cli(monkeypatch, tmp_path, _FakeGraph())
+def test_a_run_without_checkpointing_says_nothing_about_resuming(tmp_path, monkeypatch, publication_state):
+    buffer = _run_cli(monkeypatch, tmp_path, _FakeGraph(), publication_state)
 
     assert not any("resum" in text.lower() or "fresh" in text.lower() for _, _, text in buffer.messages)
 

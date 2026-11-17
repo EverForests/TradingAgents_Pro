@@ -291,9 +291,10 @@ def _analyst_graph(spec, agent, max_tool_rounds: int):
     their results, so only this graph can hand them on; a run with no call, or one
     whose material cannot be retained, returns no receipts.
     """
-    output = TypedDict(
-        f"{spec.key.capitalize()}Report", {spec.report_key: str, "market_evidence": list}
-    )
+    output_fields: dict[str, type] = {spec.report_key: str}
+    if spec.key == "market":
+        output_fields["market_evidence"] = list
+    output = TypedDict(f"{spec.key.capitalize()}Report", output_fields)
     graph = StateGraph(AgentState, output_schema=output)
     graph.add_node("agent", agent)
     graph.add_edge(START, "agent")

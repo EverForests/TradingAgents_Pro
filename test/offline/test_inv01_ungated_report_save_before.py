@@ -47,8 +47,7 @@ from pathlib import Path
 import pytest
 from langchain_core.callbacks import CallbackManagerForLLMRun
 from langchain_core.language_models.chat_models import BaseChatModel
-from langchain_core.messages import AIMessage
-from langchain_core.outputs import ChatGeneration, ChatResult
+from langchain_core.outputs import ChatResult
 
 from tradingagents.graph import publication_gate as gate
 

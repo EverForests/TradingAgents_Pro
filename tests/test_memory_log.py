@@ -928,13 +928,12 @@ class TestLegacyRemoval:
         with pytest.raises(TypeError):
             create_portfolio_manager(mock_llm, memory=MagicMock())
 
-    def test_full_pipeline_no_regression(self, tmp_path):
+    def test_full_pipeline_no_regression(self, tmp_path, publication_state):
         """propagate() completes and stores the decision after the redesign."""
         import functools
 
         fake_state = {
-            "final_trade_decision": "Rating: Buy\nBuy NVDA.",
-            "final_rating": "Buy",
+            **publication_state("NVDA", "2026-01-10", "Buy", "Rating: Buy\nBuy NVDA.", publish=False),
             "company_of_interest": "NVDA",
             "trade_date": "2026-01-10",
             "market_report": "",
@@ -966,6 +965,8 @@ class TestLegacyRemoval:
         mock_graph._run_graph = functools.partial(
             TradingAgentsGraph._run_graph, mock_graph
         )
+        mock_graph.complete_run = functools.partial(TradingAgentsGraph.complete_run, mock_graph)
+        mock_graph.publish = functools.partial(TradingAgentsGraph.publish, mock_graph)
         mock_graph.record_decision = functools.partial(
             TradingAgentsGraph.record_decision, mock_graph
         )

@@ -112,7 +112,7 @@ def test_an_unscored_decision_is_left_out_of_the_backtest_figures(tmp_path):
 
 
 @pytest.mark.unit
-def test_the_cli_says_when_a_run_produced_no_usable_rating(monkeypatch, tmp_path, capsys):
+def test_the_cli_says_when_a_run_produced_no_usable_rating(monkeypatch, tmp_path, capsys, publication_state):
     """The CLI is the primary entry point; an unreadable decision must be
     visible there, not only in the log."""
     import cli.main as m
@@ -123,6 +123,8 @@ def test_the_cli_says_when_a_run_produced_no_usable_rating(monkeypatch, tmp_path
     class _Graph:
         graph = propagator = None
         publish = TradingAgentsGraph.publish
+        complete_run = TradingAgentsGraph.complete_run
+        config = {"results_dir": str(tmp_path)}
 
         def create_run_state(self, *a, **k):
             return {"messages": []}
@@ -146,7 +148,10 @@ def test_the_cli_says_when_a_run_produced_no_usable_rating(monkeypatch, tmp_path
             pass
 
         def stream_run(self, *a, **k):
-            yield [], {"messages": [], "candidate_decision": REFUSAL, "candidate_rating": RATING_REVIEW}
+            yield [], {
+                "messages": [],
+                **publication_state("NVDA", "2026-01-10", RATING_REVIEW, REFUSAL, publish=False),
+            }
 
     fake = _Graph()
     fake.graph = fake
