@@ -3,6 +3,7 @@
 TradingAgents Pro is a CS5351 course project that extends TradingAgents, a multi-agent stock analysis framework. The course extension targets traceable publication, verified metrics, explicit sentiment coverage, request budgeting and scoped message control. The version 1.0 specification is under team review.
 
 - **Team repository:** [EverForests/TradingAgents_Pro](https://github.com/EverForests/TradingAgents_Pro)
+- **FR-03 handoff:** [Implemented feature, report section and reproduction](docs/fr03.md) · [sanitized evidence](docs/fr03-evidence.json) · [existing PR #6](https://github.com/EverForests/TradingAgents_Pro/pull/6)
 - **Upstream project:** [TauricResearch/TradingAgents](https://github.com/TauricResearch/TradingAgents)
 - **Unmodified baseline:** [`9fa1196fffbcfd9de5146d2dd2869df84ab99838`](https://github.com/TauricResearch/TradingAgents/commit/9fa1196fffbcfd9de5146d2dd2869df84ab99838). Use this revision for before-and-after comparisons.
 
@@ -17,10 +18,10 @@ TradingAgents Pro is a CS5351 course project that extends TradingAgents, a multi
 
 - `tradingagents/` — application source.
 - `cli/` — command-line interface.
-- `tests/` — existing test suite; document the course project's offline and live test locations once finalized.
+- `tests/` — existing test suite; `test/offline/` includes deterministic FR-03 checks and `test/live/` contains its optional school-model controls.
 - `.github/workflows/` — GitHub Actions workflows.
 
-See the [CS5351 deliverable map](docs/README.md) for the planned D1–D9 paths. Course tests will be split into `test/offline/` and `test/live/`; the upstream source and tests stay in place during development.
+See the [CS5351 deliverable map](docs/README.md) for D1–D9 paths and the [FR-03 module handoff](docs/fr03.md) for its actual test mapping. The upstream source and tests stay in place during development.
 
 ## Setup and verification
 
@@ -46,8 +47,8 @@ py -3 -m venv .venv
 | Suite | Command |
 | --- | --- |
 | Upstream baseline | `python -m pytest -q tests` |
-| Project offline tests | `python -m pytest -q test/offline` once course tests are added; no API credentials required. |
-| Project live tests | TBD — document required providers and credentials. |
+| Project offline tests | `python -m pytest -q test/offline -m "not integration"`; no API credentials required. |
+| FR-03 school controls | `python -m pytest -q test/live/test_fr03_school.py -m integration`; private credentials and a separately authorized cap are required. See [FR-03](docs/fr03.md#reproduction). Other modules' live requirements remain with their owners. |
 | Full project suite | TBD — document how to run both suites. |
 
 ## CI and blocking gates (D7)
@@ -483,3 +484,7 @@ Please reference our work if you find *TradingAgents* provides you with some hel
       url={https://arxiv.org/abs/2412.20138}, 
 }
 ```
+
+## FR-03 review package
+
+The implemented FR-03 module has a [handoff, report-ready section and exact offline/paired/optional-live commands](docs/fr03.md), plus [sanitized result evidence](docs/fr03-evidence.json). Continue [PR #6](https://github.com/EverForests/TradingAgents_Pro/pull/6) from `feat/fr-03-sentiment-coverage` into `feat/course-deliverables`; do not open a duplicate PR. The module implementation/tests are ready for teammate review; integration, formal human approval and the course package remain separate.

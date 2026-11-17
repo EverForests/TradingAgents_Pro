@@ -214,3 +214,20 @@ entries:
   - No new runtime model or vendor requests were needed. Prompt/client behavior is unchanged; older school results keep their recorded revision.
   - Real-provider quality, independently labeled semantic accuracy, investment backtests and joint C1/C4 acceptance remain separate work. No return/accuracy improvement is inferred from synthetic checks.
   review_status: Bounded findings resolved with actual counterexamples and regressions; draft PR still requires formal review
+
+- id: AI-DOC-FR03-HANDOFF-010
+  date: '2026-11-17'
+  tool: Codex document preparation and local OpenCode session export CLI; no code-generation session
+  base_commit: b2816ecb4b6dc465c38bd0ff213ea215a0662825
+  scope: FR-03 handoff/report section, sanitized evidence, dated review/bug/debt/trace updates and private course materials
+  human_direction: User explicitly requested completion of this feature's course documents and teammate handoff, using the existing branch and PR. Other features are unchanged.
+  contributions:
+  - Codex authored the documentation and artifact-assembly helper; these are not relabeled as OpenCode-generated application code.
+  - Native OpenCode session exports, original per-run records and annotated actual operator interventions are retained in the private course package.
+  - Public records distinguish module verification, historical online evidence, student involvement and pending team/human acceptance.
+  evidence: Document links, trace targets, JSON, artifact hashes and secret exclusions checked separately. No application or executable test changed and no runtime model/provider request was made.
+  limitations:
+  - A report-ready module chapter is not the whole team's Report.md.
+  - Private reflection material remains AI-assisted and requires the student's own verification; no student ID, contribution ratio or historical approval is invented.
+  - The proposed review assessment is not a recorded human final verdict or a merge authorization.
+  review_status: Existing draft PR updated for teammate review; team integration and final course submission remain separate
