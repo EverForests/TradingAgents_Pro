@@ -191,3 +191,26 @@ entries:
   - No new runtime model or vendor call was made for this patch. Earlier online results remain attributed to their recorded revision; the prompt and model client are unchanged here.
   - Paired replay and independent review evidence are retained separately with exact candidate revisions. Formal human and joint C1/C4 acceptance remain separate.
   review_status: Operator-verified bounded repair proposed in the existing draft PR
+- id: AI-FR03-HARDENING-FOLLOWUP-009
+  date: '2026-11-17'
+  tool: OpenCode 2.3.0 school model; Codex review and execution
+  base_commit: b4c057c8c8f2f085fb746802b029439c545497bf
+  requirements:
+  - FR-03
+  scope: Narrow plain no-news marker recognition and source ticker equivalence using the existing pure symbol mapper; five appended positive cases
+  human_direction: Same user instruction to continue while improvement is worthwhile; Codex selected and reviewed the concrete follow-up under delegation. No individual student approval or execution is claimed.
+  session_reference: ses_e1f6630f2ffeopX5X1nTvOKFOG
+  review_disposition:
+  - Independent read-only OpenCode review of b4c057c was completed. Its suggestions were checked against actual code and tests rather than adopted as approval.
+  - Removing the body guard would restore a proven defect, so that suggestion was rejected. A narrower real issue was confirmed: the generic No-found regex rejected two substantive headlines.
+  - Existing node-approved raw/canonical symbol inputs were confirmed to be inconsistent with exact receipt comparisons. The actual cases were aapl/AAPL and BTCUSD/BTC-USD; the review's AAPL.US example was not assumed valid.
+  evidence:
+  - All five new positive cases failed on b4c057c before implementation: two genuine headlines, two ticker equivalents and one real lowercase-request node case.
+  - After the two bounded source changes, all 47 frozen boundary checks passed, with the original 42 assertions unchanged. The five new cases were append-only.
+  - Full combined offline verification passed 1533 tests and 100 subtests; 39 skipped and one integration case deselected. The 39 skips include 33 paired checks that require an explicit baseline checkout, not acceptance passes.
+  - Ruff, diff and YAML checks passed. Exact-revision paired replays and raw receipts are retained separately.
+  limitations:
+  - Run/outcome identity comparison remains exact. Only receipt/item ticker attribution uses the repository's existing canonical symbol mapping.
+  - No new runtime model or vendor requests were needed. Prompt/client behavior is unchanged; older school results keep their recorded revision.
+  - Real-provider quality, independently labeled semantic accuracy, investment backtests and joint C1/C4 acceptance remain separate work. No return/accuracy improvement is inferred from synthetic checks.
+  review_status: Bounded findings resolved with actual counterexamples and regressions; draft PR still requires formal review

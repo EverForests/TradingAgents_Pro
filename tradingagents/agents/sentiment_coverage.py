@@ -27,6 +27,7 @@ from datetime import UTC, date, datetime, timedelta
 from typing import Any
 
 from tradingagents.dataflows.source_receipt import ItemMeta, SourceReceipt, SourceText
+from tradingagents.dataflows.symbols import normalize_symbol
 
 CONTRACT_VERSION = "1.0"
 
@@ -80,7 +81,12 @@ _WINDOW_PLACEHOLDERS: tuple[re.Pattern, ...] = (
 )
 _EMPTY_PLACEHOLDERS: tuple[re.Pattern, ...] = (
     re.compile(r"^<no [^<>]*>$", re.IGNORECASE),
-    re.compile(r"^no [^<>]*found[^<>]*$", re.IGNORECASE),
+    # Yahoo's whole empty-result sentence only: a genuine headline that happens
+    # to begin "No ... found ..." is real content, not a placeholder.
+    re.compile(
+        r"^no news found for [^<>]+? between \d{4}-\d{2}-\d{2} and \d{4}-\d{2}-\d{2}\.?$",
+        re.IGNORECASE,
+    ),
 )
 
 _MEASURED_BANDS: tuple[str, ...] = (
@@ -248,6 +254,21 @@ def _evidence_ref(source_id: str, vendor: str, item: ItemMeta) -> str:
     return f"{source_id}/{vendor or 'unknown'}:{item.item_id}"
 
 
+def _same_ticker(reported: Any, run_ticker: str) -> bool:
+    """Whether a reported ticker is attributable to the run's ticker.
+
+    Both sides must be non-blank strings and must agree as the canonical symbols
+    the vendors use, so a raw ``aapl`` receipt binds to an ``AAPL`` run and
+    ``BTCUSD`` to ``BTC-USD``. Anything blank or unreadable never matches; the
+    run's own identity fields stay compared exactly elsewhere.
+    """
+    if not (isinstance(reported, str) and reported.strip()):
+        return False
+    if not (isinstance(run_ticker, str) and run_ticker.strip()):
+        return False
+    return normalize_symbol(reported) == normalize_symbol(run_ticker)
+
+
 def news_vendor(raw_result: Any) -> str:
     """The vendor that actually answered a news collection, or ``unknown``.
 
@@ -329,7 +350,7 @@ def normalize_source(raw_result: Any, source_id: str, run: Any,
             identity, source_id, receipt.window_start, receipt.window_end, reasons
         )
 
-    if receipt.ticker != identity.get("ticker", ""):
+    if not _same_ticker(receipt.ticker, identity.get("ticker", "")):
         reasons.add(TICKER_MISMATCH)
         return _unavailable_outcome(
             identity, source_id, receipt.window_start, receipt.window_end, reasons
@@ -365,7 +386,7 @@ def normalize_source(raw_result: Any, source_id: str, run: Any,
             # Only an explicit True is substantive: 1 and "false" are not.
             reasons.add(UNVERIFIABLE_METADATA)
             continue
-        if item.ticker is not None and item.ticker != ticker:
+        if item.ticker is not None and not _same_ticker(item.ticker, ticker):
             reasons.add(TICKER_MISMATCH)
             continue
         if item.published_at is None:

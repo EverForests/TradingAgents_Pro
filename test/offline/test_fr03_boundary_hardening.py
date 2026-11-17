@@ -342,3 +342,86 @@ def test_huge_numeric_score_from_plain_mapping_is_unknown(score):
     assert final["overall_score"] is None
     assert final["confidence"] == "low"
     assert "SCORE_INVALID" in final["assessment_reason_codes"]
+
+
+# ---------------------------------------------------------------------------
+# Genuine positive headlines that begin with "No ... found ..."
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("text", [
+    "No fraud found in AAPL audit; board clears management.",
+    "No material change found in AAPL monthly operating update.",
+])
+def test_genuine_headline_beginning_with_no_found_stays_available(text):
+    outcome = _normalize(_source(text=text))
+    assert outcome["available"] is True
+    assert outcome["valid_record_count"] == 1
+    assert outcome["reason_codes"] == []
+    assert outcome["evidence_refs"] == ["news/fixture_vendor:n1"]
+
+
+# ---------------------------------------------------------------------------
+# Raw vendor symbols are normalized to the run's canonical ticker
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(("raw", "canonical"), [("aapl", "AAPL"), ("BTCUSD", "BTC-USD")])
+def test_raw_vendor_symbol_binds_to_canonical_run_ticker(raw, canonical):
+    run = dict(RUN, ticker=canonical)
+    raw_source = _source(ticker=raw, items=(_item(ticker=raw),))
+    outcome = _normalize(raw_source, run=run)
+    coverage = _coverage([outcome], run=run)
+    assert coverage["valid_sources"] == 1
+    assert coverage["coverage_status"] == "PARTIAL_DATA"
+    assert outcome["ticker"] == canonical
+    assert coverage["ticker"] == canonical
+
+
+# ---------------------------------------------------------------------------
+# Actual node: raw lowercase ticker binds to the canonical run identity
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.unit
+def test_actual_node_with_raw_lowercase_ticker_measures_neutral():
+    from tradingagents.agents.analysts.sentiment_analyst import create_sentiment_analyst
+    from tradingagents.agents.schemas import SentimentBand, SentimentReport
+    from tradingagents.dataflows.source_receipt import SourceReceipt, SourceText
+
+    def empty(source_id):
+        return SourceText("<unavailable>", SourceReceipt(
+            source_id=source_id, vendor="fixture_vendor", ticker=TICKER,
+            window_start=WINDOW_START, window_end=WINDOW_END, items=(), reason_codes=()))
+
+    state = {"company_of_interest": "aapl", "trade_date": "2026-11-10",
+             "asset_type": "stock", "messages": [], "course_run": dict(RUN)}
+    structured = MagicMock()
+    structured.invoke.return_value = SentimentReport(
+        overall_band=SentimentBand.NEUTRAL, overall_score=5.0, confidence="low",
+        narrative="FIXED SYNTHETIC NARRATIVE: balanced fixture control.")
+    model = MagicMock()
+    model.with_structured_output.return_value = structured
+    with patch("tradingagents.agents.analysts.sentiment_analyst.get_news") as news, \
+            patch("tradingagents.agents.analysts.sentiment_analyst.fetch_stocktwits_messages",
+                  return_value=empty("stocktwits")), \
+            patch("tradingagents.agents.analysts.sentiment_analyst.fetch_reddit_posts",
+                  return_value=empty("reddit")), \
+            patch("tradingagents.agents.analysts.sentiment_analyst.jev_screen",
+                  return_value=None):
+        news.func.return_value = _source(
+            ticker="aapl", items=(_item(ticker="aapl"),))
+        out = create_sentiment_analyst(model)(state)
+
+    assert model.with_structured_output.call_count == 1
+    assert structured.invoke.call_count == 1
+    assert model.invoke.call_count == 0
+    assessment = out["sentiment_assessment"]
+    assert assessment["valid_sources"] == 1
+    assert assessment["coverage_status"] == "PARTIAL_DATA"
+    assert (assessment["assessment_status"], assessment["overall_band"],
+            assessment["overall_score"]) == ("MEASURED", "Neutral", 5.0)
+    assert assessment["ticker"] == TICKER
+    assert out.get("course_run", state["course_run"]) == RUN
