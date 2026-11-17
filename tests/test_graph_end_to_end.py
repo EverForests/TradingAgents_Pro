@@ -1,13 +1,14 @@
 """The whole graph, end to end, with scripted models and no network.
 
 Every tool-using analyst calls each of its tools once through the vendor router,
-the debates and managers run, and the decision is parsed and logged. This pins
+the debates and managers run, and only a verified decision is logged. This pins
 the wiring: a restructure that drops a node, a tool or an edge fails here.
 """
 
 from __future__ import annotations
 
 import copy
+import re
 import time
 
 import pandas as pd
@@ -66,7 +67,19 @@ class ScriptedModel(BaseChatModel):
     def with_structured_output(self, schema, **kwargs):
         if not self.structured:
             raise NotImplementedError
-        return RunnableLambda(lambda _: self._count() or STRUCTURED[schema])
+        return RunnableLambda(lambda prompt: self._structured_response(schema, prompt))
+
+    def _structured_response(self, schema, prompt):
+        self._count()
+        if schema is schemas.DebateArgument:
+            match = re.search(r"^- (ev:\S+)\s+\[", prompt, re.MULTILINE)
+            assert match is not None, "researcher prompt must expose the run's evidence"
+            return schemas.DebateArgument(argument="Evidence-backed thesis", evidence_ids=[match[1]])
+        if schema is schemas.PortfolioDecision:
+            match = re.search(r"^- (arg:\S+)", prompt, re.MULTILINE)
+            assert match is not None, "portfolio manager prompt must expose accepted arguments"
+            return STRUCTURED[schema].model_copy(update={"argument_ids": [match[1]]})
+        return STRUCTURED[schema]
 
     def _count(self) -> None:
         self.calls.append(1)
@@ -130,26 +143,36 @@ def _graph(tmp_path, monkeypatch, model, debug=False, **config):
 
 @pytest.mark.unit
 @pytest.mark.parametrize("structured", [False, True], ids=["free-text", "structured"])
-def test_a_full_run_reaches_a_logged_decision(tmp_path, monkeypatch, offline, structured):
+def test_a_full_run_logs_only_a_verified_decision(tmp_path, monkeypatch, offline, structured):
     graph = _graph(tmp_path, monkeypatch, ScriptedModel(structured=structured))
 
     state, signal = graph.propagate("NVDA", TRADE_DATE)
 
-    assert signal == state["final_rating"] == "Overweight"
     for key in ("market_report", "sentiment_report", "news_report", "fundamentals_report",
-                "investment_plan", "trader_investment_plan", "final_trade_decision"):
+                "investment_plan", "trader_investment_plan"):
         assert state[key].strip(), key
     tool_methods = {"get_stock_data", "get_indicators", "get_news", "get_global_news",
                     "get_macro_indicators", "get_prediction_markets", "get_fundamentals",
                     "get_balance_sheet", "get_cashflow", "get_income_statement",
                     "get_insider_transactions", "ohlcv"}
     assert offline == tool_methods
-    assert [e["rating"] for e in graph.memory_log.load_entries()] == ["Overweight"]
+    entries = graph.memory_log.load_entries()
+    if structured:
+        assert state["publication_status"] == "APPROVED"
+        assert signal == state["final_rating"] == "Overweight"
+        assert state["final_trade_decision"].strip()
+        assert [e["rating"] for e in entries] == ["Overweight"]
+    else:
+        assert state["publication_status"] == "BLOCKED"
+        assert state["publication_reason"] == "INSUFFICIENT_EVIDENCE"
+        assert signal == "REVIEW"
+        assert not state.get("final_rating") and not state.get("final_trade_decision")
+        assert entries == []
 
 
 @pytest.mark.unit
 def test_an_interrupted_run_resumes_from_its_checkpoint(tmp_path, monkeypatch, offline):
-    model = ScriptedModel(fail_at=12)            # past the analysts, before the decision
+    model = ScriptedModel(structured=True, fail_at=12)  # past the analysts, before the decision
     graph = _graph(tmp_path, monkeypatch, model, checkpoint_enabled=True)
     with pytest.raises(RuntimeError, match="provider unavailable"):
         graph.propagate("NVDA", TRADE_DATE)
@@ -159,7 +182,7 @@ def test_an_interrupted_run_resumes_from_its_checkpoint(tmp_path, monkeypatch, o
 
     assert signal == "Overweight"
     resumed_calls = len(model.calls) - calls_before
-    full_run = ScriptedModel()
+    full_run = ScriptedModel(structured=True)
     _graph(tmp_path / "fresh", monkeypatch, full_run).propagate("NVDA", TRADE_DATE)
     # The resumed run makes only the calls the interrupted one had not completed.
     assert resumed_calls == len(full_run.calls) - (model.fail_at - 1)
@@ -192,7 +215,7 @@ def test_the_analysts_run_at_the_same_time(tmp_path, monkeypatch, offline):
 @pytest.mark.unit
 def test_a_debug_run_prints_the_analysts_work_and_reaches_the_same_decision(tmp_path, monkeypatch, offline, capsys):
     """Debug mode streams the analysts' own graphs, so their tool calls still print."""
-    graph = _graph(tmp_path, monkeypatch, ScriptedModel(), debug=True)
+    graph = _graph(tmp_path, monkeypatch, ScriptedModel(structured=True), debug=True)
 
     state, signal = graph.propagate("NVDA", TRADE_DATE)
 
@@ -246,7 +269,8 @@ class LoopingModel(ScriptedModel):
             self.last_turns.append(messages)
             return super()._generate(messages, stop, run_manager, **kwargs)
         self.tool_turns.append(1)
-        tool = self.tools[0]
+        tool = next((tool for tool in self.tools if tool.name == "get_verified_market_snapshot"),
+                    self.tools[0])
         call = {"name": tool.name, "id": f"call_{len(self.tool_turns)}",
                 "args": {k: v for k, v in ARGS.items()
                          if k in tool.tool_call_schema.model_json_schema()["properties"]}}
@@ -337,7 +361,7 @@ def test_a_settlement_failure_is_noted_and_the_run_goes_on(tmp_path, monkeypatch
 
     graph = _graph(tmp_path, monkeypatch, ScriptedModel(structured=True))
 
-    def locked():
+    def locked(*, wait=True):
         raise OSError("memory log is locked")
 
     monkeypatch.setattr(graph, "settle_all_pending", locked)

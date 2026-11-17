@@ -17,12 +17,32 @@ def analyst_names(keys) -> list[str]:
     return ["sentiment" if key == "social" else key for key in keys or []]
 
 
+def _blocked(final_state: dict) -> bool:
+    """Whether this run's publication gate refused the candidate.
+
+    The authoritative answer is the gate's ``publication_result``. Without one,
+    the legacy flat field is read only to recognise a refusal; it is never used
+    to *approve* anything (``save_reports`` refuses a state with no result).
+    """
+    from tradingagents.graph.publication_gate import publication_result_from_state
+
+    result = publication_result_from_state(final_state)
+    if result is not None:
+        return not result.approved
+    return final_state.get("publication_status") == "BLOCKED"
+
+
 def _header(ticker: str, final_state: dict, settings: dict | None) -> str:
     """The report's title and what produced it: analysis date, version, models, analysts, vendors."""
     lines = [f"# Trading Analysis Report: {ticker}", ""]
     if final_state.get("trade_date"):
         lines.append(f"- Analysis date: {final_state['trade_date']}")
-    if final_state.get("final_trade_decision"):
+    if _blocked(final_state):
+        # FR-01: a blocked run carries no official rating to print.
+        lines.append(
+            f"- Publication: BLOCKED ({final_state.get('publication_reason') or 'BLOCKED'})"
+        )
+    elif final_state.get("final_trade_decision"):
         lines.append(f"- Rating: {run_rating(final_state)}")
     lines.append(f"- Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     if settings:
@@ -74,9 +94,17 @@ _SECTIONS = (
 
 
 def _report_parts(final_state: dict) -> list[tuple[str, str, list[tuple[str, str, str]]]]:
-    """The sections with something to say: (heading, folder, [(agent, file, text)])."""
+    """The sections with something to say: (heading, folder, [(agent, file, text)]).
+
+    FR-01: a BLOCKED run has no official decision, so its portfolio section is
+    omitted entirely: no ``5_portfolio/decision.md`` and no decision text in the
+    consolidated report. Every other section is the run's diagnostic material.
+    """
+    blocked = _blocked(final_state)
     parts = []
     for heading, folder, agents in _SECTIONS:
+        if blocked and folder == "5_portfolio":
+            continue
         written = []
         for agent, filename, path in agents:
             value = final_state

@@ -42,23 +42,26 @@ def test_write_report_tree_creates_files(tmp_path):
 
 
 @pytest.mark.unit
-def test_save_reports_explicit_path(tmp_path):
+def test_save_reports_explicit_path(tmp_path, publication_state):
     graph = SimpleNamespace(run_settings=lambda: SETTINGS)
-    out = TradingAgentsGraph.save_reports(graph, _state(), "AAPL", save_path=tmp_path)
+    state = {**_state(), **publication_state("AAPL", "2026-09-22", "Buy", "PM DECISION")}
+    out = TradingAgentsGraph.save_reports(graph, state, "AAPL", save_path=tmp_path)
     assert (tmp_path / "complete_report.md").exists()
     assert out == tmp_path / "complete_report.md"
 
 
 @pytest.mark.unit
 @pytest.mark.parametrize("empty_value", [None, ""])
-def test_save_reports_replaces_previous_run_sections(tmp_path, empty_value):
+def test_save_reports_replaces_previous_run_sections(tmp_path, empty_value, publication_state):
     graph = SimpleNamespace(run_settings=lambda: SETTINGS)
-    first = dict(_state(), trade_date="2026-09-22")
+    first = {**_state(), **publication_state("AAPL", "2026-09-22", "Buy", "PM DECISION"),
+             "trade_date": "2026-09-22"}
     TradingAgentsGraph.save_reports(graph, first, "AAPL", save_path=tmp_path)
     (tmp_path / "notes.md").write_text("User notes", encoding="utf-8")
     (tmp_path / "1_analysts" / "notes.md").write_text("Analyst notes", encoding="utf-8")
 
     second = {
+        **publication_state("AAPL", "2026-09-23", None, ""),
         "trade_date": "2026-09-23",
         "market_report": "NEW MARKET",
         "news_report": empty_value,
@@ -90,11 +93,12 @@ def test_empty_report_removes_previous_sections_and_disabled_html(tmp_path):
 
 
 @pytest.mark.unit
-def test_save_reports_defaults_under_results_dir(tmp_path):
+def test_save_reports_defaults_under_results_dir(tmp_path, publication_state):
     graph = object.__new__(TradingAgentsGraph)
     graph.config = {"results_dir": str(tmp_path)}
     graph.run_settings = lambda: SETTINGS
-    out = graph.save_reports(_state(), "AAPL")
+    state = {**_state(), **publication_state("AAPL", "2026-09-22", "Buy", "PM DECISION")}
+    out = graph.save_reports(state, "AAPL")
     assert out.exists()
     assert out.parent.parent.name == "reports"  # results_dir/reports/AAPL_<stamp>/...
     assert out.parent.name.startswith("AAPL_")
