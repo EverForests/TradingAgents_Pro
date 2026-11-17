@@ -36,11 +36,21 @@ def _render_layout(layout) -> str:
 
 
 def _fake_graph(chunks):
-    """A graph whose stream yields ``chunks``; ``publish`` runs the real gate."""
+    """A graph whose stream yields ``chunks``; ``publish`` runs the real gate.
+
+    The run finishes normally (``complete_run``), so the gate judges a COMPLETED
+    ``RunContext``; ``publish`` then calls the **real** v1 entry point
+    (``evaluate_publication``) and applies its result with ``apply_publication``,
+    exactly as production does. Nothing here reimplements the gate.
+    """
 
     class _Graph:
         publish_calls = 0
         publish_status = None
+
+        def __init__(self):
+            # Where the gate re-reads each record's retained material.
+            self.config = {}
 
         def create_run_state(self, *a, **k):
             return {"messages": []}
@@ -63,18 +73,34 @@ def _fake_graph(chunks):
         def end_checkpoint(self):
             pass
 
+        def complete_run(self, final_state):
+            """Mark a normally-finished run ``COMPLETED`` (C0), as production does."""
+            from tradingagents.graph.trading_graph import TradingAgentsGraph
+
+            return TradingAgentsGraph.complete_run(self, final_state)
+
         def publish(self, final_state):
-            from tradingagents.graph.publication_gate import apply, evaluate
+            from tradingagents.graph.publication_gate import (
+                apply_publication,
+                evaluate_publication,
+                publication_run,
+            )
 
             _Graph.publish_calls += 1
-            outcome = evaluate(
-                final_state.get("evidence_index"),
-                final_state.get("candidate_rating"),
-                final_state.get("candidate_argument_ids") or (),
+            run = publication_run(final_state)
+            result = evaluate_publication(
+                {
+                    "rating": final_state.get("candidate_rating"),
+                    "argument_ids": final_state.get("candidate_argument_ids") or (),
+                },
+                final_state.get("argument_index") or {},
+                final_state.get("evidence_index") or {},
+                run,
+                results_dir=self.config.get("results_dir"),
             )
-            apply(outcome, final_state)
-            _Graph.publish_status = outcome.status
-            return outcome.status
+            apply_publication(result, final_state)
+            _Graph.publish_status = result.publication_status
+            return result.publication_status
 
         def stream_run(self, *a, **k):
             for chunk in chunks:
@@ -129,13 +155,90 @@ def _wire(monkeypatch, tmp_path, fake, snapshots):
         "data_cache_dir": str(tmp_path / "c"),
         "results_dir": str(tmp_path / "r"),
     })
+    # The gate re-reads each record's retained material from this run's root.
+    fake.config = {"results_dir": str(tmp_path / "r")}
+
+
+def _approved_v1_indexes(results_dir) -> tuple[dict, dict]:
+    """The run's v1 evidence and argument indexes, with material the gate can re-read.
+
+    Evidence is **retained material**, not report prose: the file is written under
+    ``{results_dir}/{ticker}/{as_of_date}/evidence/{run_id}/`` so
+    ``evaluate_publication`` can read it back before approving. The argument lives
+    in the authoritative ``argument_index`` and carries the run's full identity.
+    """
+    from pathlib import Path
+
+    run_id = "run-a"
+    evidence_id = f"ev:{run_id}:market_snapshot:call-1"
+    argument_id = f"arg:bull:{run_id}:1"
+    identity = {
+        "contract_version": "1.0",
+        "run_id": run_id,
+        "ticker": "NVDA",
+        "as_of_date": "2026-01-10",
+    }
+    root = Path(results_dir) / "NVDA" / "2026-01-10" / "evidence" / run_id
+    root.mkdir(parents=True, exist_ok=True)
+    (root / "call-1.md").write_text("NVDA closed at 144.90 USD on 2026-01-05.\n", encoding="utf-8")
+
+    evidence_index = {
+        "run_id": run_id,
+        "evidence": {
+            evidence_id: {
+                **identity,
+                "evidence_id": evidence_id,
+                "source_kind": "market_snapshot",
+                # C1 v1.0 shared record: vendor, source locator and the request
+                # window are required fields, not optional context.
+                "vendor": "yahoo",
+                "source_ref": (
+                    "tool:get_verified_market_snapshot?tool_call_id=call-1"
+                    ";ticker=NVDA;effective_as_of=2026-01-10"
+                    ";curr_date=2026-01-10;look_back_days=7"
+                    ";window=2026-01-03..2026-01-10"
+                ),
+                "source": "market_snapshot",
+                "excerpt": "NVDA closed at 144.90 USD.",
+                "window_start": "2026-01-03",
+                "window_end": "2026-01-10",
+                "content_ref": f"evidence://{run_id}/call-1.md",
+            },
+        },
+    }
+    argument_index = {
+        argument_id: {
+            **identity,
+            "argument_id": argument_id,
+            "speaker": "Bull Analyst",
+            # The v1 spelling of the argument body.
+            "claim": "breakout text",
+            "evidence_ids": [evidence_id],
+        },
+    }
+    return evidence_index, argument_index
+
+
+def _course_run() -> dict:
+    """A complete C0 run context for the streamed run (COMPLETED once it finishes)."""
+    return {
+        "contract_version": "1.0",
+        "run_id": "run-a",
+        "ticker": "NVDA",
+        "as_of_date": "2026-01-10",
+        "execution_status": "RUNNING",
+        "request_limit": 40,
+    }
 
 
 def _risk_chunk(*, candidate_body, candidate_rating, candidate_argument_ids,
-                evidence_index=None):
+                evidence_index=None, argument_index=None, course_run=None):
     """One stream chunk: debate histories plus the PM candidate and its internals."""
     return {
         "messages": [],
+        "course_run": course_run if course_run is not None else _course_run(),
+        "company_of_interest": "NVDA",
+        "trade_date": "2026-01-10",
         "investment_debate_state": {
             "bull_history": "bull case", "bear_history": "bear case",
             "history": "", "current_response": "", "count": 2,
@@ -154,6 +257,7 @@ def _risk_chunk(*, candidate_body, candidate_rating, candidate_argument_ids,
         "candidate_rating": candidate_rating,
         "candidate_argument_ids": candidate_argument_ids,
         "evidence_index": evidence_index,
+        "argument_index": argument_index if argument_index is not None else {},
     }
 
 
@@ -195,24 +299,20 @@ def test_blocked_candidate_is_never_shown_and_only_blocked_renders(tmp_path, mon
 
 @pytest.mark.unit
 def test_approved_candidate_is_shown_only_in_the_final_report(tmp_path, monkeypatch):
-    """A legal candidate is held back during the stream and shown after approval."""
-    from tradingagents.graph.publication_gate import (
-        ArgumentRecord,
-        build_evidence_index,
-        index_to_state,
-    )
+    """A legal candidate is held back during the stream and shown after approval.
 
-    index = build_evidence_index("run-a", {"market_report": "breakout text"})
-    ev = index.evidence_ids[0]
-    # Simulate the researcher having accepted the argument before the PM turn.
-    index.accept(ArgumentRecord("arg:bull:run-a:1", "Bull Analyst", "x", (ev,)))
-    state_index = index_to_state(index)
+    The approval comes from the real v1 gate reaching a run whose evidence is
+    retained material it can read back, so the display-ordering assertion is
+    about a genuine APPROVED verdict.
+    """
+    evidence_index, argument_index = _approved_v1_indexes(tmp_path / "r")
 
     snapshots = []
     fake = _fake_graph([
         _risk_chunk(
             candidate_body=CANDIDATE_BODY, candidate_rating="Buy",
-            candidate_argument_ids=["arg:bull:run-a:1"], evidence_index=state_index,
+            candidate_argument_ids=["arg:bull:run-a:1"],
+            evidence_index=evidence_index, argument_index=argument_index,
         ),
     ])
     _wire(monkeypatch, tmp_path, fake, snapshots)

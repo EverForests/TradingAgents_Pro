@@ -29,8 +29,9 @@ from tradingagents.agents.schemas import DebateArgument, PortfolioDecision, Port
 
 REPORT = "The 50-day breakout and volume confirm the uptrend."
 
-# A line in the evidence menu looks like: "- ev:<run>:market_report  [market_report] <excerpt>"
+# A line in the evidence menu looks like: "- ev:<run>:market_snapshot:<call>  [market_snapshot] <excerpt>"
 _EVIDENCE_LINE = re.compile(r"^- (ev:\S+)\s+\[", re.MULTILINE)
+_SNAPSHOT_TOOL = "get_verified_market_snapshot"
 
 
 def _cited_evidence_from_prompt(prompt: str) -> list[str]:
@@ -39,8 +40,57 @@ def _cited_evidence_from_prompt(prompt: str) -> list[str]:
     return [match.group(1)] if match else []
 
 
+def _prompt_text(prompt) -> str:
+    """The flattened text a structured call is given (a string or a PromptValue)."""
+    to_messages = getattr(prompt, "to_messages", None)
+    if callable(to_messages):
+        prompt = to_messages()
+    elif isinstance(prompt, str):
+        return prompt
+    parts = []
+    for message in prompt:
+        if isinstance(message, str):
+            parts.append(message)
+            continue
+        content = getattr(message, "content", "")
+        parts.append(content if isinstance(content, str) else "")
+    return "\n".join(parts)
+
+
+def _pin_snapshot(monkeypatch):
+    """Serve a fixed OHLCV frame in place of the vendor download.
+
+    Only ``load_ohlcv`` is replaced; the real tool closure, rendering and
+    ``as_of`` clamp still run, so the tool call retains genuine snapshot text.
+    """
+    import pandas as pd
+
+    import tradingagents.dataflows.vendors.yahoo.snapshot as snapshot
+
+    frame = pd.DataFrame(
+        [
+            {"Date": d, "Open": o, "High": h, "Low": low, "Close": c, "Volume": v}
+            for d, o, h, low, c, v in (
+                ("2025-12-30", 138.10, 140.20, 137.05, 139.80, 51_200_000),
+                ("2025-12-31", 139.80, 142.40, 139.10, 141.95, 49_800_000),
+                ("2026-01-02", 141.95, 144.10, 141.20, 143.60, 52_500_000),
+                ("2026-01-05", 143.60, 145.30, 142.80, 144.90, 55_100_000),
+            )
+        ],
+        columns=["Date", "Open", "High", "Low", "Close", "Volume"],
+    )
+    monkeypatch.setattr(snapshot, "load_ohlcv", lambda *a, **k: frame.copy())
+
+
 class _EvidenceModel(BaseChatModel):
-    """Emits reports; structured calls read the evidence menu from the prompt."""
+    """Emits reports; the market analyst first calls the snapshot tool.
+
+    The Bull then reads the evidence menu out of the prompt it is actually given
+    and cites that id, so the test proves the prompt wiring and the retained
+    material read-back rather than an injected constant.
+    """
+
+    snapshot_calls: int = 0
 
     @property
     def _llm_type(self) -> str:
@@ -59,6 +109,21 @@ class _EvidenceModel(BaseChatModel):
     def _generate(self, messages, stop=None,
                   run_manager: CallbackManagerForLLMRun | None = None,
                   **kwargs) -> ChatResult:
+        text = _prompt_text(messages).lower()
+        # The market analyst's prompt opens "You are a trading assistant" and
+        # lists its tools. Its first turn is a real tool call, so the subgraph
+        # retains the snapshot and hands the receipt up to the parent graph.
+        is_analyst = "you are a trading assistant" in text or "ohlcv" in text
+        if is_analyst and self.snapshot_calls == 0:
+            self.snapshot_calls += 1
+            return ChatResult(generations=[ChatGeneration(message=AIMessage(
+                content="",
+                tool_calls=[{
+                    "name": _SNAPSHOT_TOOL,
+                    "args": {"curr_date": "2026-01-05", "look_back_days": 7},
+                    "id": "call-1",
+                }],
+            ))])
         return ChatResult(generations=[ChatGeneration(message=AIMessage(content=REPORT))])
 
 
@@ -67,7 +132,7 @@ class _StructuredArgument:
         # Cite the real run evidence id that appears in the prompt.
         return DebateArgument(
             argument="bull case",
-            evidence_ids=_cited_evidence_from_prompt(prompt),
+            evidence_ids=_cited_evidence_from_prompt(_prompt_text(prompt)),
         )
 
 
@@ -75,7 +140,8 @@ class _StructuredDecision:
     def invoke(self, prompt):
         # The PM must cite the accepted argument. The argument id is run-bound, so
         # read it from the 'Accepted arguments' block the PM is actually given.
-        match = re.search(r"^- (arg:\S+)", prompt, re.MULTILINE)
+        text = _prompt_text(prompt)
+        match = re.search(r"^- (arg:\S+)", text, re.MULTILINE)
         argument_ids = [match.group(1)] if match else []
         return PortfolioDecision(
             rating=PortfolioRating.BUY,
@@ -97,7 +163,9 @@ def _run(monkeypatch, tmp_path):
     import tradingagents.graph.trading_graph as tg
     from tradingagents.default_config import DEFAULT_CONFIG
 
-    monkeypatch.setattr(tg, "create_tier_client", lambda *a, **k: _FakeClient(_EvidenceModel()))
+    _pin_snapshot(monkeypatch)
+    model = _EvidenceModel()
+    monkeypatch.setattr(tg, "create_tier_client", lambda *a, **k: _FakeClient(model))
     monkeypatch.setattr(tg, "resolve_instrument_identity", lambda t: {
         "company_name": "NVIDIA Corporation", "sector": "Technology",
         "industry": "Semiconductors", "exchange": "NASDAQ", "quote_type": "EQUITY",
@@ -111,6 +179,10 @@ def _run(monkeypatch, tmp_path):
     })
     graph = tg.TradingAgentsGraph(selected_analysts=("market",), debug=False, config=config)
     final_state, signal = graph.propagate("NVDA", "2026-01-05")
+    assert model.snapshot_calls >= 1, (
+        "the market analyst never called the snapshot tool, so the run has no "
+        "retained material and cannot approve"
+    )
     return graph, final_state, signal
 
 
@@ -120,17 +192,58 @@ def test_valid_rating_with_resolvable_evidence_is_approved(monkeypatch, tmp_path
 
     assert final_state.get("publication_status") == "APPROVED", final_state.get("publication_reason")
     assert signal == "Buy"
-    assert final_state.get("publication_chain")  # resolves back to run material
+    chain = final_state.get("publication_chain") or []
+    assert chain, "expected the approved chain to resolve back to run material"
+
+    # The evidence the chain resolved is the retained snapshot, indexed as a
+    # v1 evidence_id -> record mapping with a readable content_ref.
+    evidence = (final_state.get("evidence_index") or {}).get("evidence") or {}
+    assert isinstance(evidence, dict) and evidence, (
+        f"the run must index retained evidence as a mapping: {type(evidence).__name__}"
+    )
+    snapshot_ids = {
+        eid for eid, record in evidence.items()
+        if (record.get("source_kind") or "") == "market_snapshot"
+    }
+    assert snapshot_ids, f"no snapshot evidence was indexed: {sorted(evidence)}"
+    assert any(link[1] in snapshot_ids for link in chain), (
+        f"the approved chain does not resolve through retained snapshot material: {chain}"
+    )
+    for eid in snapshot_ids:
+        content_ref = evidence[eid].get("content_ref") or ""
+        assert content_ref, f"indexed snapshot {eid} names no retained material"
+        from tradingagents.agents.evidence_collection import resolve_content_ref
+
+        assert resolve_content_ref(content_ref, graph.config["results_dir"], evidence[eid]), (
+            f"the indexed material does not resolve: {content_ref}"
+        )
     assert graph.memory_log.load_entries()  # an approved decision is recorded
 
 
 @pytest.mark.unit
 def test_argument_id_is_run_bound(monkeypatch, tmp_path):
-    """The accepted argument id embeds this run's id, so it cannot be reused cross-run."""
-    _, final_state, _ = _run(monkeypatch, tmp_path)
+    """The accepted argument belongs to this run: its record carries the full identity.
+
+    The ID's spelling is not the ownership check (C1 v1.0 reads ownership from the
+    record), so the assertion is on the record's identity matching this run — and
+    on that identity not matching any other run token.
+    """
+    graph, final_state, _ = _run(monkeypatch, tmp_path)
     chain = final_state.get("publication_chain") or []
     assert chain, "expected a resolved chain"
     argument_id = chain[0][0]
     assert argument_id.startswith("arg:bull:")
+
     run_id = final_state.get("run_id")
     assert run_id and run_id in argument_id
+
+    argument = (final_state.get("argument_index") or {}).get(argument_id)
+    assert isinstance(argument, dict), (
+        f"the accepted argument must live in the authoritative argument_index: "
+        f"{sorted(final_state.get('argument_index') or {})}"
+    )
+    assert argument.get("run_id") == run_id
+    assert argument.get("ticker") == "NVDA"
+    assert argument.get("as_of_date") == "2026-01-05"
+    assert argument.get("contract_version") == "1.0"
+    assert argument.get("run_id") != "some-other-run"

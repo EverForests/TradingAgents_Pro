@@ -247,8 +247,10 @@ def _run_details(final_state: dict, settings: dict | None) -> list[tuple[str, st
 
 def render_report(ticker: str, final_state: dict, settings: dict | None, parts) -> str:
     """The report page: title and rating, what produced the run, contents, sections."""
+    from tradingagents.reporting import _blocked
+
     md = _markdown()
-    blocked = final_state.get("publication_status") == "BLOCKED"
+    blocked = _blocked(final_state)
     if blocked:
         # FR-01: a blocked run has no official rating; show the status instead.
         rating = f"BLOCKED ({final_state.get('publication_reason') or 'BLOCKED'})"

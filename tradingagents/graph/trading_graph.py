@@ -280,10 +280,32 @@ class TradingAgentsGraph:
         Programmatic callers get the same on-disk reports the CLI produces. Pass
         an explicit ``save_path`` or let it default under ``results_dir``; the
         report is also written as one HTML page unless ``html`` is False.
+
+        FR-01 / INV-01: an official report is written only from the publication
+        gate's own ``publication_result``. A state that never passed the gate — no
+        result, or only a flat ``publication_status`` someone set — raises
+        ``PublicationRequiredError`` and writes nothing, so a candidate can never
+        be saved as an official decision. A real BLOCKED result still writes a
+        diagnostic report: the same tree without an official rating, without the
+        candidate body and without ``5_portfolio/decision.md``.
         """
+        from tradingagents.graph.publication_gate import (
+            PublicationRequiredError,
+            publication_result_from_state,
+        )
+
+        result = publication_result_from_state(final_state)
+        if result is None:
+            raise PublicationRequiredError(
+                "save_reports() needs the publication gate's publication_result; this "
+                "state has none (a flat publication_status is not a gate result), so no "
+                "official report was written"
+            )
         if save_path is None:
             save_path = self.default_report_path(ticker)
-        return write_report_tree(final_state, ticker, save_path, settings=self.run_settings(), html=html)
+        return write_report_tree(
+            final_state, ticker, save_path, settings=self.run_settings(), html=html,
+        )
 
     def default_report_path(self, ticker) -> Path:
         """Where a run's reports go unless told otherwise: under results_dir, stamped now."""
@@ -365,10 +387,14 @@ class TradingAgentsGraph:
         omits the candidate body.
         """
         self._log_state(trade_date, final_state)
-        if final_state.get("publication_status") == "BLOCKED":
+        from tradingagents.graph.publication_gate import publication_result_from_state
+
+        result = publication_result_from_state(final_state)
+        if result is None or not result.approved:
             logger.warning(
                 "Publication blocked for %s on %s (%s); nothing added to the memory log",
-                company_name, trade_date, final_state.get("publication_reason"),
+                company_name, trade_date,
+                result.reason if result is not None else "no gate result",
             )
             return
         decision = final_state.get("final_trade_decision")
@@ -408,6 +434,11 @@ class TradingAgentsGraph:
         else:
             final_state = self.graph.invoke(graph_input, **args)
 
+        # The graph returned normally, so the run finished: only now does its
+        # execution state become COMPLETED. A run that raised above never reaches
+        # this line and stays RUNNING, which the gate refuses as RUN_NOT_COMPLETE.
+        self.complete_run(final_state)
+
         self.publish(final_state)
 
         self.record_decision(company_name, trade_date, final_state)
@@ -417,40 +448,77 @@ class TradingAgentsGraph:
 
         return final_state, run_rating(final_state)
 
+    def complete_run(self, final_state: dict) -> dict:
+        """Mark a run that finished normally as ``COMPLETED`` (C0).
+
+        The only place a run becomes ``COMPLETED``: ``_run_graph`` and the CLI
+        call it after the graph returns normally, right before the gate judges the
+        candidate. A terminal C0 failure already recorded — ``BUDGET_EXHAUSTED``,
+        ``CONTEXT_TOO_LARGE`` or ``FAILED`` — keeps its own code and is never
+        overwritten, and a state with no ``course_run`` stays without one, so the
+        gate refuses it.
+        """
+        if not isinstance(final_state, dict):
+            return final_state
+        terminal = ("BUDGET_EXHAUSTED", "CONTEXT_TOO_LARGE", "FAILED")
+        current = final_state.get("execution_status")
+        if current in terminal:
+            return final_state
+        course_run = final_state.get("course_run")
+        # A RunContext that already records a terminal failure is not upgraded
+        # either, even when the flat field was not set.
+        if isinstance(course_run, dict) and course_run.get("execution_status") in terminal:
+            return final_state
+        final_state["execution_status"] = "COMPLETED"
+        if isinstance(course_run, dict):
+            final_state["course_run"] = {**course_run, "execution_status": "COMPLETED"}
+        return final_state
+
     def publish(self, final_state: dict) -> str:
         """FR-01 / INV-01: decide whether this run's candidate may publish.
 
         Single deterministic gate, called once per run before any sink reads it
         (CLI display, API return, report save, memory write). Verifies the chain
-        recommendation -> accepted argument -> this run's material using the
-        evidence index the graph already built; it never re-builds the index or
-        accepts new arguments. Writes the outcome onto ``final_state`` and returns
-        the publication status.
+        recommendation -> accepted argument -> this run's retained material using
+        the authoritative ID->record mappings (``argument_index`` /
+        ``evidence_index``) and the run's ``course_run``; it never re-builds the
+        index or accepts new arguments. A run the gate judges must have finished
+        normally (``complete_run``); one still running, or with no ``RunContext``,
+        is refused as ``RUN_NOT_COMPLETE``. Writes one ``publication_result`` onto
+        ``final_state`` and returns the publication status.
 
         The Portfolio Manager writes only internal candidate fields; on refusal
-        ``apply`` removes the candidate body and sets no official rating, so no
-        official field carries it.
+        the candidate body and rating are removed and no official rating is set,
+        so no official field carries them.
         """
-        # FR-01 / INV-01: read the Portfolio Manager's *candidate* (internal
-        # fields only), not any official field. The gate's apply() is the sole
-        # writer of the official rating/body.
         from tradingagents.graph.publication_gate import (
-            apply,
-            build_evidence_index,
-            evaluate,
+            apply_publication,
+            evaluate_publication,
+            publication_run,
         )
 
-        index = final_state.get("evidence_index")
-        if index is None:
-            # No index means nothing can be verified; fall back to an empty one.
-            index = build_evidence_index("no-index", final_state)
-        outcome = evaluate(
-            index,
-            final_state.get("candidate_rating"),
-            final_state.get("candidate_argument_ids") or (),
+        run = publication_run(final_state)
+        # A terminal C0 failure recorded on the state outranks the RunContext.
+        if final_state.get("execution_status") and final_state.get("execution_status") != run.get("execution_status"):
+            run = {**run, "execution_status": final_state["execution_status"]}
+        evidence_index = final_state.get("evidence_index") or {}
+        # The authoritative ID -> record mapping the researchers wrote. A state
+        # with none has no accepted argument, so nothing can resolve.
+        argument_index = final_state.get("argument_index") or {}
+        result = evaluate_publication(
+            {
+                "rating": final_state.get("candidate_rating"),
+                "argument_ids": final_state.get("candidate_argument_ids") or (),
+            },
+            argument_index,
+            evidence_index,
+            run,
+            # The gate re-reads each record's retained material from this run's
+            # retention root, so an expired or deleted reference cannot publish.
+            results_dir=self.config.get("results_dir"),
         )
-        apply(outcome, final_state)
-        return outcome.status
+        apply_publication(result, final_state)
+        return result.publication_status
 
     def stream_run(self, graph_input, **args):
         """Stream a run as ``(messages, state)`` pairs.
