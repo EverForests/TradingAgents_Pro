@@ -2,6 +2,8 @@
 
 规范版本：1.0。状态：Proposed，待团队评审。需求状态与批准记录以[D1需求登记](req/requirements.yaml)和[PR评审记录](review-memo.md)为准。
 
+FR-03 已有实测模块候选与[完整交接入口](fr03.md)，验证版本与范围见[脱敏证据](fr03-evidence.json)。这不替代规格批准或其他模块的状态。
+
 ## 项目范围
 
 TradingAgents Pro基于TradingAgents单股分析流程，增加以下能力：
@@ -46,3 +48,7 @@ OpenCode使用Plan、Build、Verify角色；权限检查和执行边界见[权�
 AI使用情况记录在[AI-use日志](ai-use-log.yaml)，问题与待办记录在[评审记录](review-memo.md)、[技术债](debt-register.md)和[Bug记录](bug-diary.md)。测试结果须关联版本、输入、配置及实际输出。凭据、学号和原始会话不进入公开仓库。
 
 应用开发保留上游包结构；最终交付包按课程`src/`、`test/`要求核对源码和测试映射。报告、视频和集成结果使用同一最终版本。
+
+## FR-03 implemented module handoff
+
+[FR-03 feature, report section and reproduction](fr03.md) is the current module entry; [sanitized evidence](fr03-evidence.json) contains recorded versions/results. FR-03 has a passing module candidate in [PR #6](https://github.com/EverForests/TradingAgents_Pro/pull/6); other requirements and formal specification approvals keep their recorded status. Private D5 exports and reflection material are assembled separately for the course submission, not committed here. The root Report.md and other members' transcripts remain the team's responsibility.

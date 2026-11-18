@@ -173,3 +173,6 @@ class AgentState(MessagesState):
         merge_verified_metrics,
     ]
     portfolio_verified_metrics: Annotated[list, "The Portfolio Manager's structured list of verified metrics: metric_id, result_value, result_unit"]
+    sentiment_assessment: Annotated[
+        dict | None, "Authoritative sentiment record: coverage, band, score, confidence, narrative"
+    ]

@@ -13,3 +13,7 @@ Proposed owner paths and evidence. Case IDs are defined in [verification constra
 | INV-02 | C4 atomic run-local budget and actual fake transport boundary | T-INV02-RACE, T-NFR01-BOUNDARY | actual outgoing requests above limit must be zero; refuse dispatch and publication |
 
 Paths above are relative to `tradingagents/` except CLI adapters. Exact test filenames and shared adapter edits are frozen in each approved task plan. Requirement owners supply evidence for their feature; the integrator supplies a new receipt for combined components, not a copy of individual PR results.
+
+## Implemented FR-03 evidence — 2026-11-17
+
+The FR-03 row above now has an implemented mapping and recorded results in [the module handoff](../fr03.md#requirement-to-implementation-to-evidence-map) and [derived evidence](../fr03-evidence.json): COVERAGE / INVALID / NEUTRAL / PROPAGATION / SCORE all have concrete tests. Tested application b2816ec: 1533 regression passes, 100 subtests, 47 boundary controls and a separate configured 33-assertion paired replay. This is not evidence for other requirements, final publication/dispatch invariants or real-provider quality. The other proposed rows retain their owners' review states.

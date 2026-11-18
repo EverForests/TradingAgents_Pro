@@ -16,6 +16,7 @@ raising, so callers never special-case missing data.
 
 from __future__ import annotations
 
+import hashlib
 import html
 import http.client
 import logging
@@ -30,6 +31,7 @@ from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
 from tradingagents.dataflows.date_window import coverage_gap, in_window
+from tradingagents.dataflows.source_receipt import ItemMeta, SourceReceipt, SourceText
 from tradingagents.dataflows.symbols import crypto_base
 
 logger = logging.getLogger(__name__)
@@ -245,6 +247,59 @@ def _fetch_subreddit_rss(
     return posts
 
 
+def _mentions_ticker(text: str, ticker: str) -> bool:
+    """Whether ``text`` names ``ticker`` exactly as a token or cashtag.
+
+    The search is fuzzy, so matching is token-bounded: ``AAPL`` is mentioned by
+    "AAPL", "AAPL's" or "$AAPL", never by "XAAPLY".
+    """
+    core = ticker.strip().upper()
+    if not core:
+        return False
+    pattern = r"(?<![A-Z0-9])\$?" + re.escape(core) + r"(?![A-Z0-9])"
+    return re.search(pattern, text.upper(), flags=re.ASCII) is not None
+
+
+def _post_meta(post: dict, ticker: str, subreddit: str | None) -> ItemMeta:
+    """Metadata for one rendered post: full-precision time, subreddit, no body."""
+    title = (post.get("title") or "").strip()
+    body = (post.get("selftext") or "").strip()
+    created = post.get("created_utc")
+    published = datetime.fromtimestamp(created, tz=UTC) if created else None
+    sub = post.get("subreddit") or subreddit or ""
+    digest = hashlib.sha1(f"{sub}|{title}|{created}".encode()).hexdigest()[:16]
+    return ItemMeta(
+        item_id=f"rd:{sub}:{digest}",
+        published_at=published,
+        ticker=ticker,
+        substantive=bool(title or body),
+    )
+
+
+def _post_attributed(post: dict, ticker: str) -> bool:
+    """Whether the post itself names ``ticker`` (query match alone is not proof)."""
+    return _mentions_ticker(
+        f"{post.get('title') or ''}\n{post.get('selftext') or ''}", ticker
+    )
+
+
+def _reddit_source_text(text: str, posts: list[dict], ticker: str, subreddits,
+                        start_date: str | None, end_date: str | None,
+                        reasons: tuple[str, ...] = ()) -> str:
+    """The rendered text as a ``SourceText`` with a receipt for the shown posts."""
+    single_sub = subreddits[0] if len(subreddits) == 1 else None
+    receipt = SourceReceipt(
+        source_id="reddit",
+        vendor="reddit",
+        ticker=ticker,
+        window_start=start_date or "",
+        window_end=end_date or "",
+        items=tuple(_post_meta(p, ticker, single_sub) for p in posts),
+        reason_codes=reasons,
+    )
+    return SourceText(text, receipt)
+
+
 def fetch_reddit_posts(
     ticker: str,
     subreddits: Iterable[str] | None = None,
@@ -254,6 +309,7 @@ def fetch_reddit_posts(
     start_date: str | None = None,
     end_date: str | None = None,
     screen=None,
+    _with_receipt: bool = False,
 ) -> str:
     """Fetch recent Reddit posts mentioning ``ticker`` across finance
     subreddits (by default ``subreddits_for(ticker)``) and return them as a
@@ -273,13 +329,27 @@ def fetch_reddit_posts(
     per-subreddit cut, so the posts it keeps fill the slots.
     """
     subreddits = list(subreddits or subreddits_for(ticker))
+    # The receipt and its items name the ticker the caller requested, normalized
+    # but never the search form: BTC-USD stays BTC-USD.
+    requested_ticker = ticker.strip().upper()
     # Crypto reaches us as a Yahoo pair (BTC-USD); search Reddit for the base
     # ("BTC") so the query actually matches discussion instead of near-nothing.
     ticker = crypto_base(ticker) or ticker
     label = ", ".join(f"r/{s}" for s in subreddits)
+
+    def out(text: str, posts: list[dict], reasons: tuple[str, ...] = ()) -> str:
+        if not _with_receipt:
+            return text
+        return _reddit_source_text(
+            text, posts, requested_ticker, subreddits, start_date, end_date, reasons
+        )
+
     fetched = _fetch_subreddit_rss(ticker, "+".join(subreddits), _FEED_PAGE, timeout)
     if fetched is None:
-        return f"<Reddit unavailable: fetch failed ({label}); this is not an absence of discussion>"
+        return out(
+            f"<Reddit unavailable: fetch failed ({label}); this is not an absence of discussion>",
+            [], ("FETCH_ERROR",),
+        )
 
     window = bool(start_date and end_date)
     posts = _within_window(fetched, start_date, end_date)
@@ -289,17 +359,35 @@ def fetch_reddit_posts(
             "Reddit search", f"discussion of {ticker.upper()}",
         )
         period = f"within {start_date}..{end_date}" if window else "in the past 7 days"
-        return gap or f"<no Reddit posts found mentioning {ticker.upper()} across {label} {period}>"
+        return out(
+            gap or f"<no Reddit posts found mentioning {ticker.upper()} across {label} {period}>",
+            [], ("OUT_OF_WINDOW" if fetched else "EMPTY",),
+        )
 
     def sub_of(p):
         return p.get("subreddit") or (subreddits[0] if len(subreddits) == 1 else "unknown")
 
-    note, screened_out = "", set()
+    note, screened_out, all_screened_out = "", set(), False
     if screen:
+        before_screening = posts
         keep, note = screen([f"{p.get('title') or ''}\n{p.get('selftext') or ''}"[:_SCREEN_CHARS]
                              for p in posts])
         screened_out = {sub_of(p).lower() for p, kept in zip(posts, keep, strict=True) if not kept}
         posts = [p for p, kept in zip(posts, keep, strict=True) if kept]
+        all_screened_out = bool(before_screening) and not posts
+
+    # The query is fuzzy: a post counts only if it names the ticker itself. Do
+    # this before the per-subreddit cut so unrelated newest posts cannot crowd
+    # out valid ones. The legacy text keeps its existing query-only rendering.
+    attributed = [p for p in posts if _post_attributed(p, ticker)]
+    dropped_unattributed = len(posts) > len(attributed)
+    if _with_receipt:
+        if not attributed:
+            return out(
+                f"<no Reddit posts found mentioning {requested_ticker} across {label}>",
+                [], ("EMPTY" if all_screened_out else "TICKER_MISMATCH",),
+            )
+        posts = attributed
 
     # Group by the subreddit each entry names, in the requested order. Nothing
     # is dropped: an unlabelled post from a one-subreddit request belongs to it,
@@ -310,10 +398,15 @@ def fetch_reddit_posts(
 
     page_full = len(fetched) >= _FEED_PAGE
     blocks = []
+    shown: list[dict] = []
     for sub, sub_posts in by_sub.values():
         if not sub_posts:
             if sub.lower() in screened_out:
                 blocks.append(f"r/{sub}: <no posts about {ticker.upper()} after screening>")
+            elif _with_receipt:
+                # The opt-in block describes only the posts it shows, so the
+                # placeholder names the requested ticker, like its receipt.
+                blocks.append(f"r/{sub}: <no posts found mentioning {requested_ticker}>")
             else:
                 blocks.append(
                     f"r/{sub}: <not among the newest {_FEED_PAGE} matches across {label}>"
@@ -321,6 +414,10 @@ def fetch_reddit_posts(
                 )
             continue
         sub_posts = sub_posts[:limit_per_sub]  # the feed is newest-first
+        if _with_receipt and not sub_posts:
+            blocks.append(f"r/{sub}: <no posts found mentioning {requested_ticker}>")
+            continue
+        shown.extend(sub_posts)
         lines = [f"r/{sub} — {len(sub_posts)} recent posts mentioning {ticker.upper()}:"]
         for p in sub_posts:
             title = (p.get("title") or "").replace("\n", " ").strip()
@@ -334,4 +431,11 @@ def fetch_reddit_posts(
                 + (f"\n    body excerpt: {selftext}" if selftext else "")
             )
         blocks.append("\n".join(lines))
+    if _with_receipt:
+        reasons = ("TICKER_MISMATCH",) if dropped_unattributed else ()
+        return out(
+            "\n\n".join(([note] if note else []) + blocks),
+            shown,
+            reasons,
+        )
     return "\n\n".join(([note] if note else []) + blocks)

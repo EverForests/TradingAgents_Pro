@@ -83,6 +83,7 @@ class Propagator:
             # ``_run_context`` records it verbatim (and its own guard still
             # refuses a non-positive or non-integer setting).
             "request_limit": limit,
+            "sentiment_assessment": None,
             "investment_debate_state": InvestDebateState(
                 {
                     "bull_history": "",
