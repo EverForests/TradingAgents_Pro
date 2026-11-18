@@ -225,3 +225,6 @@ The dependency now resolves to `0.6.13`, preserving the approved sample
 standard-deviation calculation. The default suite in the fresh environment
 then ran with 1779 passed, 34 skipped (the 33 paired cases and optional
 Bedrock), 1 deselected and 100 passing subtests.
+
+
+**18 November 2026 — Yahoo online follow-up.** Keep two findings separate in acceptance review. The coordinator observed HTTP 429 from Yahoo; the later three-company tool checks observed none. In the latter checks an MSFT snapshot failed locally during concurrent cold-cache initialization. The unmodified upstream ToolNode reproduced the same lock in 4/100 trials with the tested dependencies, so a student feature or merge is not required to trigger it. The full NVDA run recorded only the exception class; its final state was `COMPLETED / BLOCKED`, not a published recommendation. Positive live publication remains open. [Live acceptance evidence and controls](live-acceptance.md)
