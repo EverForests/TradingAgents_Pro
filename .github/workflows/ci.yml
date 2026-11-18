@@ -27,7 +27,6 @@ jobs:
     env:
       TZ: ${{ matrix.tz }}
       NO_PROXY: 127.0.0.1,localhost
-      no_proxy: 127.0.0.1,localhost
       LANGSMITH_TRACING: 'false'
     steps:
       - uses: actions/checkout@v7
@@ -39,7 +38,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e ".[dev]"
       - name: Run test suite
-        run: pytest -q tests test/offline
+        run: |
+          export no_proxy="$NO_PROXY"
+          pytest -q tests test/offline
 
   course-artifacts:
     name: course schema, references and AI-use evidence
