@@ -55,7 +55,10 @@ def check_ai_log(base: str | None) -> None:
     if any(name.startswith(("tradingagents/", "cli/", "src/", "prompts/")) for name in changed):
         if log not in changed:
             raise ValueError("Application and runtime prompt changes require an AI-use record")
-        previous = entries(git("show", f"{common}:{log}"))
+        # The first course PR adds this log to the upstream-based main branch.
+        previous = entries(git("show", f"{common}:{log}")) if git(
+            "ls-tree", "--name-only", common, "--", log
+        ).strip() else {}
         new_records = [record for key, record in current.items() if key not in previous]
         if not any(
             all(isinstance(record.get(key), str) and record[key].strip() for key in ("tool", "scope"))
