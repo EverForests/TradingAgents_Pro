@@ -9,6 +9,11 @@ refused candidate never reaches the memory log, CLI display or saved reports.
 When a provider does not expose structured output, the agent falls back to
 free-text generation and the rating is read from that text — but with no
 argument ids, so the gate blocks it.
+
+Both decision paths meet before the node returns. There the run's verified
+metrics are re-read by ID with ``resolve_metric`` and passed on as
+``portfolio_verified_metrics``; the model's text is never a source of numbers
+and no extra request is made.
 """
 
 from __future__ import annotations
@@ -21,6 +26,34 @@ from tradingagents.agents.context import (
 from tradingagents.agents.rating import parse_rating
 from tradingagents.agents.schemas import PortfolioDecision, render_pm_decision
 from tradingagents.agents.structured import NO_EXTERNAL_TOOLS, bind_structured, invoke_structured
+from tradingagents.agents.verified_metrics import resolve_metric
+
+
+def _resolved_metrics(state) -> list:
+    """This run's verified metrics, re-read by ID, as {metric_id, result_value, result_unit}.
+
+    A missing, null or wrong-typed course_run or registry yields an empty list,
+    as does a registry whose records resolve to nothing (empty table, a prior
+    run's IDs, or an unknown ID). Order follows the registry's own key order
+    and is the same on both decision paths. The passed state is only read.
+    """
+    run = state.get("course_run") if isinstance(state, dict) else None
+    registry = state.get("verified_metrics") if isinstance(state, dict) else None
+    if not isinstance(run, dict) or not isinstance(registry, dict) or not registry:
+        return []
+    resolved = []
+    for metric_id in registry:
+        record = resolve_metric(metric_id, registry, run)
+        if not isinstance(record, dict):
+            continue
+        if record.get("metric_id") != metric_id:
+            continue
+        resolved.append({
+            "metric_id": metric_id,
+            "result_value": record.get("result_value"),
+            "result_unit": record.get("result_unit"),
+        })
+    return resolved
 
 
 def create_portfolio_manager(llm):
@@ -105,6 +138,9 @@ Write these sections, in this order, starting with the rating on its own line:
             candidate_rating = parse_rating(candidate_body)
             argument_ids = []
 
+        # Both paths meet here: re-read this run's verified metrics by ID.
+        portfolio_verified_metrics = _resolved_metrics(state)
+
         new_risk_debate_state = {
             "history": risk_debate_state["history"],
             "aggressive_history": risk_debate_state["aggressive_history"],
@@ -125,6 +161,7 @@ Write these sections, in this order, starting with the rating on its own line:
             "candidate_decision": candidate_body,
             "candidate_rating": candidate_rating,
             "candidate_argument_ids": argument_ids,
+            "portfolio_verified_metrics": portfolio_verified_metrics,
         }
 
     return portfolio_manager_node

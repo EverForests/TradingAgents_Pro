@@ -6,15 +6,18 @@ from tradingagents.agents.context import (
 )
 from tradingagents.agents.schemas import DebateArgument
 from tradingagents.agents.structured import bind_structured, invoke_structured
-from tradingagents.graph.publication_gate import (
-    accepted_arguments_view,
-    evidence_menu,
-    run_as_of_date,
-    validate_argument,
-)
 
 
 def create_bull_researcher(llm):
+    # Imported here: ``publication_gate`` imports this package, so a module-level
+    # import of it here would be circular.
+    from tradingagents.graph.publication_gate import (
+        accepted_arguments_view,
+        evidence_menu,
+        run_as_of_date,
+        validate_argument,
+    )
+
     structured_llm = bind_structured(llm, DebateArgument, "Bull Researcher")
 
     def bull_node(state) -> dict:

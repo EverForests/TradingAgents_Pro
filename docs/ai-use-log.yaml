@@ -82,3 +82,15 @@ entries:
   - Separate reviewer-provided annual data from independently inspected market-tool evidence
   evidence: Decimal recomputation, registry/schema/reference checks and preserved shared record signatures; receipts retained separately. No live calls or feature acceptance claimed.
   review_status: Pending review of this clarification; no feature plan/test approval recorded
+
+- id: AI-FR02-IMPLEMENTATION-006
+  date: "2026-11-17"
+  tool: "OpenCode 2.3.0 course-plan/build/verify; Codex delegated orchestration and independent local review"
+  scope: "FR-02 financial metrics, signed price gaps, approved shared hooks, offline tests; two human-maintained permission files"
+  base_commit: "5f40d2109ebe981123ff5a116308851e34e8dad5"
+  requirements: ["FR-02"]
+  human_direction: "Liu Huansong approved FR02-PLAN-01 on 2026-11-16 at 17:00 as relayed by the owner; supplement 01 / FR02-FIX-02 confirmed, exact reply time unavailable. Owner approved actual writes and ran terminal Git/tests. Delegated rejection applied only within prior authorization."
+  session_reference: "ses_e1ca4c953ffedfymOFTCf33fiZ; same session switched from build to verify, not an independent new session; full raw transcript retained privately"
+  evidence: "Human terminal regression: .venv/bin/python -m pytest -q --tb=short tests test/offline -m 'not integration'; exit 0; 1460 passed, 1 skipped, 1 deselected, 24 warnings, 100 subtests passed in 8.48s. Ruff --no-cache: exit 0. Earlier overlapping runs: FR02 48 passed; offline 48 passed; combined 1460 passed, 1 skipped (langchain_aws missing), 1 deselected, 24 warnings, 100 subtests. No remote CI, live acceptance or integrated-team result claimed."
+  review_status: "AI read-only review completed with evidence corrections; final peer review by Liu Huansong pending"
+  limitations: ["Frozen real-company cases embed approved operands; not historical tool-to-report reruns.", "NVDA retains SEC cache and report but lacks that run tool reply; old AAPL quote USD is the group fixture convention.", "No secrets, private transcript or complete configuration dump is included."]

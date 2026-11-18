@@ -4,12 +4,18 @@ Writes a run's per-section markdown (analysts, research, trading, risk,
 portfolio) plus a consolidated ``complete_report.md`` under ``save_path``. The
 CLI and ``TradingAgentsGraph.save_reports`` both call this, so a headless / API
 run produces the same on-disk report tree a CLI run does.
+
+``complete_report.md`` also carries a ``## Verified Metrics`` section between
+the header and the model-written body: one row per metric this run's registry
+still vouches for, taken from the registry rather than from any list's own
+numbers.
 """
 
 from datetime import datetime
 from pathlib import Path
 
 from tradingagents.agents.rating import run_rating
+from tradingagents.agents.verified_metrics import resolve_metric
 
 
 def analyst_names(keys) -> list[str]:
@@ -117,6 +123,55 @@ def _report_parts(final_state: dict) -> list[tuple[str, str, list[tuple[str, str
     return parts
 
 
+def _verified_metrics_section(final_state: dict, ticker: str) -> str:
+    """The ``## Verified Metrics`` section, or "" when nothing trustworthy is present.
+
+    Candidates come from the Portfolio Manager's own list, but a row is written
+    only for an ID this run's ``verified_metrics`` registry resolves back to, so
+    a missing, altered or prior-run record is skipped. Values and units are the
+    resolved record's, never the list's self-declared numbers, and an ID repeats
+    at most once. The section is omitted when the list or trustworthy rows are
+    absent, or when the report's ticker or analysis date disagrees with the run.
+    """
+    listed = final_state.get("portfolio_verified_metrics")
+    run = final_state.get("course_run")
+    registry = final_state.get("verified_metrics")
+    if not isinstance(listed, list) or not listed:
+        return ""
+    if not isinstance(run, dict) or not isinstance(registry, dict) or not registry:
+        return ""
+    if str(run.get("ticker") or "").strip().upper() != str(ticker or "").strip().upper():
+        return ""
+    if str(run.get("as_of_date") or "") != str(final_state.get("trade_date") or ""):
+        return ""
+
+    rows = []
+    seen = set()
+    for entry in listed:
+        if not isinstance(entry, dict):
+            continue
+        metric_id = entry.get("metric_id")
+        # A usable candidate is a nonempty, non-blank string; anything else
+        # (a list, a dict, a number) is skipped before de-duplication, which
+        # would otherwise raise on an unhashable ID and lose the whole report.
+        if not isinstance(metric_id, str) or not metric_id.strip():
+            continue
+        if metric_id in seen:
+            continue
+        record = resolve_metric(metric_id, registry, run)
+        if not isinstance(record, dict) or record.get("metric_id") != metric_id:
+            continue
+        seen.add(metric_id)
+        rows.append((metric_id, record.get("result_value"), record.get("result_unit")))
+    if not rows:
+        return ""
+
+    lines = ["## Verified Metrics", "", "| metric_id | value | unit |", "| --- | --- | --- |"]
+    for metric_id, value, unit in rows:
+        lines.append(f"| {metric_id} | {value} | {unit} |")
+    return "\n".join(lines) + "\n\n"
+
+
 def write_report_tree(final_state: dict, ticker: str, save_path, settings: dict | None = None,
                       html: bool = True) -> Path:
     """Save a completed run's reports to ``save_path``; return the complete-report path.
@@ -138,8 +193,10 @@ def write_report_tree(final_state: dict, ticker: str, save_path, settings: dict 
         content = "\n\n".join(f"### {agent}\n{text}" for agent, _filename, text in written)
         sections.append(f"## {heading}\n\n{content}")
 
+    verified = _verified_metrics_section(final_state, ticker)
     (save_path / "complete_report.md").write_text(
-        _header(ticker, final_state, settings) + "\n\n".join(sections), encoding="utf-8"
+        _header(ticker, final_state, settings) + verified + "\n\n".join(sections),
+        encoding="utf-8",
     )
     if html:
         from tradingagents.report_html import render_report

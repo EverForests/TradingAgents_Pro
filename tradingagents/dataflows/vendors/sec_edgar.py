@@ -155,14 +155,31 @@ def _as_of(facts: dict, tags: tuple[str, ...], as_of_date: str, spans: tuple[tup
            forms: tuple[str, ...] = ()) -> tuple[dict, str]:
     """({(period end, span index): value}, unit) for the tags the filer reports, as known then.
 
+    Values only, as the first two callers read them. ``_as_of_with_sources`` is
+    the same selection plus the fact each value came from.
+    """
+    values, chosen_unit, _ = _as_of_with_sources(facts, tags, as_of_date, spans, forms)
+    return values, chosen_unit
+
+
+def _as_of_with_sources(facts: dict, tags: tuple[str, ...], as_of_date: str,
+                        spans: tuple[tuple[int, int], ...],
+                        forms: tuple[str, ...] = ()) -> tuple[dict, str, dict]:
+    """``_as_of`` plus {(period end, span index): (tag, unit, fact)} for the same selection.
+
     A period reported more than once takes its latest filing on or before the
     date, so an amendment counts from the day it was filed and not before. The
     unit comes from the filing: most lines are USD, earnings per share are
     USD/shares, and scaling those alike would print a real figure as zero. A
     duration fact (revenue, cash flow) must cover one of ``spans``; an instant
     fact (a balance) has no span and serves any.
+
+    Each source is the very fact that supplied the value: its tag, its unit and
+    the record it was read from, so a later reader never has to guess which
+    filing, period or precision a printed figure came from.
     """
     values: dict[tuple[str, int], float] = {}
+    sources: dict[tuple[str, int], tuple[str, str, dict]] = {}
     chosen_unit = "USD"
     # Tags are tried in order and a period keeps the first one that reports it:
     # filers renamed lines over the years, so one tag covers only part of the
@@ -185,7 +202,8 @@ def _as_of(facts: dict, tags: tuple[str, ...], as_of_date: str, spans: tuple[tup
             if latest:
                 chosen_unit = unit
                 values.update({key: fact["val"] for key, fact in latest.items()})
-    return dict(sorted(values.items())), chosen_unit
+                sources.update({key: (tag, unit, fact) for key, fact in latest.items()})
+    return dict(sorted(values.items())), chosen_unit, sources
 
 
 def _statement(kind: str, ticker: str, freq: str, as_of_date: str, title: str) -> str:
@@ -206,7 +224,9 @@ def _statement(kind: str, ticker: str, freq: str, as_of_date: str, title: str) -
     else:
         spans, names = (_SPANS["annual"],), [""]
     forms = () if quarterly else _ANNUAL_FORMS
-    lines = {label: _as_of(us_gaap, tags, as_of_date, spans, forms) for label, tags in _STATEMENTS[kind]}
+    selected = {label: _as_of_with_sources(us_gaap, tags, as_of_date, spans, forms)
+                for label, tags in _STATEMENTS[kind]}
+    lines = {label: (values, unit) for label, (values, unit, _) in selected.items()}
     # Each row takes the shortest span it reports for a period, and a column
     # holds one span of one period, so a row filed only to date keeps its figure
     # beside a row filed by quarter.
@@ -230,13 +250,42 @@ def _statement(kind: str, ticker: str, freq: str, as_of_date: str, title: str) -
     # read a column off (#1517).
     rows = [",".join(["Period"] + [label if unit == "USD" else f"{label} ({unit})"
                                    for label, (_, unit) in tagged.items()])]
+    entries: list[dict] = []
     for end, index in periods:
         cells = []
         for label, (values, unit) in tagged.items():
             value = values.get((end, index)) if chosen[label].get(end) == index else None
-            cells.append("" if value is None else _millions(value) if unit == "USD" else f"{value:.2f}")
+            if value is None:
+                cells.append("")
+                continue
+            cells.append(_millions(value) if unit == "USD" else f"{value:.2f}")
+            if label not in ("Revenue", "Cost of Revenue", "Capital Expenditure",
+                             "Operating Cash Flow"):
+                continue
+            # The fact behind this very cell, taken here so no other cell's
+            # record can be cited in its place.
+            tag, fact_unit, fact = selected[label][2][(end, index)]
+            if not unit or not fact_unit or fact_unit != unit:
+                continue
+            if not all(fact.get(field) for field in ("start", "end", "filed", "accn")):
+                continue
+            entries.append({
+                "ticker": ticker.upper(), "cik": cik, "as_of": as_of_date,
+                "item": label, "period": end, "span": index,
+                "tag": tag, "value": fact["val"], "unit": fact_unit,
+                "display_divisor": 1000000 if unit == "USD" else 1,
+                "start": fact["start"], "end": fact["end"],
+                "filed": fact["filed"], "accn": fact["accn"],
+            })
         rows.append(",".join([end + names[index]] + cells))
-    return header + "\n".join(rows) + "\n"
+    table = header + "\n".join(rows) + "\n"
+    if not entries:
+        return table
+    # Only once the CSV is assembled does the comment line follow it, so the
+    # table stays exactly what it was and a reader that skips comments never
+    # sees the sources. Values keep the filing's own precision; a USD column
+    # prints value/display_divisor, so the cell is a rendering, not the figure.
+    return table + "# FR02_SEC_SOURCE " + json.dumps(entries, separators=(",", ":")) + "\n"
 
 
 def _millions(value: float) -> str:
