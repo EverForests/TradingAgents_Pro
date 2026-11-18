@@ -199,3 +199,17 @@ and a new AI-use record check on application or prompt PRs. The paired diagnosti
 uses synthetic facts. Full D7 semantic acceptance, formal historical approval
 receipts, GitHub required-check enforcement and independent hosted CI are separate
 open evidence items. No live application analysis was run during integration.
+
+**Local verification of `cb5d52f805329f2452c1423dec29ee835acfeab8`.**
+
+- Python 3.13.3, `python -m pytest -q tests test/offline`, with
+  `FR03_BASELINE_ROOT` at pinned upstream `9fa1196` and loopback proxy
+  bypass. **1812 passed, 1 skipped, 1 deselected, 100 subtests passed.**
+  The skip was the missing optional Bedrock dependency. The deselected
+  test requires the real DeepSeek API. The 33 paired FR-03 checks ran.
+- Ruff, baseline-to-head diff whitespace, schema/reference, AI-use log and
+  permission-copy checks passed. Clean package installation in a fresh
+  environment passed `pip check` and imports of `tradingagents` and `cli.main`.
+- The coordinator can now run online acceptance on the local integration
+  branch using the [CityU profile](../README.md#integrated-course-run).
+  Hosted GitHub Actions and branch protection remain to be verified.
