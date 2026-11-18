@@ -213,3 +213,15 @@ open evidence items. No live application analysis was run during integration.
 - The coordinator can now run online acceptance on the local integration
   branch using the [CityU profile](../README.md#integrated-course-run).
   Hosted GitHub Actions and branch protection remain to be verified.
+
+**Hosted CI follow-up.** The first push exposed a workflow startup error because
+GitHub treats `NO_PROXY` and `no_proxy` as the same YAML environment key. CI
+now exports the lowercase variable inside the test step. The PR artifact check
+also handles adding the first AI-use log to `main`. The next workflow ran its
+jobs, with the artifact, Ruff and clean-install jobs passing. A separate fresh
+local install reproduced two FR-02 Bollinger-band failures with
+`stockstats 0.6.14`, whose implementation uses population standard deviation.
+The dependency now resolves to `0.6.13`, preserving the approved sample
+standard-deviation calculation. The default suite in the fresh environment
+then ran with 1779 passed, 34 skipped (the 33 paired cases and optional
+Bedrock), 1 deselected and 100 passing subtests.
