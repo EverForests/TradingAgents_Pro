@@ -410,3 +410,30 @@ entries:
   limitations:
   - Static review only; pytest, ruff and mutation runs were not re-executed by the role
   - Record-integrity check D covered only the files the allowlist permits, so ai-use-log, bug-diary, debt-register, transcripts and Report.md were human-reviewed instead
+
+- id: AI-COURSE-INTEGRATION-20261118
+  date: '2026-11-18'
+  tool: OpenCode course-plan/course-build using CityU CS5351/DeepSeek-V4-Flash; Codex coordination and local validation
+  base_commit: 486a9a5d74433aedd3c858c483a8d77bf0f7b897
+  requirements: [FR-01, FR-02, FR-03, NFR-01, NFR-02, INV-01, INV-02]
+  scope: Five-PR local integration, shared graph contracts and metered course transport; offline tests, CI workflow and review record
+  human_direction: The project coordinator instructed autonomous local integration and approved the integration work on 2026-11-18. Feature-level historical approval evidence is recorded separately.
+  session_reference:
+    plan: ses_e133bd77fffeDP0RnLi8Mat0bn
+    evidence_and_metrics_merge: ses_e13360065ffed5aGQsZTze80cD
+    metrics_state_and_import_repair: ses_e132b0c31ffe6R6c8d5lycvvuT
+    sentiment_state_merge: ses_e1322d459ffec6MLxIyGbxpZIh
+    dispatch_transport: ses_e131f2670ffepV1XcfhjS2rZXI
+    graph_and_cli: ses_e131ddc9affeEG6rkefm7GzUcB
+    scoped_context_and_fallback: ses_e131d4816ffeQMwYM6pg5qnxZP
+    sentiment_subgraph_output: ses_e131bff3fffeDvglMVbh02mCk8
+    streamed_budget_repair: ses_e131a971effeWVpNIbcSOIY3Ry
+    cityu_profile_review_patch: ses_e1314f04affeJCL2xyyYb6O8T5
+    raw_transcripts: Retained in the local OpenCode workspace
+  contributions:
+  - OpenCode produced application conflict resolutions, transport and graph wiring, integration repairs and the initial transport counterexample.
+  - Codex operated Git and test commands, repaired fixture assumptions for the merged candidate and sentiment interfaces, and added integration assertions for the actual SDK transport and shared graph.
+  - Codex maintained exact-path permissions, workflow and artifact checks, the direct HTTP dependency and documentation.
+  - OpenCode proposed the final school-profile and CLI patch. Codex applied the reviewed subset and simplified the conditional handling, retaining unchanged defaults for other profiles.
+  evidence: See the combined-tree review in docs/review-memo.md for observed failures, reruns and local CI evidence.
+  review_status: Coordinator authorized local integration; hosted CI and online acceptance are pending.

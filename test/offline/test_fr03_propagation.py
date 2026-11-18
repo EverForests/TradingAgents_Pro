@@ -103,7 +103,7 @@ def test_five_consumers_see_actual_sentiment_text(monkeypatch, zero_sources):
     from tradingagents.agents.risk_mgmt.aggressive_debator import create_aggressive_debator
     from tradingagents.agents.risk_mgmt.conservative_debator import create_conservative_debator
     from tradingagents.agents.risk_mgmt.neutral_debator import create_neutral_debator
-    from tradingagents.agents.schemas import SentimentBand, SentimentReport
+    from tradingagents.agents.schemas import DebateArgument, SentimentBand, SentimentReport
 
     if zero_sources:
         state = _run_sentiment(monkeypatch, "", "", "", None, "opaque prose")
@@ -135,6 +135,10 @@ def test_five_consumers_see_actual_sentiment_text(monkeypatch, zero_sources):
     captured = []
     llm = MagicMock()
     llm.invoke.side_effect = lambda prompt: captured.append(str(prompt)) or MagicMock(content="")
+    llm.with_structured_output.return_value.invoke.side_effect = (
+        lambda prompt: captured.append(str(prompt))
+        or DebateArgument(argument="Offline fixture", evidence_ids=[])
+    )
 
     state["investment_debate_state"] = {"history": "", "current_response": "", "count": 0}
     state["risk_debate_state"] = {"history": "", "count": 0}

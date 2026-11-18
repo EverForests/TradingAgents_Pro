@@ -37,6 +37,7 @@ from tradingagents.agents.context import (
     opponent_argument_or_opening,
     report_or_absent,
 )
+from tradingagents.llm_clients.budget_transport import scoped_context_limit
 from tradingagents.llm_clients.context_limit import (
     TextContextParts,
     prepare_text_context,
@@ -197,7 +198,10 @@ def create_neutral_debator(llm):
             raise RuntimeError("prepared request must carry exactly one message")
         prompt = prepared_messages[0].content
 
-        response = llm.invoke(prompt)
+        # Marked for the C5 size check only across the send itself: the check
+        # runs before the C4 reservation at the transport.
+        with scoped_context_limit():
+            response = llm.invoke(prompt)
 
         argument = f"Neutral Analyst: {response.content}"
 

@@ -103,3 +103,99 @@ Each feature PR supplies its base SHA, interface/fixture versions, exact plan/te
 - **Security and efficiency findings:** unchanged from PR-NFR01-001 (standard library only, no network, single lock, no global state). The one new test adds threads and a barrier but no sleeps and no wall-clock dependence.
 - **Open findings and required action:** TD-09 (CI does not collect `test/offline`), TD-10 (no production importer, no C0 terminal mapping), TD-11 (SDK retry configuration unverified), TD-12 (static settlement check), TD-13 (duck-typed prepared request), TD-15 (Verify role cannot read the evidence records, so record integrity is human-reviewed), TD-16 (no guard that a `run_id` is instantiated once, so two `RequestBudget` objects with the same id could each spend the full limit).
 - **Verdict:** APPROVE for the owner-module revision at `3d5ce62` (two files, one docstring line and one appended test). CONDITIONALLY COMPLIANT for the owner module; not a delivery sign-off for NFR-01. The six missing items named by Gate 4 remain: integrator wiring for both tiers, C0 terminal-state mapping, verified SDK retry configuration, CI collection of `test/offline`, behavioural settlement-exclusion evidence, and read access (or human review) for the evidence records.
+
+## FR-01 / INV-01 — Post-implementation review draft (2026-11-16)
+
+- **PR / reviewed revision:** [PR #4](https://github.com/EverForests/TradingAgents_Pro/pull/4); local revision `712617e25a380197e38d6ee5cc4dcc7ab393cf61`. The test evidence below is for this revision, not necessarily the current remote PR head.
+- **Comparison base / specification:** `3d5ce620e7da497e09c986ef6cbc957b490de632`; D1, D4 and C0/C1 v1.0.
+- **Pre-implementation approval:** Plan/test approval was not present in the material reviewed. Link the contemporaneous record if available. This review does not establish or replace prior approval.
+- **Review provenance:** Read-only OpenCode review of the implementation and seven offline test files, supplemented by terminal test results. The human reviewer has not signed off.
+
+### Verification evidence
+
+| Area | Verified behavior and limits |
+| --- | --- |
+| Gate and Python API | Legal rating with valid references publishes; illegal ratings and missing, unknown or foreign IDs are rejected in the tested cases. Rejected candidates do not become official API ratings. See `test_fr01_gate_unit.py`, `test_fr01_cross_run.py`, `test_fr01_publish_valid.py` and `test_inv01_key_counterexample.py` under `test/offline/`. |
+| CLI | Simulated state-stream frames do not show the candidate before approval; rejected candidates remain hidden from official display and show a blocking reason. Approved candidates appear after the gate. The test does not inject raw model messages or inspect the message log. See `test_inv01_cli_no_premature_display.py`. |
+| Reports and memory | Rejected-run Markdown and HTML heading checks, no rejected decision-memory entry, and a positive memory-write control are covered. The HTML test uses no report sections; full HTML and direct `save_reports()` calls with ungated state remain unverified. See `test_inv01_four_exits.py` and `test_fr01_publish_valid.py`. |
+| Checkpoint resume | An interrupted run preserves its run ID and resolves its evidence chain on resume. This does not exercise replacement with a complete index from another run. See `test_inv01_resume.py`. |
+
+- **Offline:** `test/offline`: 26 passed. `tests test/offline`: 1438 passed, 1 skipped (optional Bedrock dependency `langchain_aws` missing), 1 deselected and 100 subtests passed. The successful full run allowed loopback port binding and bypassed the proxy for `localhost` and `127.0.0.1`.
+- **Diff check:** `git diff --check 3d5ce62...HEAD` passed at the reviewed revision. **Live tests:** not run.
+- **Upstream tests:** Five upstream files changed, so the full-suite result is for the current branch. The original diffs of `tests/test_cli_memory_log.py`, `tests/test_debate_opening.py`, `tests/test_graph_end_to_end.py` and `tests/test_memory_log.py` remain for human review; the agent saw summaries only. Confirm that the revised expectations preserve relevant regression assertions and identify the approval record for intentional behavior changes.
+
+### Findings and follow-up
+
+| When | Finding and evidence needed |
+| --- | --- |
+| Before FR-01 sign-off | C0/C1 shared record fields and callable interfaces differ from the implementation. In particular, the evidence record lacks required run identity and source locators, the result does not expose the required reference lists, and the gate entry points do not expose the specified signatures. Check that accepted claims are nonempty. The FR-01 owner and integrator should agree on a conforming adapter or a reviewed contract revision. |
+| Before FR-01 sign-off | Reproduce direct `save_reports()` with ungated state and complete HTML output, and a run using a whole evidence index from a different run. Document actual outcomes and add approved tests for the agreed boundaries. Normal resume and normal report output do not cover these cases. |
+| Before FR-01 sign-off | Decide whether raw CLI model messages and logs are private diagnostics or part of official output; verify the agreed boundary with a nonempty candidate message. The stale progress-field lookup does not by itself establish a rating leak. |
+| During integration | Verify that budget exhaustion and context rejection suppress publication even with otherwise valid candidate evidence, and that FR-03 `NO_DATA` diagnostics cannot serve as substantive evidence. Record results against the integrated SHA. |
+
+- **Suggested verdict:** **CHANGES REQUIRED** pending contract alignment or a reviewed revision, evidence for the open FR-01 paths, and human review of the upstream test changes and approval record. This is an advisory draft, not a merge approval.
+
+## Feature PR intake — 2026-11-18
+
+The coordinator accepted the five heads below for **local integration**. That decision is not a GitHub Review, a substitute for pre-implementation approval, or approval to merge into `main`. GitHub returned no submitted Reviews for these PRs at intake. Each head had six successful GitHub checks (four Python test jobs, install smoke and Ruff); those results do not verify the combined tree or all course blocking gates. Local test totals below are **PR-author reports**, not reruns on the combined tree. PR #9 was superseded by #10 and is not an integration input.
+
+### FR-01 / INV-01 — [PR #4](https://github.com/EverForests/TradingAgents_Pro/pull/4)
+
+- **Head:** `a5b987256fdf52ad60c254d451b9df5b0aa817a3`. This intake record covers a newer head than the earlier review draft; it does not overwrite that draft.
+- **Scope and evidence:** C0/C1 retained market snapshots, run-local argument validation and a shared publication result across CLI, API, reports and memory. The PR reports reproducing a foreign-index bypass and ungated report save before the repair. It reports 62 contract cases and 109 course offline cases passing at `7aa478b`; those counts are not attributed to the later head. Live acceptance not run in that report.
+- **Approval and follow-up:** Author reports review of R8-B and the boundary repair; approver, timestamps and supporting links remain placeholders. Verify terminal states suppress publication, and `NO_DATA` diagnostics cannot become evidence in the combined graph.
+
+### FR-02 — [PR #8](https://github.com/EverForests/TradingAgents_Pro/pull/8)
+
+- **Head:** `51c52268bb9b8d59663fbfc27d156a50e39809d4`. C0/C2 verified YoY, ratios and signed price differences from current-run source operands; Portfolio Manager and report resolve issued IDs, not model-provided numbers.
+- **Evidence:** Author reports 48 feature cases and 1460 combined local passes (1 skipped, 1 deselected), plus Ruff. Tests exercise normal completion and analyst wrap-up, invalid provenance and foreign IDs. Original NVDA tool reply was unavailable; its frozen case has retained SEC cache/report provenance.
+- **Approval and follow-up:** Author cites `FR02-PLAN-01` and maintainer approval on 2026-11-16; underlying records are private and not independently checked here. Preserve market evidence collection and verified-metric registration in the same analyst graph. Render results without granting publication authority to the numeric registry.
+
+### FR-03 — [PR #6](https://github.com/EverForests/TradingAgents_Pro/pull/6)
+
+- **Head:** `4c4574242f763d6c9883a489540d016d5ed397a9`. C0/C3 request-bound sentiment receipts and explicit coverage. Zero valid sources produce `NO_DATA / UNKNOWN / null` with zero sentiment model calls; measured neutral remains possible with valid inputs.
+- **Evidence:** Author reports 47 boundary checks and 1533 combined local passes at application revision `b2816ec` (39 skipped, 1 deselected). A separately enabled paired diagnostic reported 33 passing assertions. School-model checks were reported separately at `06d160a` using synthetic receipts; these are not live acceptance of the combined project.
+- **Approval and follow-up:** The PR explicitly reports no individual student plan/test review or final human verdict during feature development. Verify C1/C4 behavior in the combined graph; missing sentiment must not inflate evidence or consume a sentiment-model slot.
+
+### NFR-01 / INV-02 — [PR #7](https://github.com/EverForests/TradingAgents_Pro/pull/7)
+
+- **Head:** `e47760cfdeffde99d7279147e061927525d08a12`. C4 owner module implements atomic reservation/charge/cancellation and fake outbound dispatch tests.
+- **Evidence:** Author reports 39 acceptance cases, 1412 repository regression passes and four mutation runs that failed as expected; the restored tests were reported green.
+- **Approval and follow-up:** PR cites human decisions `D-NFR01-09..15` and conditional owner-module approval. It explicitly has no production caller; verify actual dispatch on both tiers, fallback/retries, C0 terminal mapping, last-slot concurrency and metered checkpoint policy before delivery sign-off.
+
+### NFR-02 — [PR #10](https://github.com/EverForests/TradingAgents_Pro/pull/10)
+
+- **Head:** `e24e7d88e8056a10e02bfd7b604ae91d3c1b1c61`. C5 canonical UTF-8 byte accounting and deterministic reduction at Analyst Wrap-up and Neutral Risk Debater; only older optional groups can be removed.
+- **Evidence:** Author reports 37 feature cases and 1449 regression passes (1 skipped, 1 deselected). A separate fake-model demonstration reported zero invocations for irreducible input; no live-provider acceptance.
+- **Approval and follow-up:** The PR describes human approval of edits and read-only verification; exact approval receipts are not linked here. Integrate C0 error mapping and prove context rejection occurs before C4 reservation, debit or send. Verify the prepared message representation at the provider boundary.
+
+### Combined-tree review — Local integration, 2026-11-18
+
+The coordinator approved the local integration work in the project chat on
+2026-11-18. The branch started at `486a9a5`, incorporated shared permission
+maintenance through `5f40d21`, and included all five reviewed parents by
+`208f828`. The order was #4, #10, #8, #6, #7. The intake table preserves the
+approval evidence available for each contributor. Today's coordinator approval
+applies to integration.
+
+| Integration area | Observed before and evidence after repair |
+| --- | --- |
+| C0/C1/C2 | The initial combined #8 run failed because the FR-02 initialization reminted the run ID and several assertions still expected Portfolio Manager to publish. The repaired graph keeps one shared identity, both verified-metric producers, retained market evidence and candidate-only manager output. The existing numeric assertions remained in place. The FR-01 and FR-02 targeted run passed 110 cases. |
+| C1/C3 | The real market-plus-social graph exposed that the sentiment node produced a record that the subgraph dropped. The positive joint case now checks NO_DATA/null and no sentiment-model binding while an approved market-evidence rating still resolves. Five downstream prompt assertions cover both structured research and plain risk requests. |
+| C0/C4 | At a limit of three, the SDK transport fixture observed four sends before integration. The repaired runner allows all three requested attempts to finish, refuses attempt four and suppresses the official rating and decision-memory write. The suite also exercises parallel graph workers, a second run's fresh budget, streamed execution, and provider transport failure with SDK retries off. Historical settlement runs outside this ledger. Metered checkpointing is refused. |
+| C0/C4/C5 | The neutral-risk integration fixture injects irreducible required content and checks zero reservations and zero provider sends. The two scoped sites keep deterministic reduction, with a final check on the provider message array in the metered profile before C4 dispatch. |
+| CityU request shape | The final fake SDK transport check first observed a missing `thinking` key. After the profile repair, both tiers send the approved alias and `thinking: {type: disabled}` to the configured CityU host, with SDK retries forced to zero. |
+
+OpenCode generated the application changes and the initial transport fixture.
+Codex maintained Git, fixture adaptations, test commands and CI. The legacy
+memory regression keeps its original approved-write assertion and binds the new
+real methods on its graph stand-in. See AI-use entry
+`AI-COURSE-INTEGRATION-20261118` for sessions and scope.
+
+The workflow runs the upstream and course offline suites, the fixed FR-03
+paired comparison, lint, dependency consistency and install smoke checks,
+requirements schema and reference validation, OpenCode permission-copy parity,
+and a new AI-use record check on application or prompt PRs. The paired diagnostic
+uses synthetic facts. Full D7 semantic acceptance, formal historical approval
+receipts, GitHub required-check enforcement and independent hosted CI are separate
+open evidence items. No live application analysis was run during integration.

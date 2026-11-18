@@ -358,24 +358,35 @@ def run_analysis(checkpoint: bool | None = None, portfolio=None, flags=None):
             graph.complete_run(final_state)
             graph.publish(final_state)
 
+            # A run that ended on a recognized C4/C5 refusal (NFR-01 / INV-02) keeps
+            # its terminal code; complete_run() leaves it in place and the gate
+            # blocks it with that reason. Such a run is reported distinctly below
+            # and keeps its checkpoint, exactly like the API path.
+            terminal_run = final_state.get("execution_status") in (
+                "BUDGET_EXHAUSTED", "CONTEXT_TOO_LARGE", "FAILED",
+            )
+
             # Clean run: log the decision, then drop this run's checkpoint so a
             # later run starts fresh. A mid-stream failure skips both, keeping
             # the checkpoint for resume. record_decision writes nothing when the
             # gate blocked the candidate.
             graph.record_decision(selections["ticker"], selections["analysis_date"], final_state)
-            graph.clear_checkpoint_on_success(
-                selections["ticker"], selections["analysis_date"], selections["asset_type"], portfolio
-            )
+            if not terminal_run:
+                graph.clear_checkpoint_on_success(
+                    selections["ticker"], selections["analysis_date"], selections["asset_type"], portfolio
+                )
         finally:
             # Always restore the plain uncheckpointed graph, even on failure.
             graph.end_checkpoint()
 
-        for agent in message_buffer.agent_status:
-            message_buffer.update_agent_status(agent, "completed")
-
-        message_buffer.add_message(
-            "System", f"Completed analysis for {selections['analysis_date']}"
-        )
+        if terminal_run:
+            message_buffer.add_message("System", f"Run ended early ({final_state['execution_status']})")
+        else:
+            for agent in message_buffer.agent_status:
+                message_buffer.update_agent_status(agent, "completed")
+            message_buffer.add_message(
+                "System", f"Completed analysis for {selections['analysis_date']}"
+            )
         message_buffer.add_message("System", analyst_wall_time_tracker.format_summary())
 
         for section in message_buffer.report_sections:
@@ -387,7 +398,8 @@ def run_analysis(checkpoint: bool | None = None, portfolio=None, flags=None):
         update_display(layout, stats_handler=stats_handler, start_time=start_time)
 
     # Post-analysis prompts (outside Live context for clean interaction)
-    console.print("\n[bold cyan]Analysis Complete![/bold cyan]\n")
+    if not terminal_run:
+        console.print("\n[bold cyan]Analysis Complete![/bold cyan]\n")
 
     # FR-01: report the gate's verdict explicitly, from its own publication
     # result. A refused candidate shows the BLOCKED status and reason, never the
@@ -395,6 +407,17 @@ def run_analysis(checkpoint: bool | None = None, portfolio=None, flags=None):
     from tradingagents.graph.publication_gate import publication_result_from_state
 
     publication = publication_result_from_state(final_state)
+    execution_status = final_state.get("execution_status")
+    if execution_status in ("BUDGET_EXHAUSTED", "CONTEXT_TOO_LARGE", "FAILED"):
+        # A run that stopped on the request budget or a scoped-context/provider
+        # refusal is reported by its own C0 status, not as a generic block. What
+        # was produced before it stopped is kept: the reason says the run did not
+        # finish, and the gate's verdict follows as usual.
+        console.print(
+            f"[yellow]Run ended early ({execution_status}).[/yellow] "
+            "No official recommendation: the run did not finish, so what it "
+            "produced before stopping is kept for inspection only.\n"
+        )
     if publication is None:
         console.print(
             "[red]No publication result for this run: it did not pass the publication "

@@ -159,7 +159,7 @@ class _FakeClient:
         return self._llm
 
 
-def _run(monkeypatch, tmp_path):
+def _run(monkeypatch, tmp_path, *, analysts=("market",)):
     import tradingagents.graph.trading_graph as tg
     from tradingagents.default_config import DEFAULT_CONFIG
 
@@ -177,7 +177,7 @@ def _run(monkeypatch, tmp_path):
         "memory_log_path": str(tmp_path / "memory.md"),
         "checkpoint_enabled": False,
     })
-    graph = tg.TradingAgentsGraph(selected_analysts=("market",), debug=False, config=config)
+    graph = tg.TradingAgentsGraph(selected_analysts=analysts, debug=False, config=config)
     final_state, signal = graph.propagate("NVDA", "2026-01-05")
     assert model.snapshot_calls >= 1, (
         "the market analyst never called the snapshot tool, so the run has no "
@@ -218,6 +218,36 @@ def test_valid_rating_with_resolvable_evidence_is_approved(monkeypatch, tmp_path
             f"the indexed material does not resolve: {content_ref}"
         )
     assert graph.memory_log.load_entries()  # an approved decision is recorded
+
+
+@pytest.mark.unit
+def test_zero_sentiment_does_not_supply_or_prevent_market_evidence(monkeypatch, tmp_path):
+    from tradingagents.agents.analysts import sentiment_analyst
+
+    monkeypatch.setattr(sentiment_analyst.get_news, "func", lambda *a, **k: "")
+    monkeypatch.setattr(sentiment_analyst, "fetch_stocktwits_messages", lambda *a, **k: "")
+    monkeypatch.setattr(sentiment_analyst, "fetch_reddit_posts", lambda *a, **k: "")
+    sentiment_bindings = []
+    bind = sentiment_analyst.bind_structured
+
+    def tracked_bind(*args, **kwargs):
+        sentiment_bindings.append(args)
+        return bind(*args, **kwargs)
+
+    monkeypatch.setattr(sentiment_analyst, "bind_structured", tracked_bind)
+    _graph, state, signal = _run(monkeypatch, tmp_path, analysts=("market", "social"))
+
+    sentiment = state["sentiment_assessment"]
+    assert sentiment["coverage_status"] == "NO_DATA"
+    assert sentiment["overall_score"] is None
+    assert not sentiment_bindings
+    assert state["publication_status"] == "APPROVED"
+    assert signal == "Buy"
+    # Every accepted reference resolves to the market tool fixture.
+    evidence = state["evidence_index"]["evidence"]
+    assert evidence
+    assert {item["source_kind"] for item in evidence.values()} == {"market_snapshot"}
+    assert all(link[1] in evidence for link in state["publication_chain"])
 
 
 @pytest.mark.unit

@@ -4,6 +4,7 @@ import json
 
 from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 
+from tradingagents.llm_clients.budget_transport import scoped_context_limit
 from tradingagents.llm_clients.context_limit import (
     ChatMessage,
     ContextBlock,
@@ -43,7 +44,10 @@ def take_turn(prompt, llm, tools, messages):
         # send only what fits. Required: system instructions, the initial request,
         # the newest complete tool exchange, and this wrap-up instruction.
         retained_messages = _prepared_wrap_up_messages(prompt, messages)
-        result = (prompt | llm).invoke(_as_text(retained_messages))
+        # Marked for the C5 size check only across the send itself: the check
+        # runs before the C4 reservation at the transport.
+        with scoped_context_limit():
+            result = (prompt | llm).invoke(_as_text(retained_messages))
         return result, result.content
     result = (prompt | llm.bind_tools(tools)).invoke(messages)
     return result, "" if result.tool_calls else result.content

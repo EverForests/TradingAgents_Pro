@@ -3,6 +3,20 @@ from typing import Any
 
 from .base_client import BaseLLMClient
 
+# Key in the ``extra`` passed to ``create_tier_client`` that carries the
+# already-built budgeted ``httpx.Client`` for the SDK (see
+# ``budget_transport.budgeted_http_client``). Poisoned on purpose: forwarding it
+# to a provider that does not activate the budget must fail loudly rather than
+# be silently dropped.
+_BUDGETED_HTTP_CLIENT_KWARG = "http_client"
+
+# Providers that may run under the C4 request budget. Anything else (native
+# Anthropic/Google/Azure/Bedrock or a signed-in ChatGPT plan) has no verified
+# single-send boundary, so it is refused instead of running unmetered.
+_BUDGET_PROVIDERS = ("openai_compatible",)
+_CITYU_BASE_URL = "https://llm.cs.cityu.edu.hk/v1"
+_CITYU_MODEL = "CS5351/DeepSeek-V4-Flash"
+
 
 def create_llm_client(
     provider: str,
@@ -145,6 +159,13 @@ def create_tier_client(config: dict, tier: str, **extra) -> BaseLLMClient:
     A tier on its own provider gets that provider's settings (thinking level,
     reasoning effort, the name of the output-token cap) and its own endpoint,
     else the provider's default: ``backend_url`` belongs to ``llm_provider``.
+    When ``request_budget_enabled`` is set (NFR-01 / INV-02, C4), the provider
+    must be exactly ``openai_compatible`` (the sole approved metered provider;
+    the broader OpenAI-compatible registry is not in approved scope) and
+    ``checkpoint_enabled`` must be off (a resumed graph would replay
+    pre-budget state). The SDK is then built with ``max_retries=0`` over
+    ``budget_transport.budgeted_http_client()`` so each model request crosses
+    the C4/C5 boundary exactly once.
     """
     provider = tier_provider(config, tier)
     if provider == config["llm_provider"].lower():
@@ -152,5 +173,49 @@ def create_tier_client(config: dict, tier: str, **extra) -> BaseLLMClient:
     else:
         base_url = config.get(f"{tier}_think_backend_url")
     kwargs = build_llm_kwargs({**config, "llm_provider": provider})
-    return create_llm_client(provider=provider, model=config[f"{tier}_think_llm"], base_url=base_url,
+    model = config[f"{tier}_think_llm"]
+    if config.get("request_budget_enabled"):
+        kwargs = _budgeted_tier_kwargs(config, tier, provider, {**kwargs, **extra})
+        extra = {}
+        if model == _CITYU_MODEL and base_url and base_url.rstrip("/") == _CITYU_BASE_URL:
+            kwargs["extra_body"] = {"thinking": {"type": "disabled"}}
+    return create_llm_client(provider=provider, model=model, base_url=base_url,
                              **kwargs, **extra)
+
+
+def _budgeted_tier_kwargs(
+    config: dict,
+    tier: str,
+    provider: str,
+    kwargs: dict[str, Any],
+) -> dict[str, Any]:
+    """Add the metered transport and force a single-attempt SDK (C4 / INV-02).
+
+    ``max_retries=0`` is enforced last so a caller cannot raise it back through
+    ``extra``/config: SDK or transport retries would turn one metered dispatch
+    into several unmetered requests. The provider must be exactly the approved
+    metered provider; other OpenAI-compatible registry entries are refused.
+    """
+    if provider not in _BUDGET_PROVIDERS:
+        raise ValueError(
+            f"request_budget_enabled is not supported for provider '{provider}': "
+            "the request budget requires provider "
+            f"{', '.join(repr(p) for p in _BUDGET_PROVIDERS)}"
+        )
+    if config.get("checkpoint_enabled"):
+        raise ValueError(
+            "request_budget_enabled cannot be combined with checkpoint_enabled: a resumed "
+            "run would continue from pre-budget checkpoint state"
+        )
+    if _BUDGETED_HTTP_CLIENT_KWARG in kwargs:
+        raise ValueError(
+            "request_budget_enabled builds its own HTTP client; "
+            f"do not pass '{_BUDGETED_HTTP_CLIENT_KWARG}' for tier '{tier}'"
+        )
+
+    from .budget_transport import budgeted_http_client
+
+    budgeted = dict(kwargs)
+    budgeted["max_retries"] = 0
+    budgeted[_BUDGETED_HTTP_CLIENT_KWARG] = budgeted_http_client()
+    return budgeted

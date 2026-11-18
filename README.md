@@ -48,12 +48,37 @@ py -3 -m venv .venv
 | --- | --- |
 | Upstream baseline | `python -m pytest -q tests` |
 | Project offline tests | `python -m pytest -q test/offline -m "not integration"`; no API credentials required. |
-| FR-03 school controls | `python -m pytest -q test/live/test_fr03_school.py -m integration`; private credentials and a separately authorized cap are required. See [FR-03](docs/fr03.md#reproduction). Other modules' live requirements remain with their owners. |
-| Full project suite | TBD — document how to run both suites. |
+| Full offline suite | `python -m pytest -q tests test/offline` |
+| FR-03 school controls | `python -m pytest -q test/live/test_fr03_school.py -m integration`; private credentials and a separately authorized cap are required. See [FR-03](docs/fr03.md#reproduction). |
+
+### Integrated course run
+
+For the school DeepSeek profile, keep the application API key in your local environment
+as `OPENAI_COMPATIBLE_API_KEY`. Use the same profile for both model tiers.
+
+```bash
+export TRADINGAGENTS_LLM_PROVIDER=openai_compatible
+export TRADINGAGENTS_LLM_BACKEND_URL=https://llm.cs.cityu.edu.hk/v1
+export TRADINGAGENTS_QUICK_THINK_LLM=CS5351/DeepSeek-V4-Flash
+export TRADINGAGENTS_DEEP_THINK_LLM=CS5351/DeepSeek-V4-Flash
+export TRADINGAGENTS_REQUEST_BUDGET_ENABLED=true
+export TRADINGAGENTS_REQUEST_LIMIT=40
+export TRADINGAGENTS_CHECKPOINT_ENABLED=false
+tradingagents --ticker NVDA --date 2026-11-10 --analysts market,social,news,fundamentals --save --no-show
+```
+
+The course profile meters synchronous model requests across both tiers of each analysis.
+It disables SDK and transport retries and refuses checkpoint resume. Both configured
+CityU DeepSeek tiers explicitly request disabled thinking.
+`BUDGET_EXHAUSTED` and `CONTEXT_TOO_LARGE` end the run and block an official recommendation.
+Keep the report and the run's settings with the online verification record.
 
 ## CI and blocking gates (D7)
 
-The baseline workflow runs tests, a clean-install smoke check, and Ruff. Document the team's required checks and enforcement once configured: pre-implementation test approval evidence, static and safety checks, requirements schema validation, and semantic evaluation for prompt or model changes. Identify which checks must pass before merging or releasing.
+CI runs the upstream and course offline suites, Ruff, a clean-install smoke check,
+requirements schema and reference validation, the PR AI-use record check, and the
+fixed FR-03 comparison against the pinned upstream. The [review memo](docs/review-memo.md)
+records which course gates have execution and enforcement evidence.
 
 ## Baseline comparison
 

@@ -166,7 +166,8 @@ class AgentState(MessagesState):
     portfolio_context: Annotated[str, "Caller-supplied holdings and cash, rendered at run start; empty when not provided"]
 
     # FR-02: run context and verified metrics
-    course_run: Annotated[dict, "The C0 RunContext for this analysis: contract version, run_id, ticker, ISO date, status and request limit"]
+    # (``course_run`` is declared once above, at the C1 v1.0 line; the later
+    # duplicate declaration is removed so the field keeps a single annotation.)
     verified_metrics: Annotated[
         dict,
         "Run-local verified metrics by metric_id; both analysts merge here, identical re-posts collapse, conflicting content is refused",

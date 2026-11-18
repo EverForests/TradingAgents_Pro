@@ -752,6 +752,8 @@ def _analyst_graph(spec, agent, max_tool_rounds: int):
     themselves stay unchanged.
     """
     output_fields: dict[str, type] = {spec.report_key: str}
+    if spec.key == "social":
+        output_fields["sentiment_assessment"] = dict
     if spec.key == "market":
         output_fields["market_evidence"] = list
     if spec.key in ("market", "fundamentals"):

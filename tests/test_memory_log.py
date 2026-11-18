@@ -965,6 +965,8 @@ class TestLegacyRemoval:
         mock_graph._run_graph = functools.partial(
             TradingAgentsGraph._run_graph, mock_graph
         )
+        mock_graph._run_budget = functools.partial(TradingAgentsGraph._run_budget, mock_graph)
+        mock_graph._terminal_state = functools.partial(TradingAgentsGraph._terminal_state, mock_graph)
         mock_graph.complete_run = functools.partial(TradingAgentsGraph.complete_run, mock_graph)
         mock_graph.publish = functools.partial(TradingAgentsGraph.publish, mock_graph)
         mock_graph.record_decision = functools.partial(
