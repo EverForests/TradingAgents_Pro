@@ -87,6 +87,30 @@ class TraderAction(StrEnum):
     SELL = "Sell"
 
 
+class DebateArgument(BaseModel):
+    """A Bull or Bear argument with structured evidence references.
+
+    FR-01: the researcher may only cite evidence IDs that exist in this run's
+    program-built index. The program validates these IDs and mints an argument
+    ID only for an accepted argument; unverified prose is not a release path.
+    """
+
+    argument: str = Field(
+        description=(
+            "The case, in the analyst's own words, engaging the opponent and the "
+            "analyst reports."
+        ),
+    )
+    evidence_ids: list[str] = Field(
+        default_factory=list,
+        description=(
+            "The evidence IDs this argument relies on. Copy exact IDs from the "
+            "'Available evidence' list; do not invent IDs. An argument with no "
+            "resolvable ID cannot support a published recommendation."
+        ),
+    )
+
+
 # ---------------------------------------------------------------------------
 # Research Manager
 # ---------------------------------------------------------------------------
@@ -235,6 +259,14 @@ class PortfolioDecision(BaseModel):
             "stronger side, sized by how decisively it wins. Choose Hold only "
             "when the evidence is still balanced after weighing, or too thin to "
             "support a call."
+        ),
+    )
+    argument_ids: list[str] = Field(
+        default_factory=list,
+        description=(
+            "The accepted argument IDs this decision rests on. Copy the exact "
+            "argument IDs listed under 'Accepted arguments' in the prompt; a "
+            "release needs at least one. Do not invent IDs."
         ),
     )
     executive_summary: str = Field(

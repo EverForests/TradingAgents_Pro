@@ -68,6 +68,26 @@ class AgentState(MessagesState):
     ]
     final_trade_decision: Annotated[str, "Final decision from the Portfolio Manager"]
     final_rating: Annotated[str, "The Portfolio Manager's 5-tier rating, or REVIEW when it has none"]
+    # FR-01 / INV-01: the publication gate's single release result, written by
+    # publication_gate.apply() before any sink reads the run.
+    publication_status: Annotated[str, "APPROVED or BLOCKED, set by the publication gate"]
+    publication_reason: Annotated[str, "INVALID_RATING or INSUFFICIENT_EVIDENCE when BLOCKED, else empty"]
+    publication_chain: Annotated[list, "Resolved (argument_id, evidence_id, source) links when APPROVED"]
+    # C1 v1.0: the run identity the gate judges against, the authoritative
+    # ID -> record mappings, and the one publication result every sink reads.
+    course_run: Annotated[dict, "RunContext for this run (contract_version, run_id, ticker, as_of_date, execution_status, request_limit)"]
+    execution_status: Annotated[str, "C0 execution state: COMPLETED, or a terminal failure such as BUDGET_EXHAUSTED"]
+    request_limit: Annotated[int, "C0 per-run request budget, a positive integer (approved default 40)"]
+    argument_index: Annotated[dict, "Accepted arguments keyed by argument_id (FR-01, C1 v1.0)"]
+    publication_result: Annotated[dict, "The gate's authoritative PublicationResult, set once per run"]
+    evidence_index: Annotated[dict, "Run-scoped evidence as an evidence_id -> record mapping, built by Index Evidence from retained material (FR-01)"]
+    market_evidence: Annotated[list, "Verified snapshot receipts this run's market analyst retained, handed up from its own subgraph (R8-B §4)"]
+    candidate_decision: Annotated[str, "Internal candidate body, never read by an official sink"]
+    candidate_rating: Annotated[str, "Internal candidate 5-tier rating, only promoted to final_rating by the gate"]
+    pending_argument: Annotated[dict, "The most recent Bull/Bear argument awaiting evidence validation (FR-01)"]
+    accepted_arguments: Annotated[list, "Accepted (argument_id, speaker, evidence_ids) records for the Portfolio Manager (FR-01)"]
+    candidate_argument_ids: Annotated[list, "Argument IDs the Portfolio Manager cited for its candidate (FR-01)"]
+    run_id: Annotated[str, "This run's stable identifier, minted once and reused on resume (FR-01)"]
     past_context: Annotated[str, "Memory log context for the Portfolio Manager (same-ticker decisions + cross-ticker lessons), written by the Memory Log step"]
     memory_note: Annotated[str, "What the Memory Log step could not settle or read this run, for the report; empty when all went well"]
     portfolio_context: Annotated[str, "Caller-supplied holdings and cash, rendered at run start; empty when not provided"]

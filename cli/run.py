@@ -328,10 +328,11 @@ def run_analysis(checkpoint: bool | None = None, portfolio=None, flags=None):
                             "final_trade_decision", f"### Neutral Analyst Analysis\n{neu_hist}"
                         )
                     if judge and message_buffer.agent_status.get("Portfolio Manager") != "completed":
+                        # FR-01: the Portfolio Manager's body is a candidate, not
+                        # an official recommendation. Do not surface it before the
+                        # publication gate runs; mark the agent done without
+                        # writing the candidate into the decision panel.
                         message_buffer.update_agent_status("Portfolio Manager", "in_progress")
-                        message_buffer.update_report_section(
-                            "final_trade_decision", f"### Portfolio Manager Decision\n{judge}"
-                        )
                         message_buffer.update_agent_status("Aggressive Analyst", "completed")
                         message_buffer.update_agent_status("Conservative Analyst", "completed")
                         message_buffer.update_agent_status("Neutral Analyst", "completed")
@@ -347,9 +348,20 @@ def run_analysis(checkpoint: bool | None = None, portfolio=None, flags=None):
             for chunk in trace:
                 final_state.update(chunk)
 
+            # FR-01 / INV-01: the same single publication gate the Python API
+            # runs, applied before any sink (display, save, memory). The stream
+            # returned normally, so the run finished: mark it COMPLETED, then let
+            # the gate judge it. It writes one publication_result onto
+            # final_state; a refused candidate carries no official body or rating
+            # from here on. Every sink below reads that same result, never the
+            # flat status field.
+            graph.complete_run(final_state)
+            graph.publish(final_state)
+
             # Clean run: log the decision, then drop this run's checkpoint so a
             # later run starts fresh. A mid-stream failure skips both, keeping
-            # the checkpoint for resume.
+            # the checkpoint for resume. record_decision writes nothing when the
+            # gate blocked the candidate.
             graph.record_decision(selections["ticker"], selections["analysis_date"], final_state)
             graph.clear_checkpoint_on_success(
                 selections["ticker"], selections["analysis_date"], selections["asset_type"], portfolio
@@ -368,6 +380,8 @@ def run_analysis(checkpoint: bool | None = None, portfolio=None, flags=None):
 
         for section in message_buffer.report_sections:
             if section in final_state:
+                # FR-01: after a refusal apply() has emptied final_trade_decision,
+                # so a blocked candidate never reaches the panel here either.
                 message_buffer.update_report_section(section, final_state[section])
 
         update_display(layout, stats_handler=stats_handler, start_time=start_time)
@@ -375,9 +389,23 @@ def run_analysis(checkpoint: bool | None = None, portfolio=None, flags=None):
     # Post-analysis prompts (outside Live context for clean interaction)
     console.print("\n[bold cyan]Analysis Complete![/bold cyan]\n")
 
-    # A decision nobody can read is not a position. Say so here rather than
-    # leaving the run to look like a normal result.
-    if is_review(run_rating(final_state)):
+    # FR-01: report the gate's verdict explicitly, from its own publication
+    # result. A refused candidate shows the BLOCKED status and reason, never the
+    # candidate as a position.
+    from tradingagents.graph.publication_gate import publication_result_from_state
+
+    publication = publication_result_from_state(final_state)
+    if publication is None:
+        console.print(
+            "[red]No publication result for this run: it did not pass the publication "
+            "gate, so it produced no official recommendation.[/red]\n"
+        )
+    elif not publication.approved:
+        console.print(
+            f"[red]Publication BLOCKED ({publication.reason}).[/red] "
+            "This run produced no official recommendation.\n"
+        )
+    elif is_review(run_rating(final_state)):
         console.print(
             "[yellow]No rating could be read from the final decision, so this run "
             "is recorded for review rather than as a position. Re-run, or read the "
@@ -461,4 +489,17 @@ def _offer_reports(final_state, graph, ticker, save=None, show=None, html=None):
     if show is None:
         show = typer.prompt("\nDisplay full report on screen?", default="Y").strip().upper() in ("Y", "YES", "")
     if show:
-        display_complete_report(final_state)
+        # FR-01: the panel shows a display state derived from the gate's own
+        # result: only an APPROVED result may carry a decision to display.
+        from tradingagents.graph.publication_gate import publication_result_from_state
+
+        publication = publication_result_from_state(final_state)
+        display_state = dict(final_state)
+        if publication is None or not publication.approved:
+            display_state["final_trade_decision"] = ""
+            display_state["final_rating"] = ""
+            display_state["publication_status"] = "BLOCKED"
+            display_state["publication_reason"] = (
+                publication.reason if publication is not None else "NO_PUBLICATION_RESULT"
+            )
+        display_complete_report(display_state)

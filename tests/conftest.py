@@ -90,6 +90,50 @@ def _own_cli_prefs(tmp_path, monkeypatch):
     monkeypatch.setattr("cli.prefs._PREFS_PATH", tmp_path / "cli_prefs.json")
 
 
+@pytest.fixture
+def publication_state(tmp_path):
+    """Supply a v1 candidate and retained evidence to tests of publication consumers."""
+    from tradingagents.graph.trading_graph import TradingAgentsGraph
+
+    def build(ticker, date, rating, body, *, results_dir=tmp_path, publish=True):
+        run_id = "fixture-run"
+        identity = {"contract_version": "1.0", "run_id": run_id, "ticker": ticker, "as_of_date": date}
+        root = results_dir / ticker / date / "evidence" / run_id
+        root.mkdir(parents=True, exist_ok=True)
+        (root / "snapshot.md").write_text(
+            f"### Recent verified closes\n\n| Date | Close |\n|---|---:|\n| {date} | 100 |\n",
+            encoding="utf-8",
+        )
+        state = {
+            "course_run": {**identity, "execution_status": "RUNNING", "request_limit": 40},
+            "candidate_rating": rating,
+            "candidate_decision": body,
+            "candidate_argument_ids": ["argument-1"],
+            "evidence_index": {
+                "snapshot-1": {
+                    **identity, "evidence_id": "snapshot-1", "source_kind": "market_snapshot",
+                    "vendor": "yahoo", "source_ref": "fixture:snapshot",
+                    "content_ref": f"evidence://{run_id}/snapshot.md",
+                    "window_start": date, "window_end": date,
+                },
+            },
+            "argument_index": {
+                "argument-1": {
+                    **identity, "argument_id": "argument-1", "claim": "Snapshot supports the claim",
+                    "evidence_ids": ["snapshot-1"],
+                },
+            },
+        }
+        if publish:
+            graph = object.__new__(TradingAgentsGraph)
+            graph.config = {"results_dir": str(results_dir)}
+            graph.complete_run(state)
+            assert graph.publish(state) == ("BLOCKED" if rating is None else "APPROVED")
+        return state
+
+    return build
+
+
 _API_KEY_ENV_VARS = (
     "OPENAI_API_KEY",
     "GOOGLE_API_KEY",
