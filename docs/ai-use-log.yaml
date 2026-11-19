@@ -417,7 +417,10 @@ entries:
   base_commit: 486a9a5d74433aedd3c858c483a8d77bf0f7b897
   requirements: [FR-01, FR-02, FR-03, NFR-01, NFR-02, INV-01, INV-02]
   scope: Five-PR local integration, shared graph contracts and metered course transport; offline tests, CI workflow and review record
-  human_direction: The project coordinator instructed autonomous local integration and approved the integration work on 2026-11-18. Feature-level historical approval evidence is recorded separately.
+  human_direction: >-
+    Human approval: on 2026-11-18 the project coordinator requested local
+    integration of the five requirements and authorized the integration scope
+    and execution. Feature-level approval evidence is recorded separately.
   session_reference:
     plan: ses_e133bd77fffeDP0RnLi8Mat0bn
     evidence_and_metrics_merge: ses_e13360065ffed5aGQsZTze80cD
@@ -432,8 +435,26 @@ entries:
     raw_transcripts: Retained in the local OpenCode workspace
   contributions:
   - OpenCode produced application conflict resolutions, transport and graph wiring, integration repairs and the initial transport counterexample.
-  - Codex operated Git and test commands, repaired fixture assumptions for the merged candidate and sentiment interfaces, and added integration assertions for the actual SDK transport and shared graph.
-  - Codex maintained exact-path permissions, workflow and artifact checks, the direct HTTP dependency and documentation.
-  - OpenCode proposed the final school-profile and CLI patch. Codex applied the reviewed subset and simplified the conditional handling, retaining unchanged defaults for other profiles.
+  - Integration automation executed Git and test commands, repaired fixture assumptions for the merged candidate and sentiment interfaces, and added integration assertions for the actual SDK transport and shared graph.
+  - Integration automation maintained exact-path permissions, workflow and artifact checks, the direct HTTP dependency and documentation.
+  - OpenCode proposed the final school-profile and CLI patch. Integration automation applied the reviewed subset and simplified the conditional handling, retaining unchanged defaults for other profiles.
   evidence: See the combined-tree review in docs/review-memo.md for observed failures, reruns and local CI evidence.
   review_status: Coordinator authorized local integration; hosted CI and online acceptance are pending.
+- id: AI-FR01-REFERENCE-RELIABILITY-20261119
+  date: '2026-11-19'
+  tool: OpenCode course-plan/course-build/course-verify with DeepSeek; integration maintainer automation
+  base_commit: 77938d016ccf8e30e2150db1561db8026aeeb7b7
+  requirements: [FR-01, INV-01]
+  scope: Invocation-local reference selections, exact canonical resolution, rejection diagnostics and regression verification
+  human_direction: The coordinator requested live verification and a repair of long reference copying; prior integration authorization remains applicable.
+  session_reference:
+    plan: ses_e0ddee99bfferbBnNlbImAOkpM
+    tests: ses_e0dd87f8fffejh9bXrN4lwsUka
+    implementation_draft: ses_e0dd1c89fffeYgVllaKKADZsq3
+    review: ses_e0dbdf93cffeyCw1U7DBXBGU2I
+  contributions:
+  - OpenCode produced the read-only plan, the initial tests, an adapter draft and the read-only source review.
+  - Maintainer automation corrected fixtures before the recorded behavioral baseline and added three controls for the draft's collision and second-selection behavior.
+  - Maintainer automation corrected PM mapping direction and import cycles, researcher imports and schema guidance, opaque-ID collisions, and reference diagnostics; it executed verification and maintained English records.
+  evidence: Twenty alias cases passed; complete regression 1832 passed, one skipped, one deselected, and 100 passing subtests. Three real DeepSeek HTTP attempts with fixed synthetic source material returned 200 and resolved an approved canonical chain. Fresh Yahoo preflights remained rate limited, with zero model requests.
+  review_status: OpenCode found no blocking source counterexample in the corrected adapter; terminal receipts recorded in the review memo. Final independent team review and hosted CI for a future commit remain pending.

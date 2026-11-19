@@ -12,8 +12,12 @@ def create_bear_researcher(llm):
     # Imported here: ``publication_gate`` imports this package, so a module-level
     # import of it here would be circular.
     from tradingagents.graph.publication_gate import (
+        _resolve_selections,
+        _select_aliases,
         accepted_arguments_view,
+        as_index,
         evidence_menu,
+        logger as reference_logger,
         run_as_of_date,
         validate_argument,
     )
@@ -42,7 +46,9 @@ def create_bear_researcher(llm):
         )
         # FR-01: give the model this run's evidence IDs and material together, so
         # a cited ID resolves to real run material.
-        evidence_block = evidence_menu(state.get("evidence_index"))
+        evidence_state = state.get("evidence_index")
+        aliases = _select_aliases(as_index(evidence_state).evidence_ids, "E")
+        evidence_block = evidence_menu(evidence_state, aliases)
 
         prompt = f"""You are a Bear Analyst making the case against investing in the {target_label}. Your goal is to present a well-reasoned argument emphasizing risks, challenges, and negative indicators. Leverage the provided research and data to highlight potential downsides and counter bullish arguments effectively.
 
@@ -67,6 +73,8 @@ Last bull argument: {current_response}
 Available evidence (cite these exact IDs in evidence_ids; do not invent IDs):
 {evidence_block}
 
+Each evidence line ends with a short selection such as '= E1'. Prefer the short selection in evidence_ids; an exact full ID is also accepted. Never shorten or rewrite a full ID, and cite no selection that is not on this list.
+
 Use this information to deliver a compelling bear argument, refute the bull's claims, and engage in a dynamic debate that demonstrates the risks and weaknesses of investing in the {target_label}.
 """ + get_language_instruction()
 
@@ -75,7 +83,13 @@ Use this information to deliver a compelling bear argument, refute the bull's cl
         evidence_ids = ()
         structured = invoke_structured(structured_llm, prompt, "Bear Researcher")
         if structured is not None:
-            evidence_ids = tuple(structured.evidence_ids or ())
+            # FR-01 reference adapter: an alias selected from this invocation's
+            # menu becomes the canonical ID the validator checks. An unknown or
+            # shortened selection is kept as written, so validation refuses the
+            # whole argument instead of dropping it.
+            evidence_ids = tuple(_resolve_selections(
+                structured.evidence_ids or (), aliases, "Bear Researcher",
+            ))
             content = structured.argument
         else:
             content = llm.invoke(prompt).content
@@ -120,7 +134,13 @@ Use this information to deliver a compelling bear argument, refute the bull's cl
             accepted = validate_argument(
                 submission, evidence_state, run, results_dir=_results_dir(),
             )
-            if accepted is not None:
+            if accepted is None:
+                reference_logger.warning(
+                    "Argument rejected: actor=%s references=%r reason=UNRESOLVABLE_EVIDENCE",
+                    "Bear Researcher",
+                    [reference[:160] for reference in evidence_ids],
+                )
+            else:
                 argument_id = accepted["argument_id"]
                 accepted = {**accepted, "claim": argument, "speaker": "Bear Analyst"}
                 argument_index[argument_id] = accepted

@@ -103,3 +103,10 @@ See [FR-03](fr03.md), [derived evidence](fr03-evidence.json) and FR03-REVIEW-006
 - **Classification:** documentation/record defect; NFR-01; severity major for evidence integrity, no behavioural impact.
 - **Root cause and invariant gap:** the evidence block was written once for one revision and then treated as a living section. The review procedure requires a new dated entry per reviewed revision; editing the old entry in place would instead have implied the old run measured the current tree.
 - **Fix and regression evidence:** the old heading is marked superseded in place, a new re-verification block is added for `3d5ce62`, and PR-NFR01-002 is appended for the new revision while PR-NFR01-001 is left intact. Session IDs from both rounds are listed explicitly because Gate 4 flagged the two sets as unreconciled.
+
+
+## FR-01 reference selection — 19 November 2026
+
+The saved AAPL rerun from 18 November showed the Bull model submitting an incomplete evidence ID. Its argument was rejected, while the Bear's exact reference was accepted and the PM cited the accepted argument. The earlier blocked AAPL run did not capture the PM references, so its exact cause is unresolved. This is a reference-selection reliability issue; the gate refused the invalid reference as required by INV-01.
+
+On integrated base `77938d0`, a 17-case real-node suite recorded 12 failures and 5 passes before the repair. Model-selected E1/A1 remained unresolved while the canonical-only control passed. The repair adds per-invocation selections, preserves canonical ownership checks and logs invalid references. Three further helper controls caught alias collisions in the generated draft. All 20 cases and the complete 1,832-case regression pass after maintainer correction. A real DeepSeek replay with fixed synthetic source material made three successful requests and resolved a canonical approved chain. Fresh Yahoo data remained unavailable under HTTP 429. [Detailed evidence](review-memo.md#fr-01-reference-reliability-follow-up--19-november-2026)

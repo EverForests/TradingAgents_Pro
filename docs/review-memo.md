@@ -186,11 +186,12 @@ applies to integration.
 | C0/C4/C5 | The neutral-risk integration fixture injects irreducible required content and checks zero reservations and zero provider sends. The two scoped sites keep deterministic reduction, with a final check on the provider message array in the metered profile before C4 dispatch. |
 | CityU request shape | The final fake SDK transport check first observed a missing `thinking` key. After the profile repair, both tiers send the approved alias and `thinking: {type: disabled}` to the configured CityU host, with SDK retries forced to zero. |
 
-OpenCode generated the application changes and the initial transport fixture.
-Codex maintained Git, fixture adaptations, test commands and CI. The legacy
-memory regression keeps its original approved-write assertion and binds the new
-real methods on its graph stand-in. See AI-use entry
-`AI-COURSE-INTEGRATION-20261118` for sessions and scope.
+The project coordinator authorized the integration scope. OpenCode generated
+the application changes and the initial transport fixture. Integration automation
+operated Git and test commands and maintained fixtures and CI. The legacy memory
+regression retains its approved-write assertion and binds the real methods on
+its graph stand-in. The AI-use entry `AI-COURSE-INTEGRATION-20261118` records
+the tools, sessions and scope.
 
 The workflow runs the upstream and course offline suites, the fixed FR-03
 paired comparison, lint, dependency consistency and install smoke checks,
@@ -226,5 +227,115 @@ standard-deviation calculation. The default suite in the fresh environment
 then ran with 1779 passed, 34 skipped (the 33 paired cases and optional
 Bedrock), 1 deselected and 100 passing subtests.
 
+## Integrated acceptance of five requirements — 18 November 2026
+
+The tested revision was `e6b60563161e3e5035bdf95fff52b5912d5aeaa9` for PR #11. Offline verification ran in an isolated worktree of that revision. The FR-03 comparison used pinned upstream `9fa1196fffbcfd9de5146d2dd2869df84ab99838`. The environment used Python 3.13.3 and `stockstats 0.6.13`, with proxy bypass for `127.0.0.1` and `localhost`.
+
+```bash
+FR03_BASELINE_ROOT="<pinned-upstream-worktree>" \
+FR03_PAIRED_RECEIPT_DIR="<private-receipt-directory>" \
+NO_PROXY=127.0.0.1,localhost no_proxy=127.0.0.1,localhost \
+LANGSMITH_TRACING=false PYTHONDONTWRITEBYTECODE=1 \
+python -m pytest -p no:cacheprovider -q tests test/offline --tb=short \
+  --show-capture=no --disable-warnings --junitxml="<private-receipt-directory>/offline.xml"
+```
+
+**Observed result — 1,812 passed, zero failed, one skipped, one deselected, and 100 passing subtests.** The skip was the optional Bedrock dependency. The deselected case requires the real DeepSeek API. The 33 FR-03 paired checks ran. Ruff, dependency consistency and course-artifact validation passed. Feature rows group related evidence and can overlap.
+
+| Requirement | Offline result | Evidence and supported conclusion |
+| --- | --- | --- |
+| FR-01 / INV-01 | 110 passing cases | A valid rating with resolvable current-run evidence can publish. Invalid, missing and foreign references and ungated state are blocked. CLI, Python, reporting and decision-memory rejection paths have controls. See `test_fr01_contract_v1_alignment.py`, `test_fr01_publish_valid.py` and `test_inv01_*.py`. |
+| FR-02 | 48 passing cases | Frozen operands verify growth rates, ratios and signed differences. The same metric ID reaches downstream fields and the report. Invalid sources, identity and values are rejected. The four fixed examples establish formula behavior; historical source claims retain their own provenance boundaries. See `test_verified_metrics.py` and the [operand notes](code-governance/verification-constraints.md#fr-02-aapl-acceptance-examples). |
+| FR-03 | 159 passing cases | Coverage counts, missing reasons, valid Neutral/5.0 and fallback paths pass. The pinned comparison covers zero-source NO_DATA/UNKNOWN/null and zero sentiment-model calls. A combined-graph positive case permits publication with valid market evidence and absent sentiment. |
+| NFR-01 / INV-02 | 39 budget cases and integration checks | With a limit of three, a flow requiring four attempts sends three, returns BUDGET_EXHAUSTED and produces no official decision or new memory. Tests cover contention, independent runs, retries, failures and streaming. |
+| NFR-02 | 37 context cases and integration checks | Scoped UTF-8 message sizing covers the 65,536-byte boundary, deterministic reduction, required-block retention and tool pairing. Irreducible required input returns CONTEXT_TOO_LARGE with zero budget reservations and sends. Scope is analyst wrap-up and the neutral risk debater. |
+
+The seven `test_integration_dispatch.py` cases include the school-provider request shape with a fake HTTP transport. These conclusions apply to fixed fixtures and offline execution. The FR-03 comparison controls inputs and model replies.
+
+### OpenCode read-only cross-check
+
+- Session `ses_e119558c9ffe8wCjnPOaNiI31r` inspected the FR-01 positive citation/memory assertions, FR-02 recomputation and signed difference, and FR-03 zero-source checks. The FR-03 excerpt used a small test graph; the full integration path is also covered by `test_fr01_publish_valid.py`.
+- Session `ses_e1196c42bffeddv66k7a7f1F9k` inspected the NFR-01 send counter and NFR-02 zero-reservation/zero-send refusal. These source reviews are separate from the terminal pass receipts.
+
+### Integrated online DeepSeek checks — 18 November 2026
+
+On `e6b6056`, the checks analyzed NVDA as of 2026-11-10 with market, social, news and fundamentals analysts. Both model tiers used `CS5351/DeepSeek-V4-Flash` through the school endpoint. Each run used isolated caches, empty memory and disabled checkpoints. HTTP attempts were observed at the inner transport. After the initial normal run failed, a diagnostic rerun used a ceiling of 29 and captured HTTP statuses and exception types. [Online results](live-acceptance.md)
+
+| Case | Limit | Observed HTTP attempts | Execution and publication |
+| --- | ---: | ---: | --- |
+| Low budget | 1 | 1 | BUDGET_EXHAUSTED / BLOCKED / BUDGET_EXHAUSTED. The budget-refusal check passed. |
+| Initial normal run | 40 | 11 | FAILED / BLOCKED / RUN_NOT_COMPLETE. The first receipt omitted the underlying transport exception type. |
+| Diagnostic rerun | 29 | 22, all HTTP 200 | COMPLETED / BLOCKED / INSUFFICIENT_EVIDENCE. Diagnostic reports were retained; this series did not establish successful publication. |
+
+All three runs withheld official ratings and decision files and wrote no new decision-memory entries. The normal attempt and rerun observed 33 model HTTP attempts together. Yahoo rate limiting affected market, news and indicator retrieval. OpenCode session `ses_e118bcd44ffe5e09FjUihsrtWh` inspected budget refusal, transport failure and terminal-state mapping. The available logs do not establish a causal link between Yahoo limits and the initial model transport failure.
+
+- FR-01 / INV-01 rejection results agreed with report and memory outcomes in this series.
+- FR-02 produced 16 metric rows in the rerun. Independent recomputation used SEC accession `0001045810-26-000075` and two complete quarterly Revenues values, 96,221 and 46,743 million USD, to obtain 105.8511434867252850694221595%. This matched `metric-559f9ba7fbe0a7d9faca4b72be32e453`. This series did not reproduce the Yahoo-derived price difference.
+- FR-03 reported coverage 0/3, NO_DATA and UNKNOWN while the workflow completed. Per-node zero model calls are established by offline controls.
+- NFR-01 observed one attempt before the low-budget refusal. Both other runs stayed within their individual limits.
+- NFR-02's byte, pairing and pre-reservation boundaries were verified offline. This series did not record per-request message bytes.
+
+Sanitized receipts, diagnostic reports, HTTP statuses and SEC recomputation are retained in the private course archive `CityU-e6b6056-2026-11-18`. Formal review of the integration revision is recorded separately.
+
+#### FR-01 positive-publication preflight — historical check
+
+At 20:04 on 18 November 2026 (UTC+8), the `e6b6056` preflight requested a Yahoo NVDA snapshot as of 2026-11-10, with 30 recent rows and an isolated cache. The tool returned DATA_UNAVAILABLE after ConnectionError, with zero usable rows, zero evidence records and no resolvable content reference. It took 4.06 seconds and made zero model calls.
+
+The preflight stopped before full model analysis. Successful publication remained unverified by that check. Its receipt is `publication-preflight/receipt.json` in the archive above. Subsequent teammate and coordinator observations are recorded as separate follow-ups below.
 
 **18 November 2026 — Yahoo online follow-up.** Keep two findings separate in acceptance review. The coordinator observed HTTP 429 from Yahoo; the later three-company tool checks observed none. In the latter checks an MSFT snapshot failed locally during concurrent cold-cache initialization. The unmodified upstream ToolNode reproduced the same lock in 4/100 trials with the tested dependencies, so a student feature or merge is not required to trigger it. The full NVDA run recorded only the exception class; its final state was `COMPLETED / BLOCKED`, not a published recommendation. The NVDA repeat published Overweight. Four of five companies published in the subsequent batch. AAPL published on a separate rerun after the manager cited a validated argument linked to its market snapshot. [Live acceptance evidence and controls](live-acceptance.md)
+
+## FR-01 reference reliability follow-up — 19 November 2026
+
+### Scope and supervision
+
+The project coordinator requested a new online check and a repair of model reference selection on integrated base `77938d016ccf8e30e2150db1561db8026aeeb7b7`. The current request and previously granted integration authorization covered this work. OpenCode supplied a read-only plan, a tests-only session, an implementation draft and a read-only code review. Maintainer automation reviewed the tests, ran commands, corrected the generated adapters and maintained the records. Final independent team approval of this working-tree revision remains pending.
+
+The live AAPL diagnostic from 18 November observed a shortened Bull evidence reference and a valid Bear reference. The first blocked AAPL run omitted the manager's submitted references, so its exact cause remains unresolved. The repair offers invocation-local evidence selections E1/E2 and argument selections A1/A2, resolves exact selections to canonical IDs, and preserves unknown references for the existing C1 rejection. Full IDs remain supported. Every accepted record and approved chain carries canonical IDs. Invalid-reference diagnostics name the actor and reference and omit claim bodies. These observations do not establish a statistical change in publication success.
+
+### Test-first evidence and maintainer review
+
+- The unchanged FR-01 group passed 146 cases before application edits.
+- The new real-node suite initially required fixture corrections: node-only cases needed retained snapshot material, and a diagnostic assertion needed the private claim actually supplied to the fake model. After correcting the fixtures, its 17 cases ran on the pre-change application with **12 failed and 5 passed**. The key positive cases failed because E1/A1 remained unresolved, while the canonical-only control passed.
+- Three additional helper cases exposed collisions when opaque canonical IDs themselves were E1/A1 and checked selection of the second item. They supplement the original real-node baseline evidence. Maintainer review corrected the draft's collision handling, PM alias direction, researcher imports, manager circular import, missing schema descriptions, and diagnostics for canonical references.
+- The new 20-case suite then passed. Existing tests remained intact. AST comparison confirmed that C1 argument validation, publication evaluation, content revalidation and final publication application retained their prior enforcement bodies.
+
+### Executed verification
+
+| Check | Observed result |
+| --- | --- |
+| New alias cases | 20 passed |
+| Complete regression, including the fixed upstream FR-03 comparison | 1,832 passed, 0 failed, 1 skipped, 1 deselected, and 100 passing subtests |
+| Ruff and whitespace checks | Passed |
+| Dependency consistency | Passed |
+| Fresh Yahoo preflight before and after repair | AAPL as of 2026-11-10 returned HTTP 429 after the standard retries, zero usable snapshots and zero model requests |
+| Live DeepSeek with fixed synthetic source | Three HTTP attempts, all 200; Bull and Bear selected E1, PM selected A1/A2; canonical records and the retained source resolved; component gate returned APPROVED with Hold |
+
+The first complete regression attempt ran inside a sandbox that denied loopback socket binding. Seven upstream login-callback cases failed with PermissionError; 1,825 cases passed. The same full command in an environment that allowed local loopback completed with the result above. Both receipts are retained.
+
+The live-model replay used the actual researchers, manager, metered client and gate, with a two-row synthetic market source explicitly marked as such. Its request ceiling was 12 and it used three requests. This checks the revised model interaction with controlled evidence. It does not establish fresh Yahoo availability, a full CLI live-data run, or an investment-quality improvement. The ordinary full-data checks used a ceiling of 40 and stopped before model analysis when Yahoo preflight failed.
+
+### OpenCode sessions and evidence
+
+| Stage | Session |
+| --- | --- |
+| Plan | `ses_e0ddee99bfferbBnNlbImAOkpM` |
+| Tests | `ses_e0dd87f8fffejh9bXrN4lwsUka` |
+| Implementation draft | `ses_e0dd1c89fffeYgVllaKKADZsq3` |
+| Read-only review | `ses_e0dbdf93cffeyCw1U7DBXBGU2I` |
+
+The implementation driver was stopped for maintainer correction of the draft. The read-only reviewer inspected the corrected working tree and found no blocking counterexample for alias direction, scope, mixed-reference rejection, opaque-ID handling or C1 ownership. Its initial report marked the full regression and live replay pending because they were still running. Those terminal results are recorded above. A follow-up attempt to attach the receipts to that session encountered an unavailable OpenCode backend; the executable results are therefore attributed to terminal receipts, with the source review retained separately.
+
+Raw sessions, before/after receipts, the draft patch, JUnit output and synthetic-source replay are retained outside the public repository under the local course evidence archive `FR01-reference-reliability-2026-11-19`. The tested application patch is identified there by SHA-256. These working-tree checks do not imply hosted CI or final human approval for a future commit.
+
+**Proposed verdict — APPROVE for the scoped reference adapter based on the recorded verification, subject to team review of the final diff.** Fresh full-data live acceptance remains limited by Yahoo availability.
+
+## Online reproduction follow-up — 19 November 2026
+
+The coordinator retried AAPL / 2026-11-10 with all four analysts through the Python graph API on base `77938d0` plus the uncommitted reference adapter. Yahoo preflight now succeeded. The default run and retry ended FAILED / BLOCKED / RUN_NOT_COMPLETE after model transport errors. A serial diagnostic progressed through accepted Bull and Bear evidence references and then failed on a later model request. An explicit-system-proxy diagnostic also failed, with TLS unexpected-EOF errors.
+
+The four receipts observed 4, 3, 12 and 5 model HTTP attempts, respectively. All four runs suppressed the official decision and recorded zero new decision-memory entries. The serial diagnostic's original receipt incorrectly labeled the configured request limit as 33; its actual configuration was 40, with twelve attempts. Both receipts are retained and the online results table uses the corrected configuration.
+
+The evidence supports fresh Yahoo access and acceptance of the repaired E1 selection against real retained source material. Successful full-flow publication remains unreproduced on this machine. This follow-up does not supersede the earlier teammate's successful CLI evidence, and it does not identify a model-side root cause from connection errors alone. [Detailed conditions and results](live-acceptance.md#coordinator-reproduction--19-november-2026)
+
+Application code was unchanged during these runs. The serial scheduling and explicit inner-transport proxy were private diagnostic adjustments. No additional implementation approval or hosted-CI result is implied.

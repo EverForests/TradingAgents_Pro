@@ -67,3 +67,24 @@ The resolver returned the referenced content on all three observed calls. The Bu
 The batch table comes from the local receipt `saved_results_summary.md`; AAPL rerun details come from the local gate trace summary `diagnostic_summary.json`. These saved artifacts are outside the committed test fixtures. This documentation update used saved artifacts and made no online requests.
 
 Rating stability and resolution of intermittent Yahoo or cache failures remain unverified. The offline controls cover the tested dependencies; production failure rates and the original demo environment were outside their scope. Yahoo's reason for returning 429 is unknown. The first NVDA run retained only the `OperationalError` class, leaving its cause unresolved. The original AAPL artifacts omit the candidate references and admissible registry state needed to explain its block; the later rerun records a separate execution.
+
+## Coordinator reproduction — 19 November 2026
+
+A new local reproduction used the working tree based on `77938d0` with the FR-01 reference-selection repair. It analyzed AAPL as of 10 November through the Python graph API with market, social, news and fundamentals analysts and `CS5351/DeepSeek-V4-Flash` on both tiers. The application patch SHA-256 was `c3e608283151c87818af77163a9095d969d06c69b02ffe3b7e865094ba4c941b`. This differs from the earlier teammate CLI revision. The application source remained stable during the checks.
+
+Yahoo preflight succeeded and supplied a verified close window from 30 September through 10 November. Each run used empty decision memory and a new result directory. Subsequent attempts copied the real Yahoo cache downloaded by the first attempt. None used the synthetic source from the earlier component replay.
+
+| Attempt | Scheduling / route | Actual configured request limit | Observed model HTTP attempts | Result |
+| --- | --- | ---: | ---: | --- |
+| Default | Four-analyst default scheduling | 40 | 4, including one HTTP 200 and three ConnectError outcomes | FAILED / BLOCKED / RUN_NOT_COMPLETE |
+| Retry | Default scheduling, previously fetched Yahoo cache | 40 | 3 ConnectError outcomes, with local address assignment and connection reset errors | FAILED / BLOCKED / RUN_NOT_COMPLETE |
+| Serial diagnostic | All four analysts, graph max_concurrency=1 | 40 | 12, with eleven HTTP 200 and one local address assignment failure | FAILED / BLOCKED / RUN_NOT_COMPLETE |
+| Explicit proxy diagnostic | Default scheduling, model transport explicitly uses the configured local system proxy | 21 | 5, with three HTTP 200 and two TLS unexpected-EOF errors | FAILED / BLOCKED / RUN_NOT_COMPLETE |
+
+The serial diagnostic initially mislabeled its request ceiling as 33 in the receipt, while the actual runner configuration remained 40. Its twelve attempts stayed below both values. The retained original receipt and corrected receipt document the labeling correction. Across the four receipts, 24 model HTTP attempts were observed.
+
+In the serial diagnostic, the Bull returned E1. The adapter resolved it to the retained market snapshot, and argument validation accepted it. The Bear supplied the full snapshot ID and was also accepted. The run subsequently failed before it could publish a final decision. Every attempt returned the API sentinel REVIEW, withheld an official rating and decision file, and left decision memory empty.
+
+The system HTTPS proxy was enabled on local port 11888. A model metadata request returned HTTP 200. The metered model client owns its HTTP transport, so successful metadata access alone does not establish that ordinary model requests use the same proxy route. The explicit-proxy diagnostic retained the existing budget wrapper and changed only the inner HTTP transport in the private test harness. It still encountered TLS errors. The serial and proxy diagnostics therefore do not establish a fix for the connection problem.
+
+These checks verified fresh Yahoo availability and short-reference acceptance with real market evidence on this machine. They did not reproduce the teammate's COMPLETED / APPROVED outcome. No application code, proxy settings or SDK retry policy was changed during this reproduction. Private receipts, diagnostic reports and runners are retained in the local course archive `FR01-reference-reliability-2026-11-19`, under the `live-reproduction-*` directories.

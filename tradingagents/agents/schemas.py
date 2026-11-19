@@ -104,9 +104,10 @@ class DebateArgument(BaseModel):
     evidence_ids: list[str] = Field(
         default_factory=list,
         description=(
-            "The evidence IDs this argument relies on. Copy exact IDs from the "
-            "'Available evidence' list; do not invent IDs. An argument with no "
-            "resolvable ID cannot support a published recommendation."
+            "Select evidence using the short aliases (for example E1) offered "
+            "in this invocation's Available evidence menu, or copy its exact "
+            "full IDs. Never truncate an ID or invent a reference. The program "
+            "resolves aliases and validates every reference before acceptance."
         ),
     )
 
@@ -264,9 +265,10 @@ class PortfolioDecision(BaseModel):
     argument_ids: list[str] = Field(
         default_factory=list,
         description=(
-            "The accepted argument IDs this decision rests on. Copy the exact "
-            "argument IDs listed under 'Accepted arguments' in the prompt; a "
-            "release needs at least one. Do not invent IDs."
+            "Select at least one accepted argument using the short aliases "
+            "(for example A1) in this invocation's Accepted arguments menu, "
+            "or copy its exact full IDs. Never truncate an ID or invent a "
+            "reference. The program resolves aliases before publication checks."
         ),
     )
     executive_summary: str = Field(

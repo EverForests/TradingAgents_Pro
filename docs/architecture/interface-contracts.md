@@ -35,6 +35,8 @@ An AcceptedArgument contains `run_id`, `argument_id`, the claim and a nonempty l
 
 The deterministic gate returns one authoritative PublicationResult: identity, publication status, reasons, approved rating or null, and validated argument/evidence references. Invalid rating uses INVALID_RATING; missing, unknown, cross-run or unaccepted required references use INSUFFICIENT_EVIDENCE. Diagnostics may retain rejected values privately, but official consumers receive no rejected rating. All four sinks (CLI, Python result, saved official report, decision memory) consume this same result. Structured output, free-text fallback and streaming/final display paths cannot bypass it.
 
+The FR-01 model adapter may offer invocation-local `E1` evidence selections and `A1` accepted-argument selections. Freeze the mapping from that invocation's actual menu and resolve selections before C1 validation. Existing canonical IDs remain supported. Persist canonical IDs in evidence, accepted arguments, candidates and publication results. Unknown selections and truncated canonical IDs remain subject to rejection. Each short selection refers only to the current menu; the full records establish run ownership. See the [ADR reference-selection amendment](adr/001-choice-tbd.md#fr-01-reference-selection-adapter--19-november-2026).
+
 FR-02 adds verified numerical records; FR-01 must not label arbitrary model prose as verified arithmetic. FR-03 missingness does not automatically invalidate other evidence. The v1 result fields below are common to all sinks; name exact sink adapter edits in the relevant feature plan and test each one.
 
 ## C2 — verified metrics

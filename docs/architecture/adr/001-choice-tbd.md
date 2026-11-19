@@ -49,3 +49,11 @@ The initial product profile uses a configurable request limit of 40, both tiers 
 Benefits are localized changes and explicit failure states. Costs are shared dispatch/publication integration and nullable-state compatibility across existing consumers. Review this decision when provider retries become opaque, a sink bypasses publication checks, required context routinely cannot fit, or requirements need different orchestration.
 
 Changes to shared fields, date semantics, thresholds, safety behavior or dependencies require affected-owner review and synchronized requirements, interfaces and tests. Record the human decision and supporting evidence.
+
+## FR-01 reference selection adapter — 19 November 2026
+
+The coordinator requested live verification and repair of long model reference copying on the integrated `77938d0` tree. The recorded AAPL rerun rejected a shortened Bull reference and accepted a complete Bear reference. The earlier blocked AAPL run lacks the manager references needed to establish its exact cause.
+
+Use invocation-local evidence aliases (`E1`, `E2`, ...) and accepted-argument aliases (`A1`, `A2`, ...). Build and freeze the mapping from the menu actually supplied to that invocation. Resolve returned selections to canonical IDs before the existing C1 validators. Keep canonical IDs available for existing callers. Unknown selections remain invalid. Every stored record, candidate and publication chain uses canonical IDs. An alias has meaning only within the menu of its current invocation; ownership continues to be established from full C0/C1 records.
+
+This adapter adds no model request. Diagnostic rejection logs identify the actor and reference without including raw claims or changing public reason codes. Verification must cover both real researcher nodes and the manager, legacy full-ID inputs, unknown/truncated/mixed references, foreign records, missing evidence, deterministic menus and independent mappings across runs. A fixed model replay exercises the revised prompts before delivery. Live provider limitations remain separately recorded.

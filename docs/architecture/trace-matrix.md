@@ -48,3 +48,11 @@ Case IDs above are traced to executable tests in this revision; the earlier "pla
 | Reviewer verdict | course-verify `ses_e1cab4f89ffed8ePmZwWo5Ljy0`: CONDITIONALLY COMPLIANT for the owner module, not compliant for NFR-01 delivery. See PR-NFR01-002 |
 | Record-integrity limit | Gate 4 was denied read on `docs/ai-use-log.yaml`, `docs/bug-diary.md`, `docs/debt-register.md`, `transcripts/nfr-01-request-budget.md` and `Report.md`, reported the denial instead of bypassing it, and those five files were reviewed by the human owner instead (TD-15) |
 | Integration status | Unchanged: no non-test module imports the gate; C0 terminal mapping, two-tier routing and SDK retry configuration remain with the integrator (TD-10, TD-11, TD-16) |
+
+## Combined acceptance
+
+The integrated `e6b6056` run records executable evidence for all five requirements, including shared C1/C4/C5 behavior and the two-tier dispatch path. See [the integrated acceptance record](../review-memo.md#integrated-acceptance-of-five-requirements--18-november-2026) for test counts, evidence limits and the CityU run procedure. The tables above record their stated historical revisions.
+
+## FR-01 reference adapter — 19 November 2026
+
+The invocation-local E/A selection adapter is covered by `test/offline/test_fr01_reference_aliases.py`. Its 17 real-node cases have a pre-change 12-failure/5-pass receipt. Three additional helper cases cover opaque-ID collisions and later selections. All 20 pass after repair. Full regression recorded 1,832 passes and 100 passing subtests. A real DeepSeek replay with an explicitly synthetic source selected E1 and A1/A2 and resolved the canonical chain. The fresh Yahoo checks remained rate limited. See the [follow-up review](../review-memo.md#fr-01-reference-reliability-follow-up--19-november-2026).

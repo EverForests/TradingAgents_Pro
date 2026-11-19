@@ -45,10 +45,13 @@ C1 v1.0 (``evaluate_publication`` / ``PublicationResult``):
 
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass, field
 from pathlib import Path
 
 from tradingagents.agents.rating import RATINGS_5_TIER
+
+logger = logging.getLogger(__name__)
 
 # The analyst state keys whose non-empty text is admissible as run material.
 _ANALYST_REPORT_KEYS = (
@@ -344,7 +347,7 @@ def build_evidence_index(run_id: str, state) -> EvidenceIndex:
     return EvidenceIndex(run_id=run_id, evidence=evidence)
 
 
-def evidence_menu(index) -> str:
+def evidence_menu(index, aliases: dict[str, str] | None = None) -> str:
     """The evidence IDs and their material, for the researcher prompt.
 
     The model may cite only these IDs; they are the program-built index for this
@@ -353,9 +356,11 @@ def evidence_menu(index) -> str:
     idx = as_index(index)
     if not idx.evidence_ids:
         return "(No evidence is available in this run; you cannot cite any evidence ID.)"
+    selections = {reference: alias for alias, reference in (aliases or {}).items()}
     lines = []
     for record in idx.evidence_records:
-        lines.append(f"- {record.evidence_id}  [{record.source}] {record.excerpt}")
+        suffix = f" = {selections[record.evidence_id]}" if record.evidence_id in selections else ""
+        lines.append(f"- {record.evidence_id}  [{record.source}] {record.excerpt}{suffix}")
     return "\n".join(lines)
 
 
@@ -363,6 +368,40 @@ def _excerpt(text: str, limit: int = 160) -> str:
     """A short, single-line pointer into the material (for traceability only)."""
     flat = " ".join(text.split())
     return flat if len(flat) <= limit else flat[: limit - 1] + "\u2026"
+
+
+# FR-01 / ADR-001: aliases are local model selections. C1 receives canonical IDs.
+def _select_aliases(references, prefix: str) -> dict[str, str]:
+    """Build an invocation-local menu without shadowing opaque canonical IDs."""
+    canonical = tuple(dict.fromkeys(
+        reference for reference in references if isinstance(reference, str) and reference
+    ))
+    reserved = set(canonical)
+    aliases = {}
+    number = 1
+    for reference in canonical:
+        while f"{prefix}{number}" in reserved:
+            number += 1
+        aliases[f"{prefix}{number}"] = reference
+        number += 1
+    return aliases
+
+
+def _resolve_selections(selections, aliases: dict[str, str], actor: str) -> list[str]:
+    """Resolve exact selections, preserving invalid references for C1 rejection."""
+    canonical = set(aliases.values())
+    resolved = []
+    for selection in selections or ():
+        if isinstance(selection, str) and selection in aliases:
+            resolved.append(aliases[selection])
+        else:
+            if selection not in canonical:
+                logger.warning(
+                    "Reference rejected: actor=%s reference=%r reason=UNKNOWN_REFERENCE",
+                    actor, repr(selection)[:160],
+                )
+            resolved.append(selection)
+    return resolved
 
 
 def _normalize_rating(value) -> str | None:

@@ -57,6 +57,9 @@ def _resolved_metrics(state) -> list:
 
 
 def create_portfolio_manager(llm):
+    # Local import preserves the graph/agents package initialization boundary.
+    from tradingagents.graph.publication_gate import _resolve_selections, _select_aliases
+
     structured_llm = bind_structured(llm, PortfolioDecision, "Portfolio Manager")
 
     def portfolio_manager_node(state) -> dict:
@@ -77,14 +80,29 @@ def create_portfolio_manager(llm):
 
         # FR-01: the decision must rest on arguments the program accepted. The
         # accepted argument IDs are injected here so the manager can cite them.
+        # FR-01 reference adapter: each listed line also offers a short local
+        # selection ('= A1'), built from this same list and frozen for this
+        # invocation, so the model need not copy a long run-bound ID.
         accepted = state.get("accepted_arguments") or []
         accepted_line = ""
+        argument_aliases: dict[str, str] = {}
         if accepted:
+            argument_aliases = _select_aliases(
+                [a["argument_id"] for a in accepted], "A",
+            )
+            selections = {
+                reference: alias for alias, reference in argument_aliases.items()
+            }
             listed = "\n".join(
                 f"- {a['argument_id']} ({a['speaker']}; evidence {', '.join(a['evidence_ids'])})"
+                + (f" = {selections[a['argument_id']]}"
+                   if a["argument_id"] in selections else "")
                 for a in accepted
             )
-            accepted_line = f"\n**Accepted arguments** (cite their IDs in argument_ids):\n{listed}\n"
+            accepted_line = (
+                f"\n**Accepted arguments** (cite their short selections, such as 'A1', "
+                f"in argument_ids; an exact full ID is also accepted):\n{listed}\n"
+            )
 
         prompt = f"""As the Portfolio Manager, synthesize the risk analysts' debate and deliver the final trading decision.
 
@@ -129,7 +147,13 @@ Write these sections, in this order, starting with the rating on its own line:
         if decision is not None:
             candidate_body = render_pm_decision(decision)
             candidate_rating = decision.rating.value
-            argument_ids = list(decision.argument_ids or [])
+            # FR-01 reference adapter: an A-selection becomes the canonical
+            # accepted-argument ID the gate rechecks. An unknown or shortened
+            # selection is kept as written, so the gate refuses the candidate
+            # instead of dropping the reference.
+            argument_ids = _resolve_selections(
+                decision.argument_ids or [], argument_aliases, "Portfolio Manager",
+            )
         else:
             # FR-01: no free-text rating fallback around the gate. A free-text
             # answer carries no structured argument_ids, so the candidate decision
