@@ -56,3 +56,10 @@ The integrated `e6b6056` run records executable evidence for all five requiremen
 ## FR-01 reference adapter — 19 November 2026
 
 The invocation-local E/A selection adapter is covered by `test/offline/test_fr01_reference_aliases.py`. Its 17 real-node cases have a pre-change 12-failure/5-pass receipt. Three additional helper cases cover opaque-ID collisions and later selections. All 20 pass after repair. Full regression recorded 1,832 passes and 100 passing subtests. A real DeepSeek replay with an explicitly synthetic source selected E1 and A1/A2 and resolved the canonical chain. The fresh Yahoo checks remained rate limited. See the [follow-up review](../review-memo.md#fr-01-reference-reliability-follow-up--19-november-2026).
+
+## Live evidence for FR-01 and FR-02 (19 November 2026)
+
+| Requirement | What the five-company CLI run showed on `df8a9d6` | Evidence |
+| --- | --- | --- |
+| FR-01 | All five runs ended `COMPLETED / APPROVED` and wrote an official recommendation to both Markdown and HTML. | [Publication results by company](../live-acceptance.md#five-company-cli-rerun-on-19-november-2026) |
+| FR-02 | Each official report included a Verified Metrics table. The live check covered export to the report; the offline suite checks the formulas, units, signs and rejection of invalid operands. | [Exported metric counts](../live-acceptance.md#five-company-cli-rerun-on-19-november-2026); [FR-02 offline tests](../../test/offline/test_verified_metrics.py) |

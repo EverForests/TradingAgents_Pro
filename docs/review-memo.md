@@ -351,3 +351,9 @@ The second run reused actual Yahoo history downloaded earlier the same day and s
 This extends the fixed-synthetic-source component check with a full graph API success using real cached data. Fresh Yahoo availability remains intermittent, and no new real-model CLI run was performed. [Detailed conditions and results](live-acceptance.md#published-reference-adapter-verification--19-november-2026)
 
 **Proposed verdict — APPROVE for the scoped adapter on the recorded offline, real-data cache replay and hosted CI evidence.** Final team review applies to the submitted diff and retains the documented availability limits.
+
+## Five-company CLI rerun on 19 November 2026
+
+On revision `df8a9d6`, the CLI published a decision and saved Markdown and HTML reports for all five companies. Each ran once with fresh per-company caches, all four analysts and an analysis date of 10 November. AAPL, previously blocked, published Hold. GOOGL changed from Underweight to Hold. NVDA remained Underweight; MSFT and AMZN remained Overweight.
+
+The displayed market snapshots matched the earlier batch for all five companies, while the model outputs differed. The two batches do not isolate the reason for AAPL’s change. The logs still show unavailable news inputs and structured-output fallbacks. See the [CLI acceptance record](live-acceptance.md#five-company-cli-rerun-on-19-november-2026) for per-company results, diagnostics and evidence locations.

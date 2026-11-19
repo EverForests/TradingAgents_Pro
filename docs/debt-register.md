@@ -17,7 +17,7 @@ For each confirmed entry add: **status**, **evidence/PR**, **impact**, **owner**
 
 ## Open verification items
 
-- TD-06: obtain original financial operands and reproducible live configurations before accepting real-company examples; closure requires source fixtures and receipts.
+- TD-06: obtain original financial operands and reproducible live configurations before accepting real-company examples; closure requires source fixtures and receipts. **FR-02 update, 19 November 2026 (open):** The [five-company CLI rerun](live-acceptance.md#five-company-cli-rerun-on-19-november-2026) records the revision, settings, market snapshots and report outputs. The archive contains SEC company-facts caches, but no raw statement replies for these runs. To close the financial-operand item, match the underlying values, units and reporting periods to the frozen cases and retain the source receipts.
 - TD-07: actual OpenCode guard probes and all course CI gates remain unverified; adding prose does not close this debt. Resolve exact-path omissions before affected Build tasks.
 - TD-08: five independent development sessions may drift on interfaces or claim approvals from summaries. Use one contract revision and real human review links; keep actual tool identity and shared-file ownership explicit.
 - Context architecture: proposed token budget in ADR-001 still needs tokenizer/model-capacity validation; a 64 KiB message check alone cannot close it.

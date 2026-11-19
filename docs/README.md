@@ -25,7 +25,7 @@ INV-01约束正式决策发布与记忆写入，INV-02约束请求上限。系�
 | D1 需求 | [产品范围](req/product.yaml)、[需求登记](req/requirements.yaml)、[校验Schema](req/req-schema.json) |
 | D2 架构 | [蓝图](../architecture-blueprint.md)、[ADR-001](architecture/adr/001-choice-tbd.md)、[共享接口C0–C5](architecture/interface-contracts.md)、[不变量](architecture/invariants.md)、[追踪矩阵](architecture/trace-matrix.md)、[状态设计](architecture/memory-design.md)、[权限模型](architecture/permission-model.md)、[运行策略](architecture/runtime-policy-catalog.md)、[候选方案比较](architecture/evaluation-table.md) |
 | D3 开发治理 | [入口AGENTS](../AGENTS.md)、[结构约束](code-governance/structural-constraints.md)、[工具清单](code-governance/mcp-tool-manifest.md)、[权限配置](../.opencode/opencode.jsonc)、[课程权限副本](../.opencode/permissions.jsonc)、[常驻规则](../.opencode/rules.md)、[项目公约](../.agent/rules.md) |
-| D4 验证治理 | [验证约束](code-governance/verification-constraints.md)、[PR评审](review-memo.md)、[技术债](debt-register.md)、[Bug记录](bug-diary.md) |
+| D4 验证治理 | [验证约束](code-governance/verification-constraints.md)、[PR评审](review-memo.md)、[技术债](debt-register.md)、[Bug记录](bug-diary.md)、[在线验收：五家公司 CLI 复跑](live-acceptance.md#five-company-cli-rerun-on-19-november-2026) |
 | D5 会话记录 | 交付包中的`transcripts/`，保留真实会话及人工干预说明 |
 | D6 过程报告 | 交付包中的`Report.md` |
 | D7 仓库与CI | [项目README](../README.md)、[工作流](../.github/workflows/ci.yml)、分支保护设置 |
