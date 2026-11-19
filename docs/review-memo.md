@@ -339,3 +339,15 @@ The four receipts observed 4, 3, 12 and 5 model HTTP attempts, respectively. All
 The evidence supports fresh Yahoo access and acceptance of the repaired E1 selection against real retained source material. Successful full-flow publication remains unreproduced on this machine. This follow-up does not supersede the earlier teammate's successful CLI evidence, and it does not identify a model-side root cause from connection errors alone. [Detailed conditions and results](live-acceptance.md#coordinator-reproduction--19-november-2026)
 
 Application code was unchanged during these runs. The serial scheduling and explicit inner-transport proxy were private diagnostic adjustments. No additional implementation approval or hosted-CI result is implied.
+
+## Published FR-01 adapter — online verification, 19 November 2026
+
+Reviewed application commit — `df8a9d6419dfa0aab2f4d8986d0a44060354cdb9`. The coordinator authorized pushing the verified repair and rerunning online verification. Its push and PR workflows completed successfully.
+
+Two runs analyzed AAPL as of 2026-11-10 with all four analysts and a ceiling of 40 model requests. The fresh-cache attempt completed after 21 HTTP 200 responses but remained BLOCKED / INSUFFICIENT_EVIDENCE under Yahoo rate limiting, with no official decision or memory entry.
+
+The second run reused actual Yahoo history downloaded earlier the same day and started with empty memory. It completed in 198.56 seconds with **APPROVED / Overweight**, 18 HTTP 200 responses, one official decision file and one decision-memory entry. Bull and Bear selected E1 and the manager selected A1/A2. The canonical chain resolved to retained real snapshot material. The API rating, Markdown/HTML reports, decision file and memory were checked.
+
+This extends the fixed-synthetic-source component check with a full graph API success using real cached data. Fresh Yahoo availability remains intermittent, and no new real-model CLI run was performed. [Detailed conditions and results](live-acceptance.md#published-reference-adapter-verification--19-november-2026)
+
+**Proposed verdict — APPROVE for the scoped adapter on the recorded offline, real-data cache replay and hosted CI evidence.** Final team review applies to the submitted diff and retains the documented availability limits.

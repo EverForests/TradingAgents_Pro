@@ -88,3 +88,16 @@ In the serial diagnostic, the Bull returned E1. The adapter resolved it to the r
 The system HTTPS proxy was enabled on local port 11888. A model metadata request returned HTTP 200. The metered model client owns its HTTP transport, so successful metadata access alone does not establish that ordinary model requests use the same proxy route. The explicit-proxy diagnostic retained the existing budget wrapper and changed only the inner HTTP transport in the private test harness. It still encountered TLS errors. The serial and proxy diagnostics therefore do not establish a fix for the connection problem.
 
 These checks verified fresh Yahoo availability and short-reference acceptance with real market evidence on this machine. They did not reproduce the teammate's COMPLETED / APPROVED outcome. No application code, proxy settings or SDK retry policy was changed during this reproduction. Private receipts, diagnostic reports and runners are retained in the local course archive `FR01-reference-reliability-2026-11-19`, under the `live-reproduction-*` directories.
+
+## Published reference adapter verification — 19 November 2026
+
+The coordinator pushed the reference adapter as `df8a9d6419dfa0aab2f4d8986d0a44060354cdb9` and verified that exact clean application revision through the Python API. Its push and PR CI completed successfully. Each run used AAPL, analysis date 2026-11-10, all four analysts, the real school-hosted DeepSeek model, a request limit of 40, empty decision memory and an independent results directory.
+
+| Run | Market-data condition | Model HTTP attempts | Execution / publication | Official outputs |
+| --- | --- | ---: | --- | --- |
+| Fresh-cache attempt | Yahoo preflight and later tools were rate limited | 21, all HTTP 200 | COMPLETED / BLOCKED / INSUFFICIENT_EVIDENCE | No official rating, decision file or new memory entry |
+| Real-data cache replay | Reused real Yahoo AAPL history downloaded earlier on 19 November; verified window ended on 2026-11-10 | 18, all HTTP 200 | COMPLETED / APPROVED; Overweight | API rating, Markdown/HTML reports, official decision file and one new memory entry verified |
+
+Both researchers in the approved run selected E1. The program resolved it to the full current-run market snapshot ID and accepted both arguments. The manager selected A1 and A2. The publication result carried canonical argument and evidence IDs, with two resolvable links to the snapshot. Verification re-read the retained source, checked that the decision and memory contained the approved rating, and confirmed that the Markdown and HTML reports existed. The run took 198.56 seconds.
+
+The success uses real cached market data and live model requests. It establishes the full graph API publication path with the revised prompts and adapters. Fresh uncached Yahoo retrieval and a new live CLI rendering check remain unverified by this run. Missing news and social inputs remained explicit. The private archive `FR01-df8a9d6-live-2026-11-19` contains receipts, reports, source and decision hashes, the runner and CI metadata. These runs used no synthetic market fixture or replacement provider response. [Push CI](https://github.com/EverForests/TradingAgents_Pro/actions/runs/44467792904) · [PR CI](https://github.com/EverForests/TradingAgents_Pro/actions/runs/44467801241)

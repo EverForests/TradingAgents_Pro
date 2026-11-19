@@ -458,3 +458,15 @@ entries:
   - Maintainer automation corrected PM mapping direction and import cycles, researcher imports and schema guidance, opaque-ID collisions, and reference diagnostics; it executed verification and maintained English records.
   evidence: Twenty alias cases passed; complete regression 1832 passed, one skipped, one deselected, and 100 passing subtests. Three real DeepSeek HTTP attempts with fixed synthetic source material returned 200 and resolved an approved canonical chain. Fresh Yahoo preflights remained rate limited, with zero model requests.
   review_status: OpenCode found no blocking source counterexample in the corrected adapter; terminal receipts recorded in the review memo. Final independent team review and hosted CI for a future commit remain pending.
+- id: AI-FR01-PUBLISHED-LIVE-20261119
+  date: '2026-11-19'
+  tool: TradingAgents graph API with live DeepSeek and maintainer verification automation
+  base_commit: df8a9d6419dfa0aab2f4d8986d0a44060354cdb9
+  requirements: [FR-01, INV-01]
+  scope: Post-push online verification of evidence selections and official publication using real data
+  human_direction: The coordinator authorized pushing the verified reference repair and rerunning online tests.
+  contributions:
+  - The live model supplied selections; deterministic code resolved and validated their current-run references.
+  - Verification automation checked attempts, source resolution, official outputs, memory and hosted CI.
+  evidence: Fresh-cache run observed 21 HTTP 200 responses and completed blocked under Yahoo rate limiting. Real Yahoo cache replay observed 18 HTTP 200 responses, completed approved with Overweight, generated an official decision and added one memory entry. Bull/Bear E1 and manager A1/A2 resolved to canonical IDs. Push and PR CI passed.
+  review_status: Proposed approval recorded in the review memo; final team review remains pending. Real-cache replay is distinct from fresh Yahoo availability and live CLI verification.
