@@ -1,6 +1,6 @@
 # PR review memo
 
-Add one dated entry per PR. Link pre-code plan/test approval and the actual results for the revision under review. Keep the memo free of credentials, student identifiers and raw session text.
+Add one dated entry per PR. Link pre-code plan/test approval and the actual results for the revision under review. Keep the memo free of credentials and raw session bodies; the roster belongs in Report.md and full D5 records in transcripts/.
 
 | Required review area | What to record |
 | --- | --- |
@@ -69,9 +69,9 @@ Each feature PR supplies its base SHA, interface/fixture versions, exact plan/te
 
 ## FR03-REVIEW-006 — 2026-11-17 module handoff
 
-- **PR / revision / reviewer:** [PR #6](https://github.com/EverForests/TradingAgents_Pro/pull/6); tested application `b2816ecb4b6dc465c38bd0ff213ea215a0662825`; Codex delegated operator assessment, supported by two real read-only OpenCode reviews. This is not a student/human GitHub approval.
+- **PR / revision / reviewer:** [PR #6](https://github.com/EverForests/TradingAgents_Pro/pull/6); tested application `b2816ecb4b6dc465c38bd0ff213ea215a0662825`; automation tools delegated operator assessment, supported by two real read-only OpenCode reviews. This is not a student/human GitHub approval.
 - **Scope:** FR-03, C0/C3 v1.0. Full requirement/code/test map, exact commands, report section and integration checklist: [FR-03 handoff](fr03.md). Aggregate evidence: [fr03-evidence.json](fr03-evidence.json).
-- **Plan/tests before implementation:** reviewed requests, frozen hashes and actual red cases are retained privately. Codex selected and approved the concrete scope under the student's general autonomy instruction. Individual student per-item approval did not occur; do not retrospectively record it.
+- **Plan/tests before implementation:** reviewed requests, frozen hashes and actual red cases are retained privately. automation tools selected and approved the concrete scope under the student's general autonomy instruction. Individual student per-item approval did not occur; do not retrospectively record it.
 - **Architecture:** local receipts, normalization, coverage and finalization at existing seams; no model authority over coverage; legacy return formats preserved. Shared state/schema/report changes are narrow. C1/C4 final acceptance belongs to the integrator and affected owners.
 - **Code/test quality:** 47 final boundary cases, combined 1533 passing tests and 100 subtests; 39 skips (6 pre-existing platform/optional, 33 paired without a configured baseline), one integration deselection. Configured paired replay separately passed 33 assertions over 16 cases on the same final application. Ruff/YAML/diff passed. Tests and original failures were not rewritten to manufacture passes.
 - **Security/efficiency:** no runtime key or raw transcript is published. Optional API collectors preserve defaults. The zero-source model path is not bound or invoked; valid neutrality remains permitted. Fake invocation reduction is 16 to 11 within the frozen synthetic diagnostic only. No billed-token or real-market performance improvement is claimed.
@@ -81,7 +81,7 @@ Each feature PR supplies its base SHA, interface/fixture versions, exact plan/te
 
 ## PR-NFR01-001 — Per-run model request budget (owner module)
 
-- **PR / revision / date / reviewer:** branch `feat/nfr-01-request-budget`, base `486a9a5d74433aedd3c858c483a8d77bf0f7b897` (merge of PR #5); PR not yet opened; 2026-11-16; reviewed by JunKai Yan (NFR-01 owner acting as maintainer for this feature branch).
+- **PR / revision / date / reviewer:** branch `feat/nfr-01-request-budget`, base `486a9a5d74433aedd3c858c483a8d77bf0f7b897` (merge of PR #5); PR not yet opened; 2026-11-16; reviewed by majiaqi-yan (NFR-01 owner acting as maintainer for this feature branch).
 - **Requirements and invariants:** NFR-01 (§2.3), INV-02, contracts C0/C4, ADR-001. Owner module `tradingagents/llm_clients/request_budget.py`; offline suite `test/offline/test_request_budget.py`.
 - **Plan and tests approved before implementation:** Gate 1 plan session `ses_e1cce6943ffeM6m8a640UGrQql` approved 2026-11-16 15:12 with decisions D-NFR01-01..08; test revision approved 2026-11-16 15:19 after the human-run red baseline (`37 failed, 1 passed`) was recorded; implementation authorised at 15:20. The two false-passing assertions were narrowed under D-NFR01-01 before implementation, not after.
 - **Spec and architecture findings:** the module implements C4 exactly (atomic reserve, charge at the attempt boundary, one send, typed refusals, unknown-delivery accounting, no reset/restore API, no unmetered mode) and cites Requirement NFR-01, Invariant INV-02, Contract C4 and ADR-001 in its docstring. Two deliberate deviations from a full delivery remain: the gate is not wired into the graph and nothing maps its failures to the C0 terminal state (TD-10); `ContextTooLarge` is owned by this module although the context reduction itself belongs to C5/NFR-02, so the integrator must not import a second competing class.
@@ -93,7 +93,7 @@ Each feature PR supplies its base SHA, interface/fixture versions, exact plan/te
 
 ## PR-NFR01-002 - Re-baseline re-verification of the per-run model request budget
 
-- **PR / revision / date / reviewer:** branch `feat/nfr-01-request-budget`, base `3d5ce620e7da497e09c986ef6cbc957b490de632` (contains `1a54b9c`, the allowlist fix requested by a teammate); PR not yet opened; 2026-11-16; reviewed by JunKai Yan (NFR-01 owner acting as maintainer for this feature branch).
+- **PR / revision / date / reviewer:** branch `feat/nfr-01-request-budget`, base `3d5ce620e7da497e09c986ef6cbc957b490de632` (contains `1a54b9c`, the allowlist fix requested by a teammate); PR not yet opened; 2026-11-16; reviewed by majiaqi-yan (NFR-01 owner acting as maintainer for this feature branch).
 - **Why this entry exists, and what it does not do:** PR-NFR01-001 was measured on `486a9a5` with 38 tests and the coarse mutation counts 8/3/1. It is kept unchanged as the dated record of that revision. Moving the branch to `3d5ce62` changed one docstring line and added one test, so this entry records the results for the tree that will actually be reviewed, and does not restate the old numbers as current.
 - **Session reconciliation (raised by Gate 4 as an integrity issue):** the two ID sets belong to two different rounds and are both real, not duplicates of one gate. Round 1 on `486a9a5`: plan `ses_e1cce6943ffeM6m8a640UGrQql`, verify `ses_e1cc3cde9ffev4PHpzLJ9n611D`. Round 2 on `3d5ce62`: plan `ses_e1cb0bce4ffeSMiYzgvWzPty3y`, build `ses_e1caf1566ffeefvZW8dDBgx8mJ`, verify `ses_e1cab4f89ffed8ePmZwWo5Ljy0`. All five IDs resolve in the local session store (`session_v2`, OpenCode 2.3.0).
 - **Why the gate was re-run at all:** the round-1 plan session could not read `docs/README.md` and `docs/review-memo.md`; the permission allowlist omitted them while `Prompt.md` line 37 made them mandatory pre-planning reading, so the human supplied their content out of band. `1a54b9c` adds those two paths plus `docs/req/product.yaml`. The round-2 plan session is the evidence that the fix works: it read twelve required documents with its own tool and reported no denial.
@@ -104,7 +104,7 @@ Each feature PR supplies its base SHA, interface/fixture versions, exact plan/te
 - **Open findings and required action:** TD-09 (CI does not collect `test/offline`), TD-10 (no production importer, no C0 terminal mapping), TD-11 (SDK retry configuration unverified), TD-12 (static settlement check), TD-13 (duck-typed prepared request), TD-15 (Verify role cannot read the evidence records, so record integrity is human-reviewed), TD-16 (no guard that a `run_id` is instantiated once, so two `RequestBudget` objects with the same id could each spend the full limit).
 - **Verdict:** APPROVE for the owner-module revision at `3d5ce62` (two files, one docstring line and one appended test). CONDITIONALLY COMPLIANT for the owner module; not a delivery sign-off for NFR-01. The six missing items named by Gate 4 remain: integrator wiring for both tiers, C0 terminal-state mapping, verified SDK retry configuration, CI collection of `test/offline`, behavioural settlement-exclusion evidence, and read access (or human review) for the evidence records.
 
-## FR-01 / INV-01 — Post-implementation review draft (2026-11-16)
+## FR-01 / INV-01 — Historical post-implementation assessment (2026-11-16)
 
 - **PR / reviewed revision:** [PR #4](https://github.com/EverForests/TradingAgents_Pro/pull/4); local revision `712617e25a380197e38d6ee5cc4dcc7ab393cf61`. The test evidence below is for this revision, not necessarily the current remote PR head.
 - **Comparison base / specification:** `3d5ce620e7da497e09c986ef6cbc957b490de632`; D1, D4 and C0/C1 v1.0.
@@ -133,7 +133,7 @@ Each feature PR supplies its base SHA, interface/fixture versions, exact plan/te
 | Before FR-01 sign-off | Decide whether raw CLI model messages and logs are private diagnostics or part of official output; verify the agreed boundary with a nonempty candidate message. The stale progress-field lookup does not by itself establish a rating leak. |
 | During integration | Verify that budget exhaustion and context rejection suppress publication even with otherwise valid candidate evidence, and that FR-03 `NO_DATA` diagnostics cannot serve as substantive evidence. Record results against the integrated SHA. |
 
-- **Suggested verdict:** **CHANGES REQUIRED** pending contract alignment or a reviewed revision, evidence for the open FR-01 paths, and human review of the upstream test changes and approval record. This is an advisory draft, not a merge approval.
+- **Suggested verdict:** **CHANGES REQUIRED** pending contract alignment or a reviewed revision, evidence for the open FR-01 paths, and human review of the upstream test changes and approval record. This historical advisory assessment is not a merge approval.
 
 ## Feature PR intake — 2026-11-18
 
@@ -357,3 +357,45 @@ This extends the fixed-synthetic-source component check with a full graph API su
 On revision `df8a9d6`, the CLI published a decision and saved Markdown and HTML reports for all five companies. Each ran once with fresh per-company caches, all four analysts and an analysis date of 10 November. AAPL, previously blocked, published Hold. GOOGL changed from Underweight to Hold. NVDA remained Underweight; MSFT and AMZN remained Overweight.
 
 The displayed market snapshots matched the earlier batch for all five companies, while the model outputs differed. The two batches do not isolate the reason for AAPL’s change. The logs still show unavailable news inputs and structured-output fallbacks. See the [CLI acceptance record](live-acceptance.md#five-company-cli-rerun-on-19-november-2026) for per-company results, diagnostics and evidence locations.
+
+## Delivery reconciliation — 20 November 2026
+
+### Review responsibility and source provenance
+
+The coordinator supplied the following review ring and confirmed equal contribution weights. Each assigned reviewer assesses the next feature; coordinator EverForests integrates and merges after acceptance. This records team responsibility. It does not manufacture a named review event or a pre-implementation timestamp.
+
+| Requirement / PR | Owner | Assigned peer reviewer | Current PR head at retrieval | Repository disposition |
+| --- | --- | --- | --- | --- |
+| FR-01 / INV-01 / [#4](https://github.com/EverForests/TradingAgents_Pro/pull/4) | EverForests | asling3 | `a5b987256fdf52ad60c254d451b9df5b0aa817a3` | Open PR; feature incorporated through local integration history |
+| FR-02 / [#8](https://github.com/EverForests/TradingAgents_Pro/pull/8) | KyrieT331 | EverForests | `51c52268bb9b8d59663fbfc27d156a50e39809d4` | GitHub merged 2026-11-18T04:53:28Z |
+| FR-03 / [#6](https://github.com/EverForests/TradingAgents_Pro/pull/6) | wmq12138 | KyrieT331 | `00b800be11ad1f395c1fc9919a94e6db303a1c2d` | Open PR; feature incorporated through local integration history |
+| NFR-01 / INV-02 / [#7](https://github.com/EverForests/TradingAgents_Pro/pull/7) | majiaqi-yan | wmq12138 | `e47760cfdeffde99d7279147e061927525d08a12` | Open PR; feature incorporated through local integration history |
+| NFR-02 / [#10](https://github.com/EverForests/TradingAgents_Pro/pull/10) | asling3 | majiaqi-yan | `e24e7d88e8056a10e02bfd7b604ae91d3c1b1c61` | GitHub merged 2026-11-18T04:53:28Z |
+
+The public GitHub API was read on 20 November 2026 for PRs #4, #6, #7, #8, #10 and #11. All six returned zero submitted Reviews and zero issue comments. PR #6's documentation head has advanced beyond the head used at original intake. Its PR body states that application/test behavior remains at tested `b2816ec`; later module documentation is supporting handoff material, not a new executed integrated revision. PR #11 still cites the earlier 1,812-test receipt, while the later 1,832-test result belongs to the reference-adapter revision. This reconciliation provides the newer evidence without editing the remote PR bodies.
+
+PR #8 records EverForests's reported approval of FR02-PLAN-01 on 16 November and its plan digest, with the underlying source retained privately. PR #7 records owner approvals and Gate sessions at `3d5ce62`. PR #4 retains incomplete historical approval metadata. PR #10 distinguishes OpenCode review from final team review. The latest FR-03 owner account and private annotations identify owner-directed decisions, while the earlier entries retain the recorded division between owner direction and automation tools. A handoff narrative does not replace the original execution provenance.
+
+### Consolidated feature assessment
+
+The following are documentation reconciliation verdicts against recorded integrated evidence. They are not submitted GitHub approvals by the assigned peers.
+
+| Requirement | Specification and architecture alignment | Test/operational evidence | Security and efficiency | Verdict |
+| --- | --- | --- | --- | --- |
+| FR-01 / INV-01 | One C1 result controls official sinks; canonical records retain C0 identity. | Positive publication, four-sink rejection, foreign-index/report-save controls, 20 reference adapter cases and real-data publication. | Fail-closed output and zero rejected memory entries; alias adapter adds no model request. Semantic support remains out of scope. | APPROVE for the tested functional scope. |
+| FR-02 | C2 computes supported formulas and resolves the same record in downstream/report fields. | 48 feature tests; frozen examples; owner-reported recomputation of 168 saved rows. | Reject invalid metadata, units, periods, denominators and identities. Raw statement receipt limitations remain explicit. | APPROVE for the tested numerical scope. |
+| FR-03 | C3 separates coverage from assessment and execution. | 16 fixed paired cases/33 assertions; 47 boundary cases; propagation and integrated continuation. | No fabricated neutral value, zero sentiment-model call on no sources, valid neutral controls retained. | APPROVE for the missing-data scope. |
+| NFR-01 / INV-02 | Shared C4 accounting meters both tiers in the supported course profile. | 39 owner tests, last-slot contention, transport instrumentation and live limit-one refusal. | Refuse over-limit attempts, retain ambiguous charges, disable automatic retries and metered resume. | APPROVE for the tested synchronous profile. |
+| NFR-02 | C5 prepares both scoped sites before C4 reservation. | 37 owner cases and joint refusal/zero-debit tests. | Keep mandatory blocks and tool pairs; irreducible content never sends. Bytes exclude separately bound schemas. | APPROVE for scoped offline acceptance. |
+
+Recorded complete regression after the adapter: 1,832 passed, one skipped, one deselected and 100 passing subtests. A real cached-data API replay approved Overweight after 18 successful DeepSeek responses. The subsequent CLI batch approved five of five with fresh per-company caches. These establish the stated behaviors, not trading performance or complete source availability.
+
+**Delivery-governance verdict: CHANGES REQUIRED for complete D7 enforcement.** [Gate audit](delivery-readiness.md#d7-gate-audit) identifies the remaining checks and hosted-protection evidence. This does not reverse the scoped feature assessments. Final `main` merge is a coordinator action after the required peer and repository conditions are met. No merge or review event is created by this document.
+
+## Repository structure reconciliation — 20 November 2026
+
+The coordinator authorized full report/D5 synchronization, including student numbers and original session exports, then excluded PPT, speaker scripts, report PDF and other delivery derivatives from the source repository. The repository now contains the complete five named transcripts and source exports, the full report and source snapshots under src/. Existing root imports and application behavior are retained. Former member-number placeholder summaries are superseded by the complete named transcripts. No project tests were run for this file-layout synchronization. D7 enforcement findings remain unchanged in the delivery audit.
+
+## Public publication redaction — 20 November 2026
+
+Before remote publication, the coordinator selected a redacted version and GitHub collaborator identifiers. Public D5 files are de-identified derivatives of existing sessions; no new session is created. Student numbers and complete originals remain in the restricted submission. The unpushed unredacted documentation commit is replaced rather than followed by a deletion commit. Runtime code, tests, workflows and D7 enforcement settings remain unchanged.

@@ -32,7 +32,7 @@ These statuses are FR-03-specific and do not close other owners' or global entri
 | TD-05 Agent-induced bloat | Paired worker remains a diagnostic with isolated imports and network blocking; no orchestration rewrite. Potential refactoring is low-priority review debt. | FR-03 owner; revisit only on a real maintenance burden, not to inflate changes. |
 | TD-06 Evaluation debt | Deterministic module evidence and matched synthetic comparison verified at b2816ec; real-provider and labeled semantic quality remain open. | FR-03 owner + integrator; new data/provider or quality claims require independent frozen evidence. |
 | TD-07 Guardrail debt | Real FR-03 Plan/Build/Verify capability/denial probes are retained privately. Full D7 gates and joint publication/budget acceptance remain open. | Governance maintainer and integrator; do not infer global closure from module CI. |
-| TD-08 Human/cognitive debt | Actual Codex/OpenCode roles recorded. Individual student prior approvals absent; they cannot be retroactively manufactured. | Student and reviewer; perform a real current review, check personal understanding and mark contribution/reflection honestly. |
+| TD-08 Human/cognitive debt | Roles of OpenCode and supporting automation tools recorded. Individual student prior approvals absent; they cannot be retroactively manufactured. | Student and reviewer; perform a real current review, check personal understanding and mark contribution/reflection honestly. |
 
 Module receipt: [FR-03](fr03.md). Full-market investment validation is outside the FR-03 missingness contract and is not presented as an implemented quality claim.
 
@@ -61,3 +61,23 @@ Module receipt: [FR-03](fr03.md). Full-market investment validation is outside t
 | TD-14 | Accepted | Module has no reset/restore API; RP row states "never reset same-run counter" | A future resume request needs redesign | Product owner | Requirement change | Restore spent count without reset, with a new approval record | Approved delta specification and tests |
 | TD-15 | Open | Gate 4 `ses_e1cab4f89ffed8ePmZwWo5Ljy0` reported denied reads on five record paths and did not bypass them | Every record-integrity verdict is partial, so a fabricated entry could pass review | Governance maintainer + NFR-01 owner | Next feature review | Add the five exact read paths to both permission files, or name a human reviewer in the memo | A Gate 4 session that reads the records, or a memo line naming the human reviewer |
 | TD-16 | Open | Two budgets with one `run_id` each allow the full limit (see PR-NFR01-002) | A duplicate construction site would double the effective budget for one run | Integrator + NFR-01 owner | Graph entry wiring PR | Bind a run id to one budget in C0 and assert it | Integrated test that a second budget for the same run id is refused or shares state |
+
+## Integrated debt reconciliation — 20 November 2026
+
+This table supersedes the current-state interpretation of older feature-stage rows while preserving their historical receipts.
+
+| Item | Current state | Evidence or remaining action |
+| --- | --- | --- |
+| TD-09 CI collection | Resolved for the existing CI invocation | `.github/workflows/ci.yml` explicitly selects `tests test/offline`; recorded hosted CI and combined regression include course tests. Bare upstream `pytest` defaults remain a separate configuration detail. |
+| TD-10 production wiring | Resolved for the metered course profile | Real-graph integrated dispatch tests and the live limit-one refusal establish a production caller and terminal mapping. |
+| TD-11 implicit retries | Resolved within the tested synchronous metered profile | Transport tests check disabled retries; actual attempts are counted across both tiers. Reopen on a provider/adapter change. |
+| TD-12 settlement exclusion | Review on settlement changes | The exclusion is documented; the feature-stage static check alone remains insufficient as a behavioral proof of every future reconciliation route. |
+| TD-13 C4/C5 adapter compatibility | Joint behavior verified; future schema drift remains a trigger | Real context/budget integration tests exercise preparation and refusal before debit. They do not certify arbitrary future adapters. |
+| TD-14 metered resume | Accepted product limitation | Checkpoint resume remains disabled for metered runs. Historical FR-01 non-metered checkpoint tests do not promise budget restoration. |
+| TD-15 verifier record visibility | Evidence-source limitation retained | Some records require maintainer inspection. Assigned peer review and collected annotations do not prove every role read every artifact. |
+| TD-16 one budget per graph run | Verified in the supported graph construction path | Parallel analysts share one budget in integrated tests. No claim is made about arbitrary manual construction of independent budget objects. |
+| TD-06 financial provenance | Extended verification, source-receipt limitation retained | FR-02 owner reports recomputing all 168 saved rows from SEC caches and five market snapshots. Saved caches do not recreate missing original raw statement replies. Annual AAPL/MSFT examples remain offline cases in the recorded batch. |
+| D7 enforcement | Open; coordinator chose documentation-only disposition on 20 November 2026 | See [gate audit](delivery-readiness.md#d7-gate-audit): test approval, complete static/safety checks, general semantic gate and hosted protection evidence. |
+| Token architecture | Open design validation | The separate token cap/compaction design is documented and not enabled by the 64 KiB byte gate. |
+
+Review owners follow the ring in [the document index](README.md#ownership-and-review). Closing evidence is scoped to the tested profile and revision.

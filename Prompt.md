@@ -28,7 +28,7 @@ Work read-only. Inspect the diff or changed files supplied by the human and map 
 
 Return a proposed review summary: requirement IDs, reviewed revision, tests and results, unmet criteria, risks and recommended verdict. Stop for human review. If evidence shows a defect, propose a repair and repeat the appropriate approval and verification gates. Only the human makes the final verdict and controls Git, publishing and merge.
 
-Keep the actual session and mark human interruptions, redirects, approvals and rejections with their rationale. Give the human a summary for the review memo and AI-use log. Never invent evidence, and keep credentials, student identifiers and raw sessions out of the public repository.
+Keep the actual session and mark human interruptions, redirects, approvals and rejections with their rationale. Give the human a summary for the review memo and AI-use log. Never invent evidence. Keep credentials and account state out of the repository. The public course repository uses GitHub collaborators and redacted D5 evidence. Student numbers and full originals remain in the restricted submission; publication and Git actions remain human-controlled.
 
 ## Task header and handoff required before Gate 1
 

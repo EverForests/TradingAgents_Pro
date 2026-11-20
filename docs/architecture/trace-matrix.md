@@ -63,3 +63,15 @@ The invocation-local E/A selection adapter is covered by `test/offline/test_fr01
 | --- | --- | --- |
 | FR-01 | All five runs ended `COMPLETED / APPROVED` and wrote an official recommendation to both Markdown and HTML. | [Publication results by company](../live-acceptance.md#five-company-cli-rerun-on-19-november-2026) |
 | FR-02 | Each official report included a Verified Metrics table. The live check covered export to the report; the offline suite checks the formulas, units, signs and rejection of invalid operands. | [Exported metric counts](../live-acceptance.md#five-company-cli-rerun-on-19-november-2026); [FR-02 offline tests](../../test/offline/test_verified_metrics.py) |
+
+## Final implementation map — 20 November 2026
+
+| Requirement | Enforcer | Executable evidence | Runtime observation |
+| --- | --- | --- | --- |
+| FR-01 / INV-01 | `graph/publication_gate.py` and gated CLI/API/report/memory consumers | `test/offline/test_fr01_contract_v1_alignment.py`, `test_inv01_four_exits.py`, `test_inv01_cli_no_premature_display.py`, `test_fr01_reference_aliases.py` | Publication status/reason, canonical chain and rejected-reference diagnostics. |
+| FR-02 | `agents/verified_metrics.py`, source adapters and manager/report consumers | `test/offline/test_verified_metrics.py` | Issued metric ID, source operands, period, unit and exported Verified Metrics table. |
+| FR-03 | `agents/sentiment_coverage.py` and analyst/downstream adapters | `test/offline/test_fr03_coverage.py`, `test_fr03_sentiment.py`, `test_fr03_boundary_hardening.py`, `test_fr03_propagation.py`, `test_fr03_paired.py` | Actual source count, source reasons, coverage status and nullable assessment. |
+| NFR-01 / INV-02 | `llm_clients/request_budget.py` and the metered model transport | `test/offline/test_request_budget.py`, `test_integration_dispatch.py` | Limit, reservations, charged attempts, known sends and unknown delivery. |
+| NFR-02 | `llm_clients/context_limit.py`, analyst wrap-up and neutral debater | `test/offline/test_nfr02_context_limit.py`, `test_nfr02_tool_pairing.py`, `test_nfr02_analyst_wrapup.py`, `test_nfr02_neutral_debator_context.py`, `test_integration_dispatch.py` | Final scoped bytes, preparation outcome and zero send/debit on refusal. Live boundary-byte instrumentation is incomplete. |
+
+Paths after the first filename in a cell share its directory. Source paths are relative to `tradingagents/`. Historical feature totals above retain their original revisions. The integrated application recorded 1,832 passing tests and 100 passing subtests after the alias repair; overlapping groups are not additive. [Live acceptance](../live-acceptance.md) distinguishes controlled model checks, real cached-data API replay and the five-company CLI batch.

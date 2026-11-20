@@ -23,5 +23,5 @@ acceptance:
   evidence_status: Baseline observations, controlled tests and live integration results are recorded separately.
   ready_to_build: Requires approved contracts, task plan/test revision and effective exact-path permissions.
 baseline_commit: 9fa1196fffbcfd9de5146d2dd2869df84ab99838
-status: proposed; review pending
+status: integrated behaviors verified; delivery governance audited separately
 interface_contracts: ../architecture/interface-contracts.md

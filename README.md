@@ -1,27 +1,61 @@
 # TradingAgents Pro — CS5351 Group Project
 
-TradingAgents Pro is a CS5351 course project that extends TradingAgents, a multi-agent stock analysis framework. The course extension targets traceable publication, verified metrics, explicit sentiment coverage, request budgeting and scoped message control. The version 1.0 specification is under team review.
+TradingAgents Pro is a CS5351 course project that extends TradingAgents, a multi-agent stock analysis framework. The course extension targets traceable publication, verified metrics, explicit sentiment coverage, request budgeting and scoped message control. The five selected requirements have integrated acceptance evidence; repository-enforcement limits are recorded separately in the delivery audit.
 
 - **Team repository:** [EverForests/TradingAgents_Pro](https://github.com/EverForests/TradingAgents_Pro)
-- **FR-03 handoff:** [Implemented feature, report section and reproduction](docs/fr03.md) · [sanitized evidence](docs/fr03-evidence.json) · [existing PR #6](https://github.com/EverForests/TradingAgents_Pro/pull/6)
+- **Course artifacts:** [D1–D9 index](docs/README.md) · [Project report](Report.md) · [Annotated sessions](transcripts/README.md) · [Delivery audit](docs/delivery-readiness.md)
 - **Upstream project:** [TauricResearch/TradingAgents](https://github.com/TauricResearch/TradingAgents)
 - **Unmodified baseline:** [`9fa1196fffbcfd9de5146d2dd2869df84ab99838`](https://github.com/TauricResearch/TradingAgents/commit/9fa1196fffbcfd9de5146d2dd2869df84ab99838). Use this revision for before-and-after comparisons.
 
 ## Project scope and architecture
 
-**CS5351 team workflow:** use OpenCode 2.3.0 and run the [permission checks](docs/architecture/permission-model.md) before the first planning session.
+**CS5351 development workflow:** OpenCode Plan, Build and Verify roles operate under the [project permissions](docs/architecture/permission-model.md). Historical sessions retain their actual tool versions and actor attribution.
 
 - **Scope (D1):** [Requirements and acceptance criteria](docs/req/requirements.yaml) define FR-01–FR-03, NFR-01–NFR-02 and two safety invariants.
 - **Architecture (D2):** [Blueprint](architecture-blueprint.md) and [shared contracts](docs/architecture/interface-contracts.md) define component ownership, dispatch control and publication authority.
 
+## Requirements and review ownership
+
+| Requirement | Implemented control | Owner | Assigned peer reviewer |
+| --- | --- | --- | --- |
+| FR-01 / INV-01 | Evidence-backed publication across CLI, API, reports and decision memory | EverForests | asling3 |
+| FR-02 | Reproducible numerical metrics and immutable record references | KyrieT331 | EverForests |
+| FR-03 | Sentiment source coverage and explicit missing-data state | wmq12138 | KyrieT331 |
+| NFR-01 / INV-02 | Shared quota for actual outbound model attempts | majiaqi-yan | wmq12138 |
+| NFR-02 | Deterministic message-byte preparation at the two scoped sites | asling3 | majiaqi-yan |
+
+EverForests coordinates integration and controls merge after acceptance. Assigned review responsibility, pre-implementation approval records and submitted GitHub Reviews are distinct evidence. The team-agreed contribution is 1.00 per member, or 20% each. [Review reconciliation](docs/review-memo.md#delivery-reconciliation--20-november-2026)
+
 ## Repository layout
 
-- `tradingagents/` — application source.
-- `cli/` — command-line interface.
-- `tests/` — existing test suite; `test/offline/` includes deterministic FR-03 checks and `test/live/` contains its optional school-model controls.
-- `.github/workflows/` — GitHub Actions workflows.
+| Location | Content |
+| --- | --- |
+| Root governance and report | `AGENTS.md`, `architecture-blueprint.md`, `Prompt.md` and `Report.md` |
+| `docs/req/` | Product requirements, consolidated registry and validation schema |
+| `docs/architecture/` | Decisions, contracts C0–C5, traceability, state, permissions and runtime policies |
+| `docs/code-governance/` | Structural, tool and verification constraints |
+| `docs/` records | AI-use log, review memo, debt register, bug diary and acceptance evidence |
+| `.opencode/`, `.agent/` | Course role configuration and standing rules |
+| `.github/` | Existing CI workflows and artifact checks |
+| `prompts/` | Versioned source snapshots documenting the actual Python-assembled runtime prompts |
+| `src/` | Complete course source view, with a hash map to the inherited runnable packages |
+| `tradingagents/`, `cli/` | Runnable upstream-compatible application and CLI packages |
+| `tests/`, `test/offline/`, `test/live/` | Inherited regression tests, added deterministic tests and separately authorized API checks |
+| `transcripts/` | Five redacted annotated transcripts identified by GitHub collaborator |
 
-See the [CS5351 deliverable map](docs/README.md) for D1–D9 paths and the [FR-03 module handoff](docs/fr03.md) for its actual test mapping. The upstream source and tests stay in place during development.
+The course source view preserves identical application bytes while retaining root imports and installation. See [the source map](src/README.md) and [D1–D9 index](docs/README.md). PPT, speaker scripts, demonstration planning, report PDF and ZIP derivatives remain outside this repository. Credentials, `.env`, account state, virtual environments and runtime caches are excluded.
+
+## Recorded acceptance
+
+| Evidence | Recorded outcome and scope |
+| --- | --- |
+| Verified application/test revision | `df8a9d6419dfa0aab2f4d8986d0a44060354cdb9` |
+| Consolidated evidence baseline | `b8a7564ed9c2ac82d0bab92f548bbe6daea763f3` |
+| Complete offline regression | 1,832 passed, zero failed, one optional skip, one live-test deselection and 100 passing subtests |
+| Real-cache AAPL graph API | COMPLETED / APPROVED, Overweight, 18 successful DeepSeek HTTP responses, official decision and memory entry |
+| Five-company CLI batch | NVDA, AAPL, MSFT, GOOGL and AMZN each COMPLETED / APPROVED in one recorded batch |
+
+These are retained revision-specific results. Documentation assembly does not claim a new test run. Approval verifies the scoped publication rules, not investment correctness. Real-data cache replay, fresh per-company caches and synthetic controls retain their separate conditions. [Live evidence](docs/live-acceptance.md) · [Complete report](Report.md)
 
 ## Setup and verification
 
@@ -50,6 +84,8 @@ py -3 -m venv .venv
 | Project offline tests | `python -m pytest -q test/offline -m "not integration"`; no API credentials required. |
 | Full offline suite | `python -m pytest -q tests test/offline` |
 | FR-03 school controls | `python -m pytest -q test/live/test_fr03_school.py -m integration`; private credentials and a separately authorized cap are required. See [FR-03](docs/fr03.md#reproduction). |
+
+To include the fixed upstream comparison in a full offline run, set `FR03_BASELINE_ROOT` to a checkout of the pinned upstream revision before invoking the suite. The external course ZIP includes that source under `evidence/pinned-upstream-9fa1196/`. Without the comparison source, its cases can be skipped and the total differs from the recorded complete acceptance.
 
 ### Integrated course run
 
@@ -80,9 +116,17 @@ requirements schema and reference validation, the PR AI-use record check, and th
 fixed FR-03 comparison against the pinned upstream. The [review memo](docs/review-memo.md)
 records which course gates have execution and enforcement evidence.
 
+**D7 remains partially complete.** The outstanding items are automatic verification of test approval before implementation, general type checking and the complete safety-path checks, a project-wide prompt/model semantic-quality gate, and independently verified hosted branch protection/review enforcement. Existing successful CI does not establish those missing controls. The coordinator chose to document these gaps without changing application code, CI scripts, workflows or repository protection settings in this documentation update. [Detailed D7 audit](docs/delivery-readiness.md#d7-gate-audit)
+
+## Course report and session evidence
+
+[Report.md](Report.md) contains the engineering process, the five GitHub collaborators, contributions and personal reflections. [Redacted annotated sessions](transcripts/README.md) provide the D5 intervention records and redacted derivatives of the existing source exports. Full originals and student numbers remain in the restricted submission. Credentials, environment files, login state and runtime caches are excluded.
+
+The repository follows the course structure for D1–D9. Application source is available under `src/`, with the inherited root packages retained for runnable compatibility. Course offline and live checks are separated under `test/`. PPT, scripts, demonstration planning, report PDF and ZIP packaging derivatives remain outside the source repository in the delivery-material directory.
+
 ## Baseline comparison
 
-Record the fixed inputs, evaluation metrics, and reproduction steps here. Link the measured baseline and enhanced results once available.
+The fixed upstream revision supports the controlled FR-03 comparison. Sixteen identical synthetic inputs produced five unsupported baseline scores versus zero after repair, while all eleven valid neutral controls remained. This is a bounded program-behavior comparison, not an investment benchmark. See [comparison evidence](docs/fr03.md), [integrated report](Report.md) and [live conditions](docs/live-acceptance.md).
 
 ---
 
@@ -394,7 +438,7 @@ Insider trades are dated by when they happened, not when they were filed, so a r
 SEC asks callers to identify themselves and refuses requests that carry no contact address, so a default one is sent. Set your own so SEC can reach you rather than the project:
 
 ```bash
-SEC_EDGAR_USER_AGENT="Your Name your@email.com"
+SEC_EDGAR_USER_AGENT="Your Name [REDACTED_EMAIL]"
 ```
 
 It covers companies that file with the SEC, including foreign companies listed in the US. Anything else, such as Hong Kong or A-share listings, falls through to the next vendor in the chain. EDGAR's machine-readable filings begin in 2009, and a fourth quarter is reported as unavailable rather than derived, because filers publish it only inside the annual figure.
@@ -512,4 +556,4 @@ Please reference our work if you find *TradingAgents* provides you with some hel
 
 ## FR-03 review package
 
-The implemented FR-03 module has a [handoff, report-ready section and exact offline/paired/optional-live commands](docs/fr03.md), plus [sanitized result evidence](docs/fr03-evidence.json). Continue [PR #6](https://github.com/EverForests/TradingAgents_Pro/pull/6) from `feat/fr-03-sentiment-coverage` into `feat/course-deliverables`; do not open a duplicate PR. The module implementation/tests are ready for teammate review; integration, formal human approval and the course package remain separate.
+The implemented FR-03 module has a [handoff, report-ready section and exact offline/paired/optional-live commands](docs/fr03.md), plus [sanitized result evidence](docs/fr03-evidence.json). FR-03 is included in the recorded integrated application. Its original PR remains a feature-stage handoff record; current package and review status are in the [delivery audit](docs/delivery-readiness.md).

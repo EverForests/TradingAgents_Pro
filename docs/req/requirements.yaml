@@ -17,7 +17,7 @@ requirements:
     verification: Replay valid input, invalid rating, missing reference and unknown/cross-run reference. Rejected
       candidates return BLOCKED with a reason; missing or unresolved evidence uses INSUFFICIENT_EVIDENCE. Resolve
       the accepted recommendation back to its argument and source material.
-  status: proposed
+  status: verified
   contracts:
   - C0
   - C1
@@ -51,7 +51,7 @@ requirements:
       use the Cost of Revenue field. For the 2026-11-10 price gap assign current to the Bollinger upper band
       and reference to the close; reverse the operands to verify the negative result. Exact values, units,
       fiscal labels and evidence status are specified in the D4 AAPL acceptance examples.
-  status: proposed
+  status: verified
   contracts:
   - C0
   - C2
@@ -78,7 +78,7 @@ requirements:
       scores remain UNKNOWN/null without changing the coverage count. Enforce the same contract after structured
       and free-text fallback paths. The selected v1 NO_DATA path creates the missing-data result without a
       sentiment-model request; other valid analysis may continue.
-  status: proposed
+  status: verified
   contracts:
   - C0
   - C3
@@ -102,7 +102,7 @@ requirements:
     verification: With fake transport and limit 3, an exactly-three-call flow succeeds; a four-call flow sends
       only three and returns BUDGET_EXHAUSTED without a rating. Check parallel reservations atomically and
       verify counters isolate concurrent runs.
-  status: proposed
+  status: verified
   contracts:
   - C0
   - C4
@@ -128,7 +128,7 @@ requirements:
       intact role/task/rules/evidence and paired tool calls/results (or tool name/args/result in text), and
       CONTEXT_TOO_LARGE with zero sends and no budget debit on rejection. Freeze the C5 serialization and required-block
       list before tests are approved. This byte criterion does not establish the separate D2 token-budget design.
-  status: proposed
+  status: verified
   contracts:
   - C0
   - C4
@@ -152,7 +152,7 @@ requirements:
     threshold: Zero.
     verification: Inject rejected Buy candidates through CLI and Python; inspect returned rating, official
       report, display and decision memory.
-  status: proposed
+  status: verified
   contracts:
   - C0
   - C1
@@ -169,7 +169,7 @@ requirements:
     metric: Outbound requests above the configured limit.
     threshold: Zero.
     verification: Race fake transport calls for the last available slot and assert at most one dispatch.
-  status: proposed
+  status: verified
   contracts:
   - C0
   - C4

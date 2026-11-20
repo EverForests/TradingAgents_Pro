@@ -6,7 +6,7 @@ This file is a sanitized working summary for the NFR-01 owner. It is not a raw t
 - Base revision: `486a9a5d74433aedd3c858c483a8d77bf0f7b897` (merge of PR #5).
 - Branch: `feat/nfr-01-request-budget` (not pushed at the time of writing).
 - Tool: OpenCode 2.3.0, agent roles `course-plan` (read-only), `course-build`, `course-verify` (read-only), model `cityucs/CS5351/DeepSeek-V4-Flash`.
-- Human: JunKai Yan (owner), who ran every verification command and issued decisions D-NFR01-01..08.
+- Human: majiaqi-yan (owner), who ran every verification command and issued decisions D-NFR01-01..08.
 
 ## Session sequence
 

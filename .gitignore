@@ -221,3 +221,8 @@ __marimo__/
 # Enterprise env file (secrets) and generated run reports
 .env.enterprise
 reports/
+
+# Course presentation derivatives remain outside the source repository.
+.DS_Store
+/presentation/
+/Report.pdf

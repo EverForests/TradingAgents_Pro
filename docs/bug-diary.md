@@ -43,7 +43,7 @@ See [FR-03](fr03.md), [derived evidence](fr03-evidence.json) and FR03-REVIEW-006
 
 ## BUG-03 — NFR-01 tests passed for the wrong reason, 2026-11-16
 
-- **ID / date / status / reporter:** BUG-03 / 2026-11-16 / fixed / JunKai Yan (NFR-01 owner), found while reviewing the pre-change baseline.
+- **ID / date / status / reporter:** BUG-03 / 2026-11-16 / fixed / majiaqi-yan (NFR-01 owner), found while reviewing the pre-change baseline.
 - **Symptom and impact:** two acceptance tests were green against the pre-update draft although the C4 API did not exist. `test_t_nfr01_boundary_empty_run_id_rejected` and `test_t_nfr01_boundary_no_unmetered_mode_exists` accepted `(ValueError, TypeError)`, so the draft's `TypeError: unexpected keyword argument 'run_id'` satisfied them. Impact: the suite would have reported partial success for behaviour it never exercised, and the red baseline would have looked stronger than it was.
 - **Reproduction:** run `pytest -q test/offline/test_request_budget.py` on the C4 test revision against the pre-update draft: `36 failed, 2 passed`. The two passes are these tests; the remaining failures are missing-contract-API errors.
 - **Classification:** test-defect / false pass; NFR-01, INV-02; severity major for evidence integrity (not a product defect).
@@ -52,7 +52,7 @@ See [FR-03](fr03.md), [derived evidence](fr03-evidence.json) and FR03-REVIEW-006
 
 ## BUG-04 — Last-slot race assertion contradicted C4 unknown-delivery accounting, 2026-11-16
 
-- **ID / date / status / reporter:** BUG-04 / 2026-11-16 / fixed / JunKai Yan, found by human-run verification.
+- **ID / date / status / reporter:** BUG-04 / 2026-11-16 / fixed / majiaqi-yan, found by human-run verification.
 - **Symptom and impact:** `test_t_inv02_race_two_contenders_last_slot_once` failed with `assert 2 == 3` on `known_sends` while `charged_attempts == LIMIT` and `transport.send_count == LIMIT` were correct. Impact: a correct implementation would have been rejected, and a future maintainer could have "fixed" it by making `charge_attempt` claim delivery it cannot confirm.
 - **Reproduction:** `pytest -q test/offline/test_request_budget.py` after implementation: `1 failed, 37 passed`, failing only in that test.
 - **Classification:** test-defect / inconsistent expectation; NFR-01, INV-02; severity major for the affected case.
@@ -61,7 +61,7 @@ See [FR-03](fr03.md), [derived evidence](fr03-evidence.json) and FR03-REVIEW-006
 
 ## BUG-05 — Reserved decision vocabulary in module prose, 2026-11-16
 
-- **ID / date / status / reporter:** BUG-05 / 2026-11-16 / fixed / JunKai Yan, found during the documentation pass.
+- **ID / date / status / reporter:** BUG-05 / 2026-11-16 / fixed / majiaqi-yan, found during the documentation pass.
 - **Symptom and impact:** the owner module described slot allocation as "holds one slot" and "a held slot". In this project `Hold` is a reserved decision term and C4 forbids implying a Hold rating on refusal, so the wording invited a vocabulary misreading by a reviewer or a future vocabulary gate, even though no behaviour was involved.
 - **Reproduction:** vocabulary review of `tradingagents/llm_clients/request_budget.py` before the edit; the terms appeared in the module docstring and in `try_reserve`'s docstring.
 - **Classification:** documentation/vocabulary ambiguity; NFR-01, C0; severity minor.
@@ -70,7 +70,7 @@ See [FR-03](fr03.md), [derived evidence](fr03-evidence.json) and FR03-REVIEW-006
 
 ## BUG-06 — Two lint defects in generated code and tests, 2026-11-16
 
-- **ID / date / status / reporter:** BUG-06 / 2026-11-16 / fixed / JunKai Yan, found by human-run `ruff check`.
+- **ID / date / status / reporter:** BUG-06 / 2026-11-16 / fixed / majiaqi-yan, found by human-run `ruff check`.
 - **Symptom and impact:** `SIM105` in the test suite (try/except/pass instead of `contextlib.suppress`) and `UP035` in the module (`Callable` imported from `typing`). Impact: the repository's static-analysis gate would have blocked the change even though behaviour was correct.
 - **Reproduction:** `ruff check tradingagents/llm_clients/request_budget.py test/offline/test_request_budget.py` → 2 errors.
 - **Classification:** style/static-analysis defect; NFR-01; severity minor.
@@ -79,7 +79,7 @@ See [FR-03](fr03.md), [derived evidence](fr03-evidence.json) and FR03-REVIEW-006
 
 ## BUG-07 - Required planning documents were not readable by the planning role, 2026-11-16
 
-- **ID / date / status / reporter:** BUG-07 / 2026-11-16 / fixed in baseline `1a54b9c` / reported by a teammate, confirmed independently by JunKai Yan.
+- **ID / date / status / reporter:** BUG-07 / 2026-11-16 / fixed in baseline `1a54b9c` / reported by a teammate, confirmed independently by majiaqi-yan.
 - **Symptom and impact:** `Prompt.md` line 37 requires reading the documentation index and open review items before planning, but `.opencode/permissions.jsonc` allowed read on `docs/architecture/*`, `docs/req/*` and `docs/code-governance/*` only. `course-plan` could read `AGENTS.md` and `Prompt.md` and was refused `docs/README.md` and `docs/review-memo.md`. Impact: every plan produced under the old allowlist either stopped or was planned from material the role could not read, which weakens the Gate 1 evidence for all five requirements.
 - **Reproduction:** run `course-plan` on baseline `486a9a5` with a task header naming those two paths; both reads return `Permission denied: read`. Under `3d5ce62` the same request succeeds for `docs/README.md`, `docs/review-memo.md` and `docs/req/product.yaml`.
 - **Classification:** tooling/configuration defect; NFR-01 and all requirements using Gate 1; severity major for evidence integrity.
@@ -112,3 +112,7 @@ The saved AAPL rerun from 18 November showed the Bull model submitting an incomp
 On integrated base `77938d0`, a 17-case real-node suite recorded 12 failures and 5 passes before the repair. Model-selected E1/A1 remained unresolved while the canonical-only control passed. The repair adds per-invocation selections, preserves canonical ownership checks and logs invalid references. Three further helper controls caught alias collisions in the generated draft. All 20 cases and the complete 1,832-case regression pass after maintainer correction. A real DeepSeek replay with fixed synthetic source material made three successful requests and resolved a canonical approved chain. Fresh Yahoo data remained unavailable under HTTP 429. [Detailed evidence](review-memo.md#fr-01-reference-reliability-follow-up--19-november-2026)
 
 **Follow-up, 19 November 2026:** In the [five-company CLI rerun](live-acceptance.md#five-company-cli-rerun-on-19-november-2026) on `df8a9d6`, AAPL published `Hold` using a fresh application cache. The 18 November batch had blocked AAPL; its saved logs do not identify the manager reference behind that decision. The new batch recorded neither a Yahoo HTTP 429 nor a database lock. Both observations apply to this run; the reference adapter changes how the model selects evidence, not how Yahoo serves data.
+
+## Delivery record reconciliation — 20 November 2026
+
+Historical feature entries retain the revisions they measured. The current state now points to the integrated source and the later reference adapter, while the debt register distinguishes resolved runtime wiring from open repository enforcement. This editorial reconciliation changes no application behavior. The report incorporates all five member accounts, equal contribution weights and the assigned peer-review ring, and records version-specific counts without summing overlapping test groups.

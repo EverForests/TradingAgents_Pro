@@ -13,7 +13,7 @@ Version: 1.0. Status: Proposed. Shared boundaries use JSON-compatible records. I
 | C4 dispatch budget | NFR-01 request-budget component | Both model tiers and every in-scope transport send |
 | C5 prepared context | NFR-02 context component | Analyst closure and neutral risk debater, then C4 |
 
-Shared-file integration owner: LIU Huansong. Feature owners submit narrow patches for state, schema, graph/client and reporting adapters. Task plans identify exact paths. The integrator preserves approved contracts across patches; shared files must not be independently replaced by feature branches.
+Shared-file integration owner: EverForests. Feature owners submit narrow patches for state, schema, graph/client and reporting adapters. Task plans identify exact paths. The integrator preserves approved contracts across patches; shared files must not be independently replaced by feature branches.
 
 ## C0 — identity, state and errors
 

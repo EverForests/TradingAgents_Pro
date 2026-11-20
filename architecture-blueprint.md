@@ -21,3 +21,9 @@ Plan is read-only. A human approves scope, interface and tests before Build star
 [C0–C5](docs/architecture/interface-contracts.md) defines shared records, function boundaries, state keys and failure precedence. Each component owns its authoritative records; legacy report strings remain compatible views. Shared-file changes are integrated by the designated coordinator.
 
 The application retains the upstream package layout. Verify the final submission mapping to the required `src/` and `test/` layout before packaging. Approval and outstanding verification items are recorded in [review records](docs/review-memo.md).
+
+## Integrated implementation and delivery view — 20 November 2026
+
+The five owner modules and C0–C5 boundaries are implemented in the recorded application revision. The [trace matrix](docs/architecture/trace-matrix.md#final-implementation-map--20-november-2026) names concrete tests. FR-01 invocation-local references resolve before the original C1 checks, and the byte-size preparation runs before C4 reservation at its scoped sites. Source and test snapshots in the private package follow the [D8 map](src/README.md).
+
+EverForests coordinates integration. Assigned peer review rotates FR-01 to FR-02 to FR-03 to NFR-01 to NFR-02 to FR-01, with each owner reviewing the next requirement and the coordinator merging after acceptance. This describes the team workflow, not the existence of a GitHub Review event. Historical design and plan approvals retain their recorded provenance. The [delivery audit](docs/delivery-readiness.md) separates implemented architecture from open CI enforcement.

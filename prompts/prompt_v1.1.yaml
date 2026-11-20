@@ -1,1 +1,281 @@
-# Placeholder: runtime prompt v1.1.
+format_version: 1
+version: '1.1'
+kind: runtime-prompt-source-snapshot
+source_revision: df8a9d6419dfa0aab2f4d8986d0a44060354cdb9
+runtime_authority: The Python source modules assemble actual prompts. This YAML archives their exact source
+  and is not loaded at runtime.
+change: Invocation-local E/A menus resolved to canonical references before C1 validation
+components:
+- path: tradingagents/agents/researchers/bull_researcher.py
+  sha256: 00e907de09e215650f594ffd5e5720573b478597837116e2e30ec9d302fc303e
+  source_snapshot: "from tradingagents.agents.context import (\n    get_instrument_context_from_state,\n\
+    \    get_language_instruction,\n    opponent_argument_or_opening,\n    report_or_absent,\n)\nfrom\
+    \ tradingagents.agents.schemas import DebateArgument\nfrom tradingagents.agents.structured import\
+    \ bind_structured, invoke_structured\n\n\ndef create_bull_researcher(llm):\n    # Imported here: ``publication_gate``\
+    \ imports this package, so a module-level\n    # import of it here would be circular.\n    from tradingagents.graph.publication_gate\
+    \ import (\n        _resolve_selections,\n        _select_aliases,\n        accepted_arguments_view,\n\
+    \        as_index,\n        evidence_menu,\n        logger as reference_logger,\n        run_as_of_date,\n\
+    \        validate_argument,\n    )\n\n    structured_llm = bind_structured(llm, DebateArgument, \"\
+    Bull Researcher\")\n\n    def bull_node(state) -> dict:\n        investment_debate_state = state[\"\
+    investment_debate_state\"]\n        history = investment_debate_state.get(\"history\", \"\")\n   \
+    \     bull_history = investment_debate_state.get(\"bull_history\", \"\")\n\n        current_response\
+    \ = opponent_argument_or_opening(\n            investment_debate_state.get(\"current_response\", \"\
+    \"), \"bear analyst\"\n        )\n        market_research_report = report_or_absent(state[\"market_report\"\
+    ], \"market\")\n        sentiment_report = report_or_absent(state[\"sentiment_report\"], \"sentiment\"\
+    )\n        news_report = report_or_absent(state[\"news_report\"], \"news\")\n        fundamentals_report\
+    \ = report_or_absent(state[\"fundamentals_report\"], \"fundamentals\")\n        instrument_context\
+    \ = get_instrument_context_from_state(state)\n        asset_type = state.get(\"asset_type\", \"stock\"\
+    )\n        target_label = \"stock\" if asset_type == \"stock\" else \"asset\"\n        fundamentals_label\
+    \ = (\n            \"Company fundamentals report\"\n            if asset_type == \"stock\"\n     \
+    \       else \"Asset fundamentals report (may be unavailable for crypto)\"\n        )\n        # FR-01:\
+    \ give the model this run's evidence IDs and material together, so\n        # a cited ID resolves\
+    \ to real run material.\n        evidence_state = state.get(\"evidence_index\")\n        aliases =\
+    \ _select_aliases(as_index(evidence_state).evidence_ids, \"E\")\n        evidence_block = evidence_menu(evidence_state,\
+    \ aliases)\n\n        prompt = f\"\"\"You are a Bull Analyst advocating for investing in the {target_label}.\
+    \ Your task is to build a strong, evidence-based case emphasizing growth potential, competitive advantages,\
+    \ and positive market indicators. Leverage the provided research and data to address concerns and\
+    \ counter bearish arguments effectively.\n\nKey points to focus on:\n- Growth Potential: Highlight\
+    \ the company's market opportunities, revenue projections, and scalability.\n- Competitive Advantages:\
+    \ Emphasize factors like unique products, strong branding, or dominant market positioning.\n- Positive\
+    \ Indicators: Use financial health, industry trends, and recent positive news as evidence.\n- Bear\
+    \ Counterpoints: Critically analyze the bear argument with specific data and sound reasoning, addressing\
+    \ concerns thoroughly and showing why the bull perspective holds stronger merit.\n- Engagement: Present\
+    \ your argument in a conversational style, engaging directly with the bear analyst's points and debating\
+    \ effectively rather than just listing data.\n\nResources available:\n{instrument_context}\nMarket\
+    \ research report: {market_research_report}\nSocial media sentiment report: {sentiment_report}\nLatest\
+    \ world affairs news: {news_report}\n{fundamentals_label}: {fundamentals_report}\nConversation history\
+    \ of the debate: {history}\nLast bear argument: {current_response}\n\nAvailable evidence (cite these\
+    \ exact IDs in evidence_ids; do not invent IDs):\n{evidence_block}\n\nEach evidence line ends with\
+    \ a short selection such as '= E1'. Prefer the short selection in evidence_ids; an exact full ID is\
+    \ also accepted. Never shorten or rewrite a full ID, and cite no selection that is not on this list.\n\
+    \nUse this information to deliver a compelling bull argument, refute the bear's concerns, and engage\
+    \ in a dynamic debate that demonstrates the strengths of the bull position.\n\"\"\" + get_language_instruction()\n\
+    \n        # FR-01: prefer a structured argument so the evidence IDs are captured in\n        # the\
+    \ same call; fall back to plain prose only for the debate text (that\n        # plain path carries\
+    \ no evidence IDs, so it mints no argument and cannot\n        # back a published recommendation).\n\
+    \        evidence_ids = ()\n        structured = invoke_structured(structured_llm, prompt, \"Bull\
+    \ Researcher\")\n        if structured is not None:\n            # FR-01 reference adapter: an alias\
+    \ selected from this invocation's\n            # menu becomes the canonical ID the validator checks.\
+    \ An unknown or\n            # shortened selection is kept as written, so validation refuses the\n\
+    \            # whole argument instead of dropping it.\n            evidence_ids = tuple(_resolve_selections(\n\
+    \                structured.evidence_ids or (), aliases, \"Bull Researcher\",\n            ))\n  \
+    \          content = structured.argument\n        else:\n            content = llm.invoke(prompt).content\n\
+    \n        argument = f\"Bull Analyst: {content}\"\n\n        new_investment_debate_state = {\n   \
+    \         \"history\": history + \"\\n\" + argument,\n            \"bull_history\": bull_history +\
+    \ \"\\n\" + argument,\n            \"bear_history\": investment_debate_state.get(\"bear_history\"\
+    , \"\"),\n            \"current_response\": argument,\n            \"count\": investment_debate_state[\"\
+    count\"] + 1,\n        }\n\n        # FR-01: validate the cited evidence against this run's index\
+    \ with the v1\n        # boundary ``validate_argument`` and, only if it is accepted, store the\n \
+    \       # record it returns. That record keeps the run's full identity, so the\n        # gate can\
+    \ re-check ownership. ``argument_index`` is the authoritative\n        # ID -> record mapping keyed\
+    \ by ``argument_id`` (C1 v1.0);\n        # ``accepted_arguments`` is derived from it for legacy readers\
+    \ and is\n        # never a release authority.\n        argument_index = dict(state.get(\"argument_index\"\
+    ) or {})\n        evidence_state = state.get(\"evidence_index\")\n        if evidence_state is not\
+    \ None and evidence_ids:\n            # Imported here: ``setup`` imports this module, so a module-level\n\
+    \            # import of it would be circular.\n            from tradingagents.graph.setup import\
+    \ _pending_run_context, _results_dir\n\n            run = state.get(\"course_run\") or _pending_run_context(state)\
+    \ or {}\n            submission = {\n                \"contract_version\": \"1.0\",\n            \
+    \    \"run_id\": run.get(\"run_id\", \"\"),\n                # The seeded RunContext is the identity\
+    \ authority; fall back to the\n                # state only when an older checkpoint carries no context.\n\
+    \                \"ticker\": run.get(\"ticker\") or state.get(\"company_of_interest\", \"\"),\n  \
+    \              \"as_of_date\": run.get(\"as_of_date\") or run_as_of_date(state),\n               \
+    \ \"argument_id\": f\"arg:bull:{run.get('run_id', '')}:\"\n                               f\"{new_investment_debate_state['count']}\"\
+    ,\n                \"speaker\": \"Bull Analyst\",\n                \"claim\": argument,\n        \
+    \        \"evidence_ids\": list(evidence_ids),\n            }\n            accepted = validate_argument(\n\
+    \                submission, evidence_state, run, results_dir=_results_dir(),\n            )\n   \
+    \         if accepted is None:\n                reference_logger.warning(\n                    \"\
+    Argument rejected: actor=%s references=%r reason=UNRESOLVABLE_EVIDENCE\",\n                    \"\
+    Bull Researcher\",\n                    [reference[:160] for reference in evidence_ids],\n       \
+    \         )\n            else:\n                argument_id = accepted[\"argument_id\"]\n        \
+    \        accepted = {**accepted, \"claim\": argument, \"speaker\": \"Bull Analyst\"}\n           \
+    \     argument_index[argument_id] = accepted\n                # ``evidence_index`` is *not* rewritten\
+    \ here. It is the\n                # authoritative mapping the Index Evidence step built, and a\n\
+    \                # round-trip through ``index_to_state`` would drop each record's\n              \
+    \  # identity and ``content_ref``, leaving the snapshot material\n                # unresolvable.\
+    \ Accepting an argument appends to\n                # ``argument_index`` only; the gate reads both\
+    \ mappings as stored.\n\n        return {\n            \"argument_index\": argument_index,\n     \
+    \       \"investment_debate_state\": new_investment_debate_state,\n            \"pending_argument\"\
+    : {\n                \"speaker\": \"Bull Analyst\",\n                \"text\": argument,\n       \
+    \         \"evidence_ids\": list(evidence_ids),\n            },\n            \"accepted_arguments\"\
+    : accepted_arguments_view(argument_index),\n        }\n\n    return bull_node\n"
+- path: tradingagents/agents/researchers/bear_researcher.py
+  sha256: 8498f67360ab5566ed43e1d8990485baa7e2c4eb93b663f5f8f1c207e7aa5249
+  source_snapshot: "from tradingagents.agents.context import (\n    get_instrument_context_from_state,\n\
+    \    get_language_instruction,\n    opponent_argument_or_opening,\n    report_or_absent,\n)\nfrom\
+    \ tradingagents.agents.schemas import DebateArgument\nfrom tradingagents.agents.structured import\
+    \ bind_structured, invoke_structured\n\n\ndef create_bear_researcher(llm):\n    # Imported here: ``publication_gate``\
+    \ imports this package, so a module-level\n    # import of it here would be circular.\n    from tradingagents.graph.publication_gate\
+    \ import (\n        _resolve_selections,\n        _select_aliases,\n        accepted_arguments_view,\n\
+    \        as_index,\n        evidence_menu,\n        logger as reference_logger,\n        run_as_of_date,\n\
+    \        validate_argument,\n    )\n\n    structured_llm = bind_structured(llm, DebateArgument, \"\
+    Bear Researcher\")\n\n    def bear_node(state) -> dict:\n        investment_debate_state = state[\"\
+    investment_debate_state\"]\n        history = investment_debate_state.get(\"history\", \"\")\n   \
+    \     bear_history = investment_debate_state.get(\"bear_history\", \"\")\n\n        current_response\
+    \ = opponent_argument_or_opening(\n            investment_debate_state.get(\"current_response\", \"\
+    \"), \"bull analyst\"\n        )\n        market_research_report = report_or_absent(state[\"market_report\"\
+    ], \"market\")\n        sentiment_report = report_or_absent(state[\"sentiment_report\"], \"sentiment\"\
+    )\n        news_report = report_or_absent(state[\"news_report\"], \"news\")\n        fundamentals_report\
+    \ = report_or_absent(state[\"fundamentals_report\"], \"fundamentals\")\n        instrument_context\
+    \ = get_instrument_context_from_state(state)\n        asset_type = state.get(\"asset_type\", \"stock\"\
+    )\n        target_label = \"stock\" if asset_type == \"stock\" else \"asset\"\n        fundamentals_label\
+    \ = (\n            \"Company fundamentals report\"\n            if asset_type == \"stock\"\n     \
+    \       else \"Asset fundamentals report (may be unavailable for crypto)\"\n        )\n        # FR-01:\
+    \ give the model this run's evidence IDs and material together, so\n        # a cited ID resolves\
+    \ to real run material.\n        evidence_state = state.get(\"evidence_index\")\n        aliases =\
+    \ _select_aliases(as_index(evidence_state).evidence_ids, \"E\")\n        evidence_block = evidence_menu(evidence_state,\
+    \ aliases)\n\n        prompt = f\"\"\"You are a Bear Analyst making the case against investing in\
+    \ the {target_label}. Your goal is to present a well-reasoned argument emphasizing risks, challenges,\
+    \ and negative indicators. Leverage the provided research and data to highlight potential downsides\
+    \ and counter bullish arguments effectively.\n\nKey points to focus on:\n\n- Risks and Challenges:\
+    \ Highlight factors like market saturation, financial instability, or macroeconomic threats that could\
+    \ hinder the stock's performance.\n- Competitive Weaknesses: Emphasize vulnerabilities such as weaker\
+    \ market positioning, declining innovation, or threats from competitors.\n- Negative Indicators: Use\
+    \ evidence from financial data, market trends, or recent adverse news to support your position.\n\
+    - Bull Counterpoints: Critically analyze the bull argument with specific data and sound reasoning,\
+    \ exposing weaknesses or over-optimistic assumptions.\n- Engagement: Present your argument in a conversational\
+    \ style, directly engaging with the bull analyst's points and debating effectively rather than simply\
+    \ listing facts.\n\nResources available:\n\n{instrument_context}\nMarket research report: {market_research_report}\n\
+    Social media sentiment report: {sentiment_report}\nLatest world affairs news: {news_report}\n{fundamentals_label}:\
+    \ {fundamentals_report}\nConversation history of the debate: {history}\nLast bull argument: {current_response}\n\
+    \nAvailable evidence (cite these exact IDs in evidence_ids; do not invent IDs):\n{evidence_block}\n\
+    \nEach evidence line ends with a short selection such as '= E1'. Prefer the short selection in evidence_ids;\
+    \ an exact full ID is also accepted. Never shorten or rewrite a full ID, and cite no selection that\
+    \ is not on this list.\n\nUse this information to deliver a compelling bear argument, refute the bull's\
+    \ claims, and engage in a dynamic debate that demonstrates the risks and weaknesses of investing in\
+    \ the {target_label}.\n\"\"\" + get_language_instruction()\n\n        # FR-01: prefer a structured\
+    \ argument (captures evidence IDs in one call);\n        # plain fallback carries no IDs and mints\
+    \ no argument.\n        evidence_ids = ()\n        structured = invoke_structured(structured_llm,\
+    \ prompt, \"Bear Researcher\")\n        if structured is not None:\n            # FR-01 reference\
+    \ adapter: an alias selected from this invocation's\n            # menu becomes the canonical ID the\
+    \ validator checks. An unknown or\n            # shortened selection is kept as written, so validation\
+    \ refuses the\n            # whole argument instead of dropping it.\n            evidence_ids = tuple(_resolve_selections(\n\
+    \                structured.evidence_ids or (), aliases, \"Bear Researcher\",\n            ))\n  \
+    \          content = structured.argument\n        else:\n            content = llm.invoke(prompt).content\n\
+    \n        argument = f\"Bear Analyst: {content}\"\n\n        new_investment_debate_state = {\n   \
+    \         \"history\": history + \"\\n\" + argument,\n            \"bear_history\": bear_history +\
+    \ \"\\n\" + argument,\n            \"bull_history\": investment_debate_state.get(\"bull_history\"\
+    , \"\"),\n            \"current_response\": argument,\n            \"count\": investment_debate_state[\"\
+    count\"] + 1,\n        }\n\n        # FR-01: validate the cited evidence against this run's index\
+    \ with the v1\n        # boundary ``validate_argument`` and, only if accepted, store the record it\n\
+    \        # returns. That record keeps the run's full identity, so the gate can\n        # re-check\
+    \ ownership. ``argument_index`` is the authoritative ID -> record\n        # mapping keyed by ``argument_id``\
+    \ (C1 v1.0); ``accepted_arguments`` is\n        # derived from it and is never a release authority.\n\
+    \        argument_index = dict(state.get(\"argument_index\") or {})\n        evidence_state = state.get(\"\
+    evidence_index\")\n        if evidence_state is not None and evidence_ids:\n            # Imported\
+    \ here: ``setup`` imports this module, so a module-level\n            # import of it would be circular.\n\
+    \            from tradingagents.graph.setup import _pending_run_context, _results_dir\n\n        \
+    \    run = state.get(\"course_run\") or _pending_run_context(state) or {}\n            submission\
+    \ = {\n                \"contract_version\": \"1.0\",\n                \"run_id\": run.get(\"run_id\"\
+    , \"\"),\n                # The seeded RunContext is the identity authority; fall back to the\n  \
+    \              # state only when an older checkpoint carries no context.\n                \"ticker\"\
+    : run.get(\"ticker\") or state.get(\"company_of_interest\", \"\"),\n                \"as_of_date\"\
+    : run.get(\"as_of_date\") or run_as_of_date(state),\n                \"argument_id\": f\"arg:bear:{run.get('run_id',\
+    \ '')}:\"\n                               f\"{new_investment_debate_state['count']}\",\n         \
+    \       \"speaker\": \"Bear Analyst\",\n                \"claim\": argument,\n                \"evidence_ids\"\
+    : list(evidence_ids),\n            }\n            accepted = validate_argument(\n                submission,\
+    \ evidence_state, run, results_dir=_results_dir(),\n            )\n            if accepted is None:\n\
+    \                reference_logger.warning(\n                    \"Argument rejected: actor=%s references=%r\
+    \ reason=UNRESOLVABLE_EVIDENCE\",\n                    \"Bear Researcher\",\n                    [reference[:160]\
+    \ for reference in evidence_ids],\n                )\n            else:\n                argument_id\
+    \ = accepted[\"argument_id\"]\n                accepted = {**accepted, \"claim\": argument, \"speaker\"\
+    : \"Bear Analyst\"}\n                argument_index[argument_id] = accepted\n                # As\
+    \ for the Bull: ``evidence_index`` is the authoritative mapping\n                # the Index Evidence\
+    \ step built and is never rewritten here, so no\n                # record loses its identity or ``content_ref``.\n\
+    \n        return {\n            \"argument_index\": argument_index,\n            \"investment_debate_state\"\
+    : new_investment_debate_state,\n            \"pending_argument\": {\n                \"speaker\":\
+    \ \"Bear Analyst\",\n                \"text\": argument,\n                \"evidence_ids\": list(evidence_ids),\n\
+    \            },\n            \"accepted_arguments\": accepted_arguments_view(argument_index),\n  \
+    \      }\n\n    return bear_node\n"
+- path: tradingagents/agents/managers/portfolio_manager.py
+  sha256: fd4e38a41bda40e5ff82942e12a51176d867bac1ab5c8bbe03f0e9b2bee30300
+  source_snapshot: "\"\"\"Portfolio Manager: synthesises the risk-analyst debate into the final decision.\n\
+    \nUses LangChain's ``with_structured_output`` so the LLM produces a typed\n``PortfolioDecision`` directly,\
+    \ in a single call. FR-01 / INV-01: the manager\nwrites **only** the internal candidate (``candidate_decision``,\n\
+    ``candidate_rating``, ``candidate_argument_ids``); the publication gate promotes\nit to the official\
+    \ ``final_trade_decision`` / ``final_rating`` on approval, so a\nrefused candidate never reaches the\
+    \ memory log, CLI display or saved reports.\nWhen a provider does not expose structured output, the\
+    \ agent falls back to\nfree-text generation and the rating is read from that text — but with no\n\
+    argument ids, so the gate blocks it.\n\nBoth decision paths meet before the node returns. There the\
+    \ run's verified\nmetrics are re-read by ID with ``resolve_metric`` and passed on as\n``portfolio_verified_metrics``;\
+    \ the model's text is never a source of numbers\nand no extra request is made.\n\"\"\"\n\nfrom __future__\
+    \ import annotations\n\nfrom tradingagents.agents.context import (\n    get_instrument_context_from_state,\n\
+    \    get_language_instruction,\n    get_portfolio_context_from_state,\n)\nfrom tradingagents.agents.rating\
+    \ import parse_rating\nfrom tradingagents.agents.schemas import PortfolioDecision, render_pm_decision\n\
+    from tradingagents.agents.structured import NO_EXTERNAL_TOOLS, bind_structured, invoke_structured\n\
+    from tradingagents.agents.verified_metrics import resolve_metric\n\n\ndef _resolved_metrics(state)\
+    \ -> list:\n    \"\"\"This run's verified metrics, re-read by ID, as {metric_id, result_value, result_unit}.\n\
+    \n    A missing, null or wrong-typed course_run or registry yields an empty list,\n    as does a registry\
+    \ whose records resolve to nothing (empty table, a prior\n    run's IDs, or an unknown ID). Order\
+    \ follows the registry's own key order\n    and is the same on both decision paths. The passed state\
+    \ is only read.\n    \"\"\"\n    run = state.get(\"course_run\") if isinstance(state, dict) else None\n\
+    \    registry = state.get(\"verified_metrics\") if isinstance(state, dict) else None\n    if not isinstance(run,\
+    \ dict) or not isinstance(registry, dict) or not registry:\n        return []\n    resolved = []\n\
+    \    for metric_id in registry:\n        record = resolve_metric(metric_id, registry, run)\n     \
+    \   if not isinstance(record, dict):\n            continue\n        if record.get(\"metric_id\") !=\
+    \ metric_id:\n            continue\n        resolved.append({\n            \"metric_id\": metric_id,\n\
+    \            \"result_value\": record.get(\"result_value\"),\n            \"result_unit\": record.get(\"\
+    result_unit\"),\n        })\n    return resolved\n\n\ndef create_portfolio_manager(llm):\n    # Local\
+    \ import preserves the graph/agents package initialization boundary.\n    from tradingagents.graph.publication_gate\
+    \ import _resolve_selections, _select_aliases\n\n    structured_llm = bind_structured(llm, PortfolioDecision,\
+    \ \"Portfolio Manager\")\n\n    def portfolio_manager_node(state) -> dict:\n        instrument_context\
+    \ = get_instrument_context_from_state(state)\n        portfolio_context = get_portfolio_context_from_state(state)\n\
+    \n        history = state[\"risk_debate_state\"][\"history\"]\n        risk_debate_state = state[\"\
+    risk_debate_state\"]\n        research_plan = state[\"investment_plan\"]\n        trader_plan = state[\"\
+    trader_investment_plan\"]\n\n        past_context = state.get(\"past_context\", \"\")\n        lessons_line\
+    \ = (\n            f\"- Lessons from prior decisions and outcomes:\\n{past_context}\\n\"\n       \
+    \     if past_context\n            else \"\"\n        )\n\n        # FR-01: the decision must rest\
+    \ on arguments the program accepted. The\n        # accepted argument IDs are injected here so the\
+    \ manager can cite them.\n        # FR-01 reference adapter: each listed line also offers a short\
+    \ local\n        # selection ('= A1'), built from this same list and frozen for this\n        # invocation,\
+    \ so the model need not copy a long run-bound ID.\n        accepted = state.get(\"accepted_arguments\"\
+    ) or []\n        accepted_line = \"\"\n        argument_aliases: dict[str, str] = {}\n        if accepted:\n\
+    \            argument_aliases = _select_aliases(\n                [a[\"argument_id\"] for a in accepted],\
+    \ \"A\",\n            )\n            selections = {\n                reference: alias for alias, reference\
+    \ in argument_aliases.items()\n            }\n            listed = \"\\n\".join(\n               \
+    \ f\"- {a['argument_id']} ({a['speaker']}; evidence {', '.join(a['evidence_ids'])})\"\n          \
+    \      + (f\" = {selections[a['argument_id']]}\"\n                   if a[\"argument_id\"] in selections\
+    \ else \"\")\n                for a in accepted\n            )\n            accepted_line = (\n  \
+    \              f\"\\n**Accepted arguments** (cite their short selections, such as 'A1', \"\n     \
+    \           f\"in argument_ids; an exact full ID is also accepted):\\n{listed}\\n\"\n            )\n\
+    \n        prompt = f\"\"\"As the Portfolio Manager, synthesize the risk analysts' debate and deliver\
+    \ the final trading decision.\n\n{instrument_context}\n\n{portfolio_context}\n\n---\n\n**Rating Scale**\
+    \ (use exactly one):\n- **Buy**: Strong conviction to enter or add to position\n- **Overweight**:\
+    \ Favorable outlook, gradually increase exposure\n- **Hold**: Maintain current position, no action\
+    \ needed\n- **Underweight**: Reduce exposure, take partial profits\n- **Sell**: Exit position or avoid\
+    \ entry\n\n**Context:**\n- Research Manager's investment plan: **{research_plan}**\n- Trader's transaction\
+    \ proposal: **{trader_plan}**\n{lessons_line}\n**Risk Analysts Debate History:**\n{history}\n{accepted_line}\n\
+    \n---\n\nGround every conclusion in specific evidence from the analysts. The risk debate always contains\
+    \ conflicting stances; deciding which is stronger is the job, so conflict alone is not a reason to\
+    \ Hold. Commit to the stronger case, sized by how decisively it wins. Choose Hold only when the evidence\
+    \ is still balanced after that weighing, or too thin to support a call; do not force a direction to\
+    \ appear decisive. Weigh the analysts on their merits, independent of speaking order.\n\n## Output\n\
+    \nWrite these sections, in this order, starting with the rating on its own line:\n\n- **Rating**:\
+    \ exactly one of Buy / Overweight / Hold / Underweight / Sell\n- **Executive Summary**: the call and\
+    \ how to act on it\n- **Investment Thesis**: the evidence that decided it, and what would change it\n\
+    \n{NO_EXTERNAL_TOOLS}{get_language_instruction()}\"\"\"\n\n        # The typed rating is the decision;\
+    \ the rendered text only carries it.\n        # Read back from text, a rating the thesis quotes could\
+    \ replace it.\n        decision = invoke_structured(structured_llm, prompt, \"Portfolio Manager\"\
+    )\n        if decision is not None:\n            candidate_body = render_pm_decision(decision)\n \
+    \           candidate_rating = decision.rating.value\n            # FR-01 reference adapter: an A-selection\
+    \ becomes the canonical\n            # accepted-argument ID the gate rechecks. An unknown or shortened\n\
+    \            # selection is kept as written, so the gate refuses the candidate\n            # instead\
+    \ of dropping the reference.\n            argument_ids = _resolve_selections(\n                decision.argument_ids\
+    \ or [], argument_aliases, \"Portfolio Manager\",\n            )\n        else:\n            # FR-01:\
+    \ no free-text rating fallback around the gate. A free-text\n            # answer carries no structured\
+    \ argument_ids, so the candidate decision\n            # is kept but cannot publish — the gate blocks\
+    \ it for lack of evidence.\n            candidate_body = llm.invoke(prompt).content\n            candidate_rating\
+    \ = parse_rating(candidate_body)\n            argument_ids = []\n\n        # Both paths meet here:\
+    \ re-read this run's verified metrics by ID.\n        portfolio_verified_metrics = _resolved_metrics(state)\n\
+    \n        new_risk_debate_state = {\n            \"history\": risk_debate_state[\"history\"],\n  \
+    \          \"aggressive_history\": risk_debate_state[\"aggressive_history\"],\n            \"conservative_history\"\
+    : risk_debate_state[\"conservative_history\"],\n            \"neutral_history\": risk_debate_state[\"\
+    neutral_history\"],\n            \"latest_speaker\": \"Judge\",\n            \"current_aggressive_response\"\
+    : risk_debate_state[\"current_aggressive_response\"],\n            \"current_conservative_response\"\
+    : risk_debate_state[\"current_conservative_response\"],\n            \"current_neutral_response\"\
+    : risk_debate_state[\"current_neutral_response\"],\n            \"count\": risk_debate_state[\"count\"\
+    ],\n        }\n\n        # FR-01 / INV-01: the Portfolio Manager writes only the internal candidate.\n\
+    \        # The publication gate promotes it to the official fields on approval; on\n        # refusal\
+    \ nothing here can reach an official sink.\n        return {\n            \"risk_debate_state\": new_risk_debate_state,\n\
+    \            \"candidate_decision\": candidate_body,\n            \"candidate_rating\": candidate_rating,\n\
+    \            \"candidate_argument_ids\": argument_ids,\n            \"portfolio_verified_metrics\"\
+    : portfolio_verified_metrics,\n        }\n\n    return portfolio_manager_node\n"

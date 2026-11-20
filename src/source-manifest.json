@@ -1,0 +1,646 @@
+{
+  "application_revision": "df8a9d6419dfa0aab2f4d8986d0a44060354cdb9",
+  "source_layout": "Root packages are runnable; src copies are exact submitted snapshots.",
+  "sources": [
+    {
+      "runnable_path": "cli/__init__.py",
+      "course_source_path": "src/cli/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "runnable_path": "cli/display.py",
+      "course_source_path": "src/cli/display.py",
+      "sha256": "7845e599c4e83927d06070cd0096138a8d93a00ee78ff6e7e06fce753be02809"
+    },
+    {
+      "runnable_path": "cli/main.py",
+      "course_source_path": "src/cli/main.py",
+      "sha256": "965793dd4b016d8e69a03ba62ae6fe139ba3de9f31d42e431466721b5ed97a9d"
+    },
+    {
+      "runnable_path": "cli/models.py",
+      "course_source_path": "src/cli/models.py",
+      "sha256": "2363534e647d6278f2d6075739bd8373322a32775f303ce15dd83d29dc437072"
+    },
+    {
+      "runnable_path": "cli/prefs.py",
+      "course_source_path": "src/cli/prefs.py",
+      "sha256": "7bc559427bbec0913496c22e2d1d1e4bbfc643505200399d0929cd295e2c9b76"
+    },
+    {
+      "runnable_path": "cli/prompts.py",
+      "course_source_path": "src/cli/prompts.py",
+      "sha256": "14a748d9063c5059a9f58346badb07d6718ed82244d395110a3abf1996ea73df"
+    },
+    {
+      "runnable_path": "cli/run.py",
+      "course_source_path": "src/cli/run.py",
+      "sha256": "6116f858b95ae4da720d3b47426c46160d3a7c0d44dfa69aa67ce03c4b095a6f"
+    },
+    {
+      "runnable_path": "cli/selections.py",
+      "course_source_path": "src/cli/selections.py",
+      "sha256": "c9271d35264144ebf0544c66745ec523cca546dcaa9edbff78f5d77d776f2fd3"
+    },
+    {
+      "runnable_path": "cli/static/welcome.txt",
+      "course_source_path": "src/cli/static/welcome.txt",
+      "sha256": "070c00fb5cf458d12fce27c57442ed3f54fb1871871e576688d84b456806ec0e"
+    },
+    {
+      "runnable_path": "cli/stats_handler.py",
+      "course_source_path": "src/cli/stats_handler.py",
+      "sha256": "3f9e0c9a37e50af1e5a26724b53b5dd5cb2f988dc277ac7a7347817a974dae22"
+    },
+    {
+      "runnable_path": "cli/updates.py",
+      "course_source_path": "src/cli/updates.py",
+      "sha256": "fd5b5858d1f859bf6e96e76f876203114bec7168937a3cbc1f6831e10560837b"
+    },
+    {
+      "runnable_path": "main.py",
+      "course_source_path": "src/main.py",
+      "sha256": "f8aa9b469a7e1163340d6312b213076ad2ceec1495ca65ad562c31e5ac6c04ac"
+    },
+    {
+      "runnable_path": "tradingagents/__init__.py",
+      "course_source_path": "src/tradingagents/__init__.py",
+      "sha256": "88fff8048660d767919f7b1a9f246e7e3aa9378abd20fc2726cc424a30080bcd"
+    },
+    {
+      "runnable_path": "tradingagents/agents/__init__.py",
+      "course_source_path": "src/tradingagents/agents/__init__.py",
+      "sha256": "678113367f806b26a26ff36054ad866d0d9315073564ba06a8d61fd08ffaf9fb"
+    },
+    {
+      "runnable_path": "tradingagents/agents/analysts/__init__.py",
+      "course_source_path": "src/tradingagents/agents/analysts/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "runnable_path": "tradingagents/agents/analysts/fundamentals_analyst.py",
+      "course_source_path": "src/tradingagents/agents/analysts/fundamentals_analyst.py",
+      "sha256": "daa6deb211ffea262da168a935464080cd75e61815d164502d6466dbd60845b4"
+    },
+    {
+      "runnable_path": "tradingagents/agents/analysts/market_analyst.py",
+      "course_source_path": "src/tradingagents/agents/analysts/market_analyst.py",
+      "sha256": "b9b1562d0c5beafd578380aa5b60534da7601b640b7e8d8869363d309ac0b066"
+    },
+    {
+      "runnable_path": "tradingagents/agents/analysts/news_analyst.py",
+      "course_source_path": "src/tradingagents/agents/analysts/news_analyst.py",
+      "sha256": "fbc22552cd6ae0306ef66a891fb7f7ca5de4f528f12402ebab3c68d2c8c58cba"
+    },
+    {
+      "runnable_path": "tradingagents/agents/analysts/sentiment_analyst.py",
+      "course_source_path": "src/tradingagents/agents/analysts/sentiment_analyst.py",
+      "sha256": "b1313438e81876d1a4ce2bee8131c6813fbd8907ec5abbf4c636667f2431abca"
+    },
+    {
+      "runnable_path": "tradingagents/agents/analysts/turn.py",
+      "course_source_path": "src/tradingagents/agents/analysts/turn.py",
+      "sha256": "5b4b336ae20921fc11927bb4e7a9387621cc06f3a6d8b259d085af78cbaff4f3"
+    },
+    {
+      "runnable_path": "tradingagents/agents/context.py",
+      "course_source_path": "src/tradingagents/agents/context.py",
+      "sha256": "b039623a86856206ce397fcbafd8ef0d9de161d6042772bea2dfc6fec95233dd"
+    },
+    {
+      "runnable_path": "tradingagents/agents/evidence_collection.py",
+      "course_source_path": "src/tradingagents/agents/evidence_collection.py",
+      "sha256": "c05d745593764744a6148701c74f50e23e58497615a8e88e831c4890c64461c4"
+    },
+    {
+      "runnable_path": "tradingagents/agents/managers/__init__.py",
+      "course_source_path": "src/tradingagents/agents/managers/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "runnable_path": "tradingagents/agents/managers/portfolio_manager.py",
+      "course_source_path": "src/tradingagents/agents/managers/portfolio_manager.py",
+      "sha256": "fd4e38a41bda40e5ff82942e12a51176d867bac1ab5c8bbe03f0e9b2bee30300"
+    },
+    {
+      "runnable_path": "tradingagents/agents/managers/research_manager.py",
+      "course_source_path": "src/tradingagents/agents/managers/research_manager.py",
+      "sha256": "60386f2afe3e4b7411b68d8e67a83a6b899ba8aa61a2bec5e9d080feb731c1f7"
+    },
+    {
+      "runnable_path": "tradingagents/agents/post_screen.py",
+      "course_source_path": "src/tradingagents/agents/post_screen.py",
+      "sha256": "1aa4ada438d9ffeb817b4fb0067bbd46d730e736b00e8640446da483f8be73a9"
+    },
+    {
+      "runnable_path": "tradingagents/agents/rating.py",
+      "course_source_path": "src/tradingagents/agents/rating.py",
+      "sha256": "90ab5951c3438ba8d9f7536a80c6b5824a6b56ae5cda83f31ada1be311866a52"
+    },
+    {
+      "runnable_path": "tradingagents/agents/researchers/__init__.py",
+      "course_source_path": "src/tradingagents/agents/researchers/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "runnable_path": "tradingagents/agents/researchers/bear_researcher.py",
+      "course_source_path": "src/tradingagents/agents/researchers/bear_researcher.py",
+      "sha256": "8498f67360ab5566ed43e1d8990485baa7e2c4eb93b663f5f8f1c207e7aa5249"
+    },
+    {
+      "runnable_path": "tradingagents/agents/researchers/bull_researcher.py",
+      "course_source_path": "src/tradingagents/agents/researchers/bull_researcher.py",
+      "sha256": "00e907de09e215650f594ffd5e5720573b478597837116e2e30ec9d302fc303e"
+    },
+    {
+      "runnable_path": "tradingagents/agents/risk_mgmt/__init__.py",
+      "course_source_path": "src/tradingagents/agents/risk_mgmt/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "runnable_path": "tradingagents/agents/risk_mgmt/aggressive_debator.py",
+      "course_source_path": "src/tradingagents/agents/risk_mgmt/aggressive_debator.py",
+      "sha256": "f2ddbc28dbeb2786f4c1dcf0c1ef3a54b564fbf118ca14e6a72a3259870b6113"
+    },
+    {
+      "runnable_path": "tradingagents/agents/risk_mgmt/conservative_debator.py",
+      "course_source_path": "src/tradingagents/agents/risk_mgmt/conservative_debator.py",
+      "sha256": "a1d688a37b05cf12a8e16aa51cafffe39594a50e1b49c225e5de564fb5254639"
+    },
+    {
+      "runnable_path": "tradingagents/agents/risk_mgmt/neutral_debator.py",
+      "course_source_path": "src/tradingagents/agents/risk_mgmt/neutral_debator.py",
+      "sha256": "5cdf36d7225e20d5186ffbd2a777659f5e7022b0b0bcf81fab81bfd1898cfdca"
+    },
+    {
+      "runnable_path": "tradingagents/agents/schemas.py",
+      "course_source_path": "src/tradingagents/agents/schemas.py",
+      "sha256": "2c731ab6942c99aa1f58bdddfd1921213dafcbc368f65424b36b3da4726d7bec"
+    },
+    {
+      "runnable_path": "tradingagents/agents/sentiment_coverage.py",
+      "course_source_path": "src/tradingagents/agents/sentiment_coverage.py",
+      "sha256": "e8ba70f44393e4f00f8640f2a470187af33dd9718a0d5b71b4c66679197220f5"
+    },
+    {
+      "runnable_path": "tradingagents/agents/state.py",
+      "course_source_path": "src/tradingagents/agents/state.py",
+      "sha256": "097e2e844279883c2198a4f9868c3a948424a05cbd47c2716f2e37e4dc0876dc"
+    },
+    {
+      "runnable_path": "tradingagents/agents/structured.py",
+      "course_source_path": "src/tradingagents/agents/structured.py",
+      "sha256": "c163bcbd4d510630ba12e1d9a21497eb4e14f54c13a84e87910b0e7bd468a6f2"
+    },
+    {
+      "runnable_path": "tradingagents/agents/tools.py",
+      "course_source_path": "src/tradingagents/agents/tools.py",
+      "sha256": "1daca9790c64845def459e3cf4ad9569dd952e6849933e4be550c9233b19f57f"
+    },
+    {
+      "runnable_path": "tradingagents/agents/trader/__init__.py",
+      "course_source_path": "src/tradingagents/agents/trader/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "runnable_path": "tradingagents/agents/trader/trader.py",
+      "course_source_path": "src/tradingagents/agents/trader/trader.py",
+      "sha256": "ce2ee336dc21a5cd59215a7944ab0a701e633c40478598f0416bee95d01c3cef"
+    },
+    {
+      "runnable_path": "tradingagents/agents/verified_metrics.py",
+      "course_source_path": "src/tradingagents/agents/verified_metrics.py",
+      "sha256": "6dff2e44d363b9285b37ddae0eaa0aaadba2b57cf4454974bcd26b97eb645505"
+    },
+    {
+      "runnable_path": "tradingagents/assets/tauric-logo.svg",
+      "course_source_path": "src/tradingagents/assets/tauric-logo.svg",
+      "sha256": "798dfbe4ed4350da4f545f46189c877b1750c639fe21ee71828964de9f843af1"
+    },
+    {
+      "runnable_path": "tradingagents/backtest.py",
+      "course_source_path": "src/tradingagents/backtest.py",
+      "sha256": "7123b4931d7cbfc1af882e61545138293075d91569ccc035f05702be30a86763"
+    },
+    {
+      "runnable_path": "tradingagents/dataflows/__init__.py",
+      "course_source_path": "src/tradingagents/dataflows/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "runnable_path": "tradingagents/dataflows/config.py",
+      "course_source_path": "src/tradingagents/dataflows/config.py",
+      "sha256": "0158c7a3bf506eb8d633896632858eb086ecbd063c78344b58f145201928314f"
+    },
+    {
+      "runnable_path": "tradingagents/dataflows/date_window.py",
+      "course_source_path": "src/tradingagents/dataflows/date_window.py",
+      "sha256": "77c4ab1d546ed24e47368db6a95c042cd9cefc94bfacfd9350cd8243ac1c8d29"
+    },
+    {
+      "runnable_path": "tradingagents/dataflows/errors.py",
+      "course_source_path": "src/tradingagents/dataflows/errors.py",
+      "sha256": "ceaff104123ac2a55b50635f27d39f80b6455c74617f67f7f54d908e00477b13"
+    },
+    {
+      "runnable_path": "tradingagents/dataflows/files.py",
+      "course_source_path": "src/tradingagents/dataflows/files.py",
+      "sha256": "d98010cbf6105230dfbea5ff4e138052a891b1c6a116c9ba0446aaa5c96858d5"
+    },
+    {
+      "runnable_path": "tradingagents/dataflows/net.py",
+      "course_source_path": "src/tradingagents/dataflows/net.py",
+      "sha256": "f7d9945e487c300867d111310e10316063cb0cac95a764ad4140d77d89a52b76"
+    },
+    {
+      "runnable_path": "tradingagents/dataflows/router.py",
+      "course_source_path": "src/tradingagents/dataflows/router.py",
+      "sha256": "3e720eb77038084a75d1d6c138c4c7112d9b95ca368ec93a69c7b597b663409e"
+    },
+    {
+      "runnable_path": "tradingagents/dataflows/source_receipt.py",
+      "course_source_path": "src/tradingagents/dataflows/source_receipt.py",
+      "sha256": "bfc9ae74a1351b91157846ad10fc4dfd67a0dbd242da099b2a4e61d90fdb92b7"
+    },
+    {
+      "runnable_path": "tradingagents/dataflows/symbols.py",
+      "course_source_path": "src/tradingagents/dataflows/symbols.py",
+      "sha256": "15335e01f1532ea51e12f6ace2d0bec3058d6975eac93bed5ed07f2d4e550528"
+    },
+    {
+      "runnable_path": "tradingagents/dataflows/vendors/__init__.py",
+      "course_source_path": "src/tradingagents/dataflows/vendors/__init__.py",
+      "sha256": "a867066a8b045938c175d598c2a5108275a8c825cc6d939d990aa9d053d79b8e"
+    },
+    {
+      "runnable_path": "tradingagents/dataflows/vendors/alpha_vantage/__init__.py",
+      "course_source_path": "src/tradingagents/dataflows/vendors/alpha_vantage/__init__.py",
+      "sha256": "1e21b5bae37737cba9e0c2e87132487332275a38b925f6fabc868e7b9d41f7d1"
+    },
+    {
+      "runnable_path": "tradingagents/dataflows/vendors/alpha_vantage/common.py",
+      "course_source_path": "src/tradingagents/dataflows/vendors/alpha_vantage/common.py",
+      "sha256": "225c2651a636c4a6b0733cd3a66feacaff1732fce7b2f512a16140bd483bd82a"
+    },
+    {
+      "runnable_path": "tradingagents/dataflows/vendors/alpha_vantage/fundamentals.py",
+      "course_source_path": "src/tradingagents/dataflows/vendors/alpha_vantage/fundamentals.py",
+      "sha256": "e7ecb7f3af77dd78ca8d334e925af3325d1cb06a20eae6e1c1be03740b781b66"
+    },
+    {
+      "runnable_path": "tradingagents/dataflows/vendors/alpha_vantage/indicator.py",
+      "course_source_path": "src/tradingagents/dataflows/vendors/alpha_vantage/indicator.py",
+      "sha256": "d5f8ccc72aff89559611febf7eb543d54b6efb303d270049f300fcd5e0bf756b"
+    },
+    {
+      "runnable_path": "tradingagents/dataflows/vendors/alpha_vantage/news.py",
+      "course_source_path": "src/tradingagents/dataflows/vendors/alpha_vantage/news.py",
+      "sha256": "8483bb83065ba9bacb4ae87f7b22e25d5354376e30c4d5f458074e3f50906316"
+    },
+    {
+      "runnable_path": "tradingagents/dataflows/vendors/alpha_vantage/stock.py",
+      "course_source_path": "src/tradingagents/dataflows/vendors/alpha_vantage/stock.py",
+      "sha256": "17633620192f0005f58de3f7dc1671ac3ee8b7d96cf20283e74648b70225cd5c"
+    },
+    {
+      "runnable_path": "tradingagents/dataflows/vendors/fred.py",
+      "course_source_path": "src/tradingagents/dataflows/vendors/fred.py",
+      "sha256": "905ea6412067145a10c71f0e07b83624769d6e3379dd10391a47b045857ef6d7"
+    },
+    {
+      "runnable_path": "tradingagents/dataflows/vendors/polymarket.py",
+      "course_source_path": "src/tradingagents/dataflows/vendors/polymarket.py",
+      "sha256": "031c275db13ac8db031083ffe9569924ed714a86ad76f648f66268a220d110a1"
+    },
+    {
+      "runnable_path": "tradingagents/dataflows/vendors/reddit.py",
+      "course_source_path": "src/tradingagents/dataflows/vendors/reddit.py",
+      "sha256": "a7e58add628352b576067aecfad45c3e6855a0052778c57814a3bdb859864b0a"
+    },
+    {
+      "runnable_path": "tradingagents/dataflows/vendors/sec_edgar.py",
+      "course_source_path": "src/tradingagents/dataflows/vendors/sec_edgar.py",
+      "sha256": "e7183d3a1ae9d434f2cf2799692cc3fc4ff4e327521e33ef191f1f983e002647"
+    },
+    {
+      "runnable_path": "tradingagents/dataflows/vendors/stocktwits.py",
+      "course_source_path": "src/tradingagents/dataflows/vendors/stocktwits.py",
+      "sha256": "1b59d9d1f591e50d7ee4d3f8925f6fa20a784ef6650fae3d6cf72ee0b3fdfa32"
+    },
+    {
+      "runnable_path": "tradingagents/dataflows/vendors/yahoo/__init__.py",
+      "course_source_path": "src/tradingagents/dataflows/vendors/yahoo/__init__.py",
+      "sha256": "4edf2362854ee40ec5fa7e769d64bde32b7070b42c5dfa2abb728267884d6552"
+    },
+    {
+      "runnable_path": "tradingagents/dataflows/vendors/yahoo/common.py",
+      "course_source_path": "src/tradingagents/dataflows/vendors/yahoo/common.py",
+      "sha256": "64ddaba3f6f2d92dd949e1f963a952d91976fe50c64834110a7330a4df2b2fcc"
+    },
+    {
+      "runnable_path": "tradingagents/dataflows/vendors/yahoo/fundamentals.py",
+      "course_source_path": "src/tradingagents/dataflows/vendors/yahoo/fundamentals.py",
+      "sha256": "d0f7eb8d3d4e8798bd8c4d47a59299fe8f40479f936aa7c0008f9b8cd9acc7c2"
+    },
+    {
+      "runnable_path": "tradingagents/dataflows/vendors/yahoo/market.py",
+      "course_source_path": "src/tradingagents/dataflows/vendors/yahoo/market.py",
+      "sha256": "ee6fc5aac9af2e1172dae5aa0bdc8f59ee40d2d23128812efc91ec919cbdb68e"
+    },
+    {
+      "runnable_path": "tradingagents/dataflows/vendors/yahoo/news.py",
+      "course_source_path": "src/tradingagents/dataflows/vendors/yahoo/news.py",
+      "sha256": "464473cac60ba912bcdb436822d4585c1b7cdfdb59cec2d72b04c115f3330691"
+    },
+    {
+      "runnable_path": "tradingagents/dataflows/vendors/yahoo/ohlcv.py",
+      "course_source_path": "src/tradingagents/dataflows/vendors/yahoo/ohlcv.py",
+      "sha256": "ec1c8949f29d04cd922c24dc0e935919b881dec72f29f0d47de1d6e919d691ff"
+    },
+    {
+      "runnable_path": "tradingagents/dataflows/vendors/yahoo/snapshot.py",
+      "course_source_path": "src/tradingagents/dataflows/vendors/yahoo/snapshot.py",
+      "sha256": "91aabce1fd4af1775d1e2c9907cac8df11f8ad4ee844d0bae3a4c79b1819c9d7"
+    },
+    {
+      "runnable_path": "tradingagents/default_config.py",
+      "course_source_path": "src/tradingagents/default_config.py",
+      "sha256": "f5636e6ef9a25c43aa99307160fdbcaeca7c6db9dbc9b3d2fecef602f5d4100e"
+    },
+    {
+      "runnable_path": "tradingagents/graph/__init__.py",
+      "course_source_path": "src/tradingagents/graph/__init__.py",
+      "sha256": "3c5ec25eb68097a8ec82ab3e1877d2b028e1aa9c85339e7008b508a5e335210d"
+    },
+    {
+      "runnable_path": "tradingagents/graph/analyst_execution.py",
+      "course_source_path": "src/tradingagents/graph/analyst_execution.py",
+      "sha256": "2cee40303e18c19bf77d36a7f3d91ba431c84dfd53031139dd34411f2c694456"
+    },
+    {
+      "runnable_path": "tradingagents/graph/checkpointer.py",
+      "course_source_path": "src/tradingagents/graph/checkpointer.py",
+      "sha256": "f1ccb055601a8267f0b136482b06d853bd173a83a63c7d04c30f69ac65f3c295"
+    },
+    {
+      "runnable_path": "tradingagents/graph/conditional_logic.py",
+      "course_source_path": "src/tradingagents/graph/conditional_logic.py",
+      "sha256": "3c9f344071552b95b59e0e78302ba73b77236afc895effcc0007ebf3eea4a3e3"
+    },
+    {
+      "runnable_path": "tradingagents/graph/propagation.py",
+      "course_source_path": "src/tradingagents/graph/propagation.py",
+      "sha256": "6b7fd480d611bbdf5a4b5c0035420a3d03d473be4ac8a8cb98f568eb9a7ae365"
+    },
+    {
+      "runnable_path": "tradingagents/graph/publication_gate.py",
+      "course_source_path": "src/tradingagents/graph/publication_gate.py",
+      "sha256": "fc9b0fc98f4828a87d84092769a3b1ece312c719f1cf13f34881f1268117cf50"
+    },
+    {
+      "runnable_path": "tradingagents/graph/setup.py",
+      "course_source_path": "src/tradingagents/graph/setup.py",
+      "sha256": "ee0bf07bbd21587825ac260a39fcae3dc23ee18b95f27cf2277e6ee6e847a9ea"
+    },
+    {
+      "runnable_path": "tradingagents/graph/trading_graph.py",
+      "course_source_path": "src/tradingagents/graph/trading_graph.py",
+      "sha256": "b1b71bd6b0f55a90de3db19be7fd3985fb4bf0fc321c1eccde08504426bb6b98"
+    },
+    {
+      "runnable_path": "tradingagents/llm_clients/__init__.py",
+      "course_source_path": "src/tradingagents/llm_clients/__init__.py",
+      "sha256": "548fda2ec116932a327f7dd9fae96cd9702f64dd872b8026d31635eb8264300c"
+    },
+    {
+      "runnable_path": "tradingagents/llm_clients/anthropic_client.py",
+      "course_source_path": "src/tradingagents/llm_clients/anthropic_client.py",
+      "sha256": "cd1fc45370b4845be0639fc47a5661a2aa0c6ad69a78417a750f44a16d36793a"
+    },
+    {
+      "runnable_path": "tradingagents/llm_clients/api_key_env.py",
+      "course_source_path": "src/tradingagents/llm_clients/api_key_env.py",
+      "sha256": "75044997cc0cdebed4df87addc720912c5604919a3d400227798d3df8558fadf"
+    },
+    {
+      "runnable_path": "tradingagents/llm_clients/azure_client.py",
+      "course_source_path": "src/tradingagents/llm_clients/azure_client.py",
+      "sha256": "c7124723b453864746369e0b2f8a1aee3b7f7d24096acb87801da7e3b7c22247"
+    },
+    {
+      "runnable_path": "tradingagents/llm_clients/base_client.py",
+      "course_source_path": "src/tradingagents/llm_clients/base_client.py",
+      "sha256": "5af145a100b42e5de2c3baffcde0f3975fd826b14c1659c4ee44a300affa0c38"
+    },
+    {
+      "runnable_path": "tradingagents/llm_clients/bedrock_client.py",
+      "course_source_path": "src/tradingagents/llm_clients/bedrock_client.py",
+      "sha256": "aa279ec2956d1811683ebed4a7267657d53dc0a900c7185a07e2cfab03d9d99a"
+    },
+    {
+      "runnable_path": "tradingagents/llm_clients/budget_transport.py",
+      "course_source_path": "src/tradingagents/llm_clients/budget_transport.py",
+      "sha256": "481d650bbe423b2f3642f23f7d6c5561fbcc1e6591d1cc5592369bb2c6f48b7d"
+    },
+    {
+      "runnable_path": "tradingagents/llm_clients/capabilities.py",
+      "course_source_path": "src/tradingagents/llm_clients/capabilities.py",
+      "sha256": "b9fd431371cc8f70a2ac832adfd73a79c3b5339ad6fd9449641bef24df6ce564"
+    },
+    {
+      "runnable_path": "tradingagents/llm_clients/chatgpt_auth.py",
+      "course_source_path": "src/tradingagents/llm_clients/chatgpt_auth.py",
+      "sha256": "f83a2878964091e374a3806afbd901efe1cf50c56f1b1e7de06711d64c67bd15"
+    },
+    {
+      "runnable_path": "tradingagents/llm_clients/context_limit.py",
+      "course_source_path": "src/tradingagents/llm_clients/context_limit.py",
+      "sha256": "542842c431c1b4bb5095bc3975cccac62fbfd6a55e598d365b3bc726faafa97c"
+    },
+    {
+      "runnable_path": "tradingagents/llm_clients/factory.py",
+      "course_source_path": "src/tradingagents/llm_clients/factory.py",
+      "sha256": "9638603672296b093cd7dd8626a2d4cdcf23be14af826ccf5574d9223d1026be"
+    },
+    {
+      "runnable_path": "tradingagents/llm_clients/google_client.py",
+      "course_source_path": "src/tradingagents/llm_clients/google_client.py",
+      "sha256": "6079f050a8a46cc388e5ce79e1e6f4489f350225838dd5bc17607d549a6d9ea4"
+    },
+    {
+      "runnable_path": "tradingagents/llm_clients/model_catalog.py",
+      "course_source_path": "src/tradingagents/llm_clients/model_catalog.py",
+      "sha256": "2f617a54fac65b228de8c87a49f609616e3a2b906c51a174516b8d2245c9c7a7"
+    },
+    {
+      "runnable_path": "tradingagents/llm_clients/openai_client.py",
+      "course_source_path": "src/tradingagents/llm_clients/openai_client.py",
+      "sha256": "5fb2d11627b169f74812ad4cecef2a797591d41e6d62be7ebf94c46cf3398e03"
+    },
+    {
+      "runnable_path": "tradingagents/llm_clients/request_budget.py",
+      "course_source_path": "src/tradingagents/llm_clients/request_budget.py",
+      "sha256": "3618af75ce6e990adef1b2c6afe6d6437828e1e593d59c70cd945a15ae22ce21"
+    },
+    {
+      "runnable_path": "tradingagents/llm_clients/validators.py",
+      "course_source_path": "src/tradingagents/llm_clients/validators.py",
+      "sha256": "626014bb0d1b78bd2b1fb519c7c93fa243cdaaad0f904044bd6836488607c31c"
+    },
+    {
+      "runnable_path": "tradingagents/memory/__init__.py",
+      "course_source_path": "src/tradingagents/memory/__init__.py",
+      "sha256": "8e56b432cb14a223acd2a831845e79c5e0e978c5e1d561399e0028f0211c8636"
+    },
+    {
+      "runnable_path": "tradingagents/memory/log.py",
+      "course_source_path": "src/tradingagents/memory/log.py",
+      "sha256": "6361d5d884dc6cf59481cef66ab668669f00fc220a9f2985c4853e6b4c22f40f"
+    },
+    {
+      "runnable_path": "tradingagents/memory/reflection.py",
+      "course_source_path": "src/tradingagents/memory/reflection.py",
+      "sha256": "f54582a8d1b5df7f2c7b6c9f82ca9ab215986dd2042d59f3955fe7af2cbba8bb"
+    },
+    {
+      "runnable_path": "tradingagents/memory/settlement.py",
+      "course_source_path": "src/tradingagents/memory/settlement.py",
+      "sha256": "c9411e47f5bc600c6905bf76baeddebd8181e883e7e60b5de295c68e9defbcc2"
+    },
+    {
+      "runnable_path": "tradingagents/portfolio.py",
+      "course_source_path": "src/tradingagents/portfolio.py",
+      "sha256": "f9289eb7f7b0698f5d7af7b300023425d56c7a66245a9b86810210421fd18631"
+    },
+    {
+      "runnable_path": "tradingagents/report_html.py",
+      "course_source_path": "src/tradingagents/report_html.py",
+      "sha256": "936d8b4e68768362e84e98a84539804377a8f769ab6a0073222bed16d683aab0"
+    },
+    {
+      "runnable_path": "tradingagents/reporting.py",
+      "course_source_path": "src/tradingagents/reporting.py",
+      "sha256": "75ee86ed1a3ac418f6bd4b2d09736d94eff22c42f45e0c771018b19d2986f5e9"
+    }
+  ],
+  "tests": [
+    "test/live/.gitkeep",
+    "test/live/test_fr03_school.py",
+    "test/offline/.gitkeep",
+    "test/offline/test_fr01_contract_v1_alignment.py",
+    "test/offline/test_fr01_cross_run.py",
+    "test/offline/test_fr01_foreign_index_before.py",
+    "test/offline/test_fr01_gate_unit.py",
+    "test/offline/test_fr01_market_snapshot_collection.py",
+    "test/offline/test_fr01_publish_valid.py",
+    "test/offline/test_fr01_reference_aliases.py",
+    "test/offline/test_fr03_adapters.py",
+    "test/offline/test_fr03_boundary_hardening.py",
+    "test/offline/test_fr03_coverage.py",
+    "test/offline/test_fr03_paired.py",
+    "test/offline/test_fr03_propagation.py",
+    "test/offline/test_fr03_sentiment.py",
+    "test/offline/test_integration_dispatch.py",
+    "test/offline/test_inv01_cli_no_premature_display.py",
+    "test/offline/test_inv01_four_exits.py",
+    "test/offline/test_inv01_key_counterexample.py",
+    "test/offline/test_inv01_resume.py",
+    "test/offline/test_inv01_ungated_report_save_before.py",
+    "test/offline/test_nfr02_analyst_wrapup.py",
+    "test/offline/test_nfr02_context_limit.py",
+    "test/offline/test_nfr02_neutral_debator_context.py",
+    "test/offline/test_nfr02_tool_pairing.py",
+    "test/offline/test_request_budget.py",
+    "test/offline/test_verified_metrics.py",
+    "tests/__init__.py",
+    "tests/conftest.py",
+    "tests/test_alpha_vantage_hardening.py",
+    "tests/test_analyst_execution.py",
+    "tests/test_anthropic_effort.py",
+    "tests/test_api_key_env.py",
+    "tests/test_azure_client.py",
+    "tests/test_backtest.py",
+    "tests/test_bedrock_provider.py",
+    "tests/test_cache_writes.py",
+    "tests/test_capabilities.py",
+    "tests/test_chatgpt_auth.py",
+    "tests/test_chatgpt_provider.py",
+    "tests/test_checkpoint_lifecycle.py",
+    "tests/test_checkpoint_resume.py",
+    "tests/test_cli_commands.py",
+    "tests/test_cli_config_precedence.py",
+    "tests/test_cli_display.py",
+    "tests/test_cli_env_skip.py",
+    "tests/test_cli_headless.py",
+    "tests/test_cli_memory_log.py",
+    "tests/test_cli_no_console.py",
+    "tests/test_cli_prefs.py",
+    "tests/test_cli_symbol_handling.py",
+    "tests/test_cli_updates.py",
+    "tests/test_crypto_asset_mode.py",
+    "tests/test_dataflows_config.py",
+    "tests/test_date_boundaries.py",
+    "tests/test_debate_opening.py",
+    "tests/test_deepseek_reasoning.py",
+    "tests/test_env_overrides.py",
+    "tests/test_fred.py",
+    "tests/test_fundamentals_lookahead.py",
+    "tests/test_fundamentals_units.py",
+    "tests/test_get_scrubbed.py",
+    "tests/test_google_api_key.py",
+    "tests/test_google_thinking_level.py",
+    "tests/test_graph_end_to_end.py",
+    "tests/test_i18n_coverage.py",
+    "tests/test_instrument_identity.py",
+    "tests/test_layering.py",
+    "tests/test_llm_max_retries.py",
+    "tests/test_llm_max_tokens.py",
+    "tests/test_memory_log.py",
+    "tests/test_memory_pointintime.py",
+    "tests/test_minimax.py",
+    "tests/test_model_validation.py",
+    "tests/test_news_analyst_prompt.py",
+    "tests/test_news_lookahead.py",
+    "tests/test_no_data_handling.py",
+    "tests/test_ohlcv_cache_freshness.py",
+    "tests/test_ohlcv_date_column.py",
+    "tests/test_ohlcv_latest_bar.py",
+    "tests/test_ollama_base_url.py",
+    "tests/test_openai_compatible_provider.py",
+    "tests/test_openai_reasoning_effort.py",
+    "tests/test_openai_responses_base_url.py",
+    "tests/test_openrouter_model_select.py",
+    "tests/test_polymarket.py",
+    "tests/test_portfolio_context.py",
+    "tests/test_post_screen.py",
+    "tests/test_prompt_integrity.py",
+    "tests/test_provider_registry.py",
+    "tests/test_rating_integrity.py",
+    "tests/test_reddit_fallback.py",
+    "tests/test_report_html.py",
+    "tests/test_reporting.py",
+    "tests/test_risk_router_path_map.py",
+    "tests/test_safe_ticker_component.py",
+    "tests/test_sec_edgar.py",
+    "tests/test_signal_processing.py",
+    "tests/test_social_lookahead.py",
+    "tests/test_statement_knowledge_time.py",
+    "tests/test_stocktwits_resilience.py",
+    "tests/test_structured_agent_prompts.py",
+    "tests/test_structured_agents.py",
+    "tests/test_suite_isolation.py",
+    "tests/test_symbol_normalization_paths.py",
+    "tests/test_symbols.py",
+    "tests/test_temperature_config.py",
+    "tests/test_ticker_symbol_handling.py",
+    "tests/test_tier_providers.py",
+    "tests/test_tool_date_enforcement.py",
+    "tests/test_undated_tools_as_of.py",
+    "tests/test_vendor_errors.py",
+    "tests/test_vendor_routing.py",
+    "tests/test_version.py",
+    "tests/test_yahoo_rate_limit.py",
+    "tests/test_yahoo_snapshot.py",
+    "tests/test_yfinance_stale_ohlcv_guard.py"
+  ]
+}

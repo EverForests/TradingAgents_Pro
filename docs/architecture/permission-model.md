@@ -22,6 +22,12 @@ The documentation index (`docs/README.md`), product scope (`docs/req/product.yam
 
 The AI-use log, bug and debt records, upstream vendor/date adapters and non-Python fixtures are not generally allowlisted. Before a task depends on one, the human maintainer must review its exact path and update both configuration copies consistently if access is needed. Do not add a broad `docs/**`, vendor-tree or repository-wide write rule.
 
-For FR-03, proposed additional reads to review include `tradingagents/dataflows/date_window.py`, `tradingagents/dataflows/vendors/stocktwits.py`, `tradingagents/dataflows/vendors/reddit.py` and `tradingagents/dataflows/vendors/yahoo/news.py`; resolve any further imports in the approved plan. Approve fixture reads/writes by exact filename (or a justified bounded task directory). Read access is not edit approval.
+The integrated allowlist includes the approved source and test seams from all five features, including the read-only reference `tests/test_graph_end_to_end.py`. An entry grants only its declared action. New dependency reads and fixture paths still require exact-path maintenance; reading a reference test never grants permission to edit it.
 
 Configuration changes belong to the human maintainer. Record effective guard-probe outcomes before session use. If a required read is denied, stop the affected operation for exact-path review. Tool boundaries and evidence responsibilities are defined in the [tool manifest](../code-governance/mcp-tool-manifest.md).
+
+## Integrated configuration snapshot — 20 November 2026
+
+The effective configuration and course copy are byte-identical. They contain 99 allow rules within the default-deny policy. Plan and Verify remain read-only; Build edits remain subject to exact reviewed task scope and interactive approval. This is a configuration-source observation, not a new runtime guard probe. Historical role probes remain attributed to their original sessions.
+
+The assigned peer-review ring does not widen agent authority. EverForests controls integration and merge; the owners and reviewers are listed in the document index. Supporting automation tools do not convert a denied OpenCode action into a permitted one or constitute a human approval.
