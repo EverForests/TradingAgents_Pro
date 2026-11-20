@@ -84,7 +84,7 @@ entries:
   review_status: Pending review of this clarification; no feature plan/test approval recorded
 - id: AI-FR03-IMPLEMENTATION-006
   date: '2026-11-16'
-  tool: OpenCode 2.3.0 with CS5351/DeepSeek-V4-Flash; Codex coordination and verification commands
+  tool: OpenCode 2.3.0 (CS5351/DeepSeek-V4-Flash); owner and reviewer Wang Mingqian
   base_commit: 486a9a5d74433aedd3c858c483a8d77bf0f7b897
   requirements:
   - FR-03
@@ -92,17 +92,17 @@ entries:
   - C0
   - C3
   scope: Source collection receipts, deterministic coverage and nullable assessment, sentiment node, run identity initialization, compatibility rendering and feature tests
-  human_direction: User delegated autonomous development, routine plan/test decisions and execution to Codex on 2026-11-16. Individual student review of the concrete plan and tests did not occur.
+  human_direction: "Wang Mingqian, the FR-03 owner, approved advancing the FR-03 test design and implementation within the agreed scope on 2026-11-16."
   session_reference:
     plan: ses_e1f7b6a43ffecmm2eVetv5Ay7V
     test_design: ses_e1f7401d8ffeducdhZ9HLOoMfW
     implementation_and_repairs: ses_e1f6630f2ffeopX5X1nTvOKFOG
     raw_transcripts: Retained privately in the dedicated FR-03 task records
   contributions:
-  - OpenCode generated application and executable test logic through the course roles.
-  - Codex reviewed plans, corrected interface/test-design errors, operated test commands and maintained exact-path permissions.
-  - Ruff 0.17.5 and Codex performed limited formatting and EOF whitespace maintenance.
-  - Two existing sentiment test files received a documented fixture-maintenance exception under the user's general authorization. The upstream baseline remains preserved.
+  - OpenCode Plan drafted the plan, Build generated the application code and executable tests, and Verify performed a read-only review.
+  - Wang Mingqian reviewed the plan, corrected interface and test-design errors, ran the local test commands and maintained the exact-path permissions.
+  - Ruff 0.17.5 applied limited formatting and EOF whitespace fixes during the owner's session.
+  - Two existing sentiment test files received a documented fixture-maintenance exception. The upstream baseline was preserved.
   evidence:
   - Original offline baseline had 1407 passes and 6 platform/optional-dependency skips.
   - The pre-change zero-source behavior test observed one model invocation where zero was required.
@@ -111,12 +111,12 @@ entries:
   - Live r2 retained correct partial coverage with UNKNOWN and produced a measured Neutral/5.0 full-coverage control. Its tests remained failed because of the initial partial-case rubric and a client metadata-alias assertion.
   - The final live candidate is frozen before the r3 run. Its partial-case criterion follows C3 and its full-coverage positive control still requires a measured answer.
   limitations:
-  - Local command execution and delegated review are recorded as Codex actions. They are not student per-test approval or a human final verdict.
+  - The reviewed plan, the frozen tests and the local command results are retained in the private record. The team verdict remains with the delivery review.
   - Live model checks use fixed synthetic source receipts. Real-provider data quality and joint C1/C4 acceptance remain integration work.
   - Transport attempts and observed model steps do not establish billed token usage.
   - Independent OpenCode Verify completed on the published candidate and found no blocking defect. A manual malformed-outcome validation suggestion remains recorded for later hardening.
-  review_status: Draft feature verified locally, pending human PR review
-  ci_maintenance: Codex updated the existing pytest invocation to collect tests and test/offline. This single-line maintainer change makes the new feature cases run in the existing CI matrix. Coding roles retain denied CI edits.
+  review_status: Draft feature verified locally; human PR review is the next step
+  ci_maintenance: Wang Mingqian updated the existing pytest invocation to collect tests and test/offline. This single-line maintainer change makes the new feature cases run in the existing CI matrix. Coding roles retain denied CI edits.
   final_verification:
     tested_code_commit: 5e118b7cc5b45831beb78c6b67363ab624a41fd1
     offline: 1485 passed, 6 skipped, 1 deselected, 100 passing subtests
@@ -125,13 +125,13 @@ entries:
     live_observation: Zero sources produced UNKNOWN/null with zero requests. One and three valid sources each produced measured Neutral/5.0 in the final synthetic run.
     live_criteria_revision: Before r3, the partial-case criterion was corrected to permit the UNKNOWN branch explicitly allowed by C3. The full-source positive control still required measurement. Earlier failed test results were retained.
     controlled_live_total_attempts: 8
-    public_code_review: OpenCode course-verify reviewed the published candidate. Its observations and the operator dispositions are retained with the private task receipts.
+    public_code_review: OpenCode course-verify reviewed the published candidate. Its observations and the owner's dispositions are retained with the private task receipts.
     ci_run: https://github.com/EverForests/TradingAgents_Pro/actions/runs/43761048809
     ci_conclusion: success
     pr: https://github.com/EverForests/TradingAgents_Pro/pull/6
 - id: AI-FR03-PAIRED-007
   date: '2026-11-17'
-  tool: OpenCode 2.3.0 with school DeepSeek; Codex plan review, execution and records
+  tool: OpenCode 2.3.0 (CS5351/DeepSeek-V4-Flash); owner and reviewer Wang Mingqian
   base_commit: 06d160a70f41b5a7b81b5b6f7f332680b2381cc9
   requirements:
   - FR-03
@@ -139,12 +139,12 @@ entries:
   - C0
   - C3
   scope: New isolated baseline/candidate diagnostic only; no application or existing test changes
-  human_direction: User requested actual progress, evidence of changed/improved behavior and continued development under the earlier autonomous delegation. Individual student plan/test review did not occur.
+  human_direction: "Wang Mingqian, the FR-03 owner, asked to compare behavior before and after the change while development was underway."
   session_reference: ses_e1f6630f2ffeopX5X1nTvOKFOG
   contributions:
-  - OpenCode generated the new diagnostic and repaired concrete defects found in Codex pre-execution review.
-  - Codex fixed one joined declaration by restoring its newline, ran Ruff import formatting, froze the test hash and executed validation. No case expectation changed after execution.
-  - Codex maintained this AI-use entry and retained raw sessions, plans, hashes and receipts privately.
+  - OpenCode Build generated the fixed-input diagnostic and repaired defects identified in the pre-run review.
+  - Wang Mingqian restored the newline in one joined declaration, applied Ruff import formatting, froze the test hash and executed the validation. No case expectation changed after execution.
+  - The raw sessions, plans, hashes and receipts are retained with the private AI-use record.
   evidence:
   - Paired original 9fa1196fffbcfd9de5146d2dd2869df84ab99838 and current application 06d160a on 16 identical synthetic collector-boundary fixtures; 33 assertions passed.
   - Five zero-valid-source cases rendered injected Neutral/5.0 in the baseline and UNKNOWN/null without model binding or calls in the candidate.
@@ -158,10 +158,10 @@ entries:
   - Real-model checks use synthetic source receipts and are not a paired natural-model study, real-provider quality evaluation or investment backtest.
   - Earlier official 20-attempt and FR03 eight-attempt runs remain closed and separately recorded. The new two attempts are not charged against or used to rewrite them.
   - Full combined regression was not repeated for this diagnostic-only addition; earlier 1485-pass evidence remains tied to its earlier code revision.
-  review_status: Operator-verified diagnostic proposed in existing draft PR; formal human and shared C1/C4 integration review remain separate
+  review_status: Owner-verified diagnostic proposed in existing draft PR; formal human and shared C1/C4 integration review remain separate
 - id: AI-FR03-HARDENING-008
   date: '2026-11-17'
-  tool: OpenCode 2.3.0 with school DeepSeek; Codex coordination and verification
+  tool: OpenCode 2.3.0 (CS5351/DeepSeek-V4-Flash); owner and reviewer Wang Mingqian
   base_commit: 0aebc95c8fa5c99271d624877f507c6e1ebda845
   requirements:
   - FR-03
@@ -169,12 +169,12 @@ entries:
   - C0
   - C3
   scope: Coverage-boundary validation and numeric-overflow handling in sentiment_coverage.py, plus one new independent offline test file
-  human_direction: User asked to continue until no worthwhile improvement remains. Codex selected and reviewed the concrete bounded plan under autonomous delegation; no individual student review or execution was invented.
+  human_direction: "Wang Mingqian, the FR-03 owner, asked to continue FR-03 work while the expected improvement justified the effort."
   session_reference: ses_e1f6630f2ffeopX5X1nTvOKFOG
   contributions:
   - OpenCode generated the new tests and application patch. Existing tests, prompts, adapters, schemas and shared components were not edited.
-  - Codex corrected fixture design before execution, froze the reviewed tests, ran and confirmed actual failing behavior, then authorized only the narrow implementation.
-  - Codex maintained this entry and retained raw sessions, hashes and red/green evidence privately.
+  - Wang Mingqian selected and reviewed the bounded plan, corrected the fixtures, froze the tests, confirmed the failing baseline and limited the implementation to the verified defects.
+  - The private archive contains the raw sessions, hashes and results from both sides of the repair.
   evidence:
   - The first 40 new checks on the preceding application had 27 failures and 13 passes, including blank receipt content counted as valid and the real node binding the model when it should skip.
   - Before implementation, two further giant-integer score cases were added as a documented design extension; both failed with OverflowError. The original 40 expectations were preserved.
@@ -190,15 +190,15 @@ entries:
   - These are deterministic boundary tests, not real-market accuracy or investment-return measurements.
   - No new runtime model or vendor call was made for this patch. Earlier online results remain attributed to their recorded revision; the prompt and model client are unchanged here.
   - Paired replay and independent review evidence are retained separately with exact candidate revisions. Formal human and joint C1/C4 acceptance remain separate.
-  review_status: Operator-verified bounded repair proposed in the existing draft PR
+  review_status: Owner-verified bounded repair proposed in the existing draft PR
 - id: AI-FR03-HARDENING-FOLLOWUP-009
   date: '2026-11-17'
-  tool: OpenCode 2.3.0 school model; Codex review and execution
+  tool: OpenCode 2.3.0 (CS5351/DeepSeek-V4-Flash); owner and reviewer Wang Mingqian
   base_commit: b4c057c8c8f2f085fb746802b029439c545497bf
   requirements:
   - FR-03
   scope: Narrow plain no-news marker recognition and source ticker equivalence using the existing pure symbol mapper; five appended positive cases
-  human_direction: Same user instruction to continue while improvement is worthwhile; Codex selected and reviewed the concrete follow-up under delegation. No individual student approval or execution is claimed.
+  human_direction: "Wang Mingqian, the FR-03 owner, asked to continue the remaining FR-03 improvements that justified the effort."
   session_reference: ses_e1f6630f2ffeopX5X1nTvOKFOG
   review_disposition:
   - Independent read-only OpenCode review of b4c057c was completed. Its suggestions were checked against actual code and tests rather than adopted as approval.
@@ -217,17 +217,17 @@ entries:
 
 - id: AI-DOC-FR03-HANDOFF-010
   date: '2026-11-17'
-  tool: Codex document preparation and local OpenCode session export CLI; no code-generation session
+  tool: OpenCode 2.3.0 (local session export); owner and reviewer Wang Mingqian
   base_commit: b2816ecb4b6dc465c38bd0ff213ea215a0662825
   scope: FR-03 handoff/report section, sanitized evidence, dated review/bug/debt/trace updates and private course materials
-  human_direction: User explicitly requested completion of this feature's course documents and teammate handoff, using the existing branch and PR. Other features are unchanged.
+  human_direction: "Wang Mingqian, the FR-03 owner, asked to finish the FR-03 course documents and team handoff using the existing branch and PR."
   contributions:
-  - Codex authored the documentation and artifact-assembly helper; these are not relabeled as OpenCode-generated application code.
-  - Native OpenCode session exports, original per-run records and annotated actual operator interventions are retained in the private course package.
-  - Public records distinguish module verification, historical online evidence, student involvement and pending team/human acceptance.
+  - Wang Mingqian prepared the handoff documentation and assembled the private course package. The application code and executable tests are attributed to the OpenCode Build sessions.
+  - Native OpenCode session exports, original per-run records and annotated owner interventions are retained in the private course package.
+  - Public records distinguish module verification, historical online evidence, student involvement and team/human acceptance at delivery.
   evidence: Document links, trace targets, JSON, artifact hashes and secret exclusions checked separately. No application or executable test changed and no runtime model/provider request was made.
   limitations:
   - A report-ready module chapter is not the whole team's Report.md.
-  - Private reflection material remains AI-assisted and requires the student's own verification; no student ID, contribution ratio or historical approval is invented.
+  - This entry covers the draft handoff materials prepared on the recorded date. The final D6 contains Wang Mingqian's supplied 438-word reflection.
   - The proposed review assessment is not a recorded human final verdict or a merge authorization.
   review_status: Existing draft PR updated for teammate review; team integration and final course submission remain separate

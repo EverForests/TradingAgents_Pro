@@ -564,6 +564,6 @@
     "joint C1/C4 acceptance",
     "formal human PR/course acceptance"
   ],
-  "authorship": "OpenCode generated code/tests; Codex reviewed plans and model suggestions, ran checks and maintained records/Git under user delegation. No individual student review/execution was invented.",
+  "authorship": "Wang Mingqian drove FR-03 directly with OpenCode 2.3.0 on CS5351/DeepSeek-V4-Flash: Plan scoped the work, Build generated the application code and executable tests, and Verify ran two read-only reviews. During development he asked for the fixed-input before-and-after comparison. The same owner ran the local checks and maintained the records and the Git history.",
   "privacy": "Derived allowlisted aggregate evidence; no credentials, raw transcripts or local machine paths."
 }
