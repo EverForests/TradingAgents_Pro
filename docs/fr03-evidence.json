@@ -1,0 +1,569 @@
+{
+  "schema_version": 1,
+  "requirement": "FR-03",
+  "contract_version": "1.0",
+  "application_commit": "b2816ecb4b6dc465c38bd0ff213ea215a0662825",
+  "upstream_commit": "9fa1196fffbcfd9de5146d2dd2869df84ab99838",
+  "branch": "feat/fr-03-sentiment-coverage",
+  "pr": "https://github.com/EverForests/TradingAgents_Pro/pull/6",
+  "regression": {
+    "seconds": 40.47,
+    "skips": "6existing platform/optional plus33 paired diagnostic without baseline env",
+    "deselected": 1,
+    "subtests_passed": 100,
+    "passed": 1533,
+    "skipped": 39
+  },
+  "boundary": {
+    "boundary_passed": 47,
+    "seconds": 2.15
+  },
+  "paired": {
+    "summary": {
+      "cases": 16,
+      "zero_valid_cases": 5,
+      "valid_cases": 11,
+      "baseline_model_calls": 16,
+      "candidate_model_calls": 11,
+      "baseline_unsupported_measurements": 5,
+      "candidate_unsupported_measurements": 0,
+      "baseline_valid_neutral_preserved": 11,
+      "candidate_valid_neutral_preserved": 11,
+      "label": "synthetic diagnostic counts over frozen fixtures; not a natural model-error rate, cost or accuracy measurement"
+    },
+    "cases": [
+      {
+        "case": "mask_000",
+        "expected_available": [],
+        "baseline": {
+          "header_band": "Neutral",
+          "header_score": 5.0,
+          "model_calls": 1,
+          "prompt_sources": []
+        },
+        "candidate": {
+          "assessment_status": "UNKNOWN",
+          "overall_band": "UNKNOWN",
+          "overall_score": null,
+          "coverage_status": "NO_DATA",
+          "valid_sources": 0,
+          "available": [],
+          "model_calls": 0,
+          "binding_calls": 0,
+          "prompt_sources": [],
+          "header_band": "UNKNOWN",
+          "header_score": null
+        }
+      },
+      {
+        "case": "mask_001",
+        "expected_available": [
+          "reddit"
+        ],
+        "baseline": {
+          "header_band": "Neutral",
+          "header_score": 5.0,
+          "model_calls": 1,
+          "prompt_sources": [
+            "reddit"
+          ]
+        },
+        "candidate": {
+          "assessment_status": "MEASURED",
+          "overall_band": "Neutral",
+          "overall_score": 5.0,
+          "coverage_status": "PARTIAL_DATA",
+          "valid_sources": 1,
+          "available": [
+            "reddit"
+          ],
+          "model_calls": 1,
+          "binding_calls": 1,
+          "prompt_sources": [
+            "reddit"
+          ],
+          "header_band": "Neutral",
+          "header_score": 5.0
+        }
+      },
+      {
+        "case": "mask_010",
+        "expected_available": [
+          "stocktwits"
+        ],
+        "baseline": {
+          "header_band": "Neutral",
+          "header_score": 5.0,
+          "model_calls": 1,
+          "prompt_sources": [
+            "stocktwits"
+          ]
+        },
+        "candidate": {
+          "assessment_status": "MEASURED",
+          "overall_band": "Neutral",
+          "overall_score": 5.0,
+          "coverage_status": "PARTIAL_DATA",
+          "valid_sources": 1,
+          "available": [
+            "stocktwits"
+          ],
+          "model_calls": 1,
+          "binding_calls": 1,
+          "prompt_sources": [
+            "stocktwits"
+          ],
+          "header_band": "Neutral",
+          "header_score": 5.0
+        }
+      },
+      {
+        "case": "mask_011",
+        "expected_available": [
+          "stocktwits",
+          "reddit"
+        ],
+        "baseline": {
+          "header_band": "Neutral",
+          "header_score": 5.0,
+          "model_calls": 1,
+          "prompt_sources": [
+            "stocktwits",
+            "reddit"
+          ]
+        },
+        "candidate": {
+          "assessment_status": "MEASURED",
+          "overall_band": "Neutral",
+          "overall_score": 5.0,
+          "coverage_status": "PARTIAL_DATA",
+          "valid_sources": 2,
+          "available": [
+            "reddit",
+            "stocktwits"
+          ],
+          "model_calls": 1,
+          "binding_calls": 1,
+          "prompt_sources": [
+            "stocktwits",
+            "reddit"
+          ],
+          "header_band": "Neutral",
+          "header_score": 5.0
+        }
+      },
+      {
+        "case": "mask_100",
+        "expected_available": [
+          "news"
+        ],
+        "baseline": {
+          "header_band": "Neutral",
+          "header_score": 5.0,
+          "model_calls": 1,
+          "prompt_sources": [
+            "news"
+          ]
+        },
+        "candidate": {
+          "assessment_status": "MEASURED",
+          "overall_band": "Neutral",
+          "overall_score": 5.0,
+          "coverage_status": "PARTIAL_DATA",
+          "valid_sources": 1,
+          "available": [
+            "news"
+          ],
+          "model_calls": 1,
+          "binding_calls": 1,
+          "prompt_sources": [
+            "news"
+          ],
+          "header_band": "Neutral",
+          "header_score": 5.0
+        }
+      },
+      {
+        "case": "mask_101",
+        "expected_available": [
+          "news",
+          "reddit"
+        ],
+        "baseline": {
+          "header_band": "Neutral",
+          "header_score": 5.0,
+          "model_calls": 1,
+          "prompt_sources": [
+            "news",
+            "reddit"
+          ]
+        },
+        "candidate": {
+          "assessment_status": "MEASURED",
+          "overall_band": "Neutral",
+          "overall_score": 5.0,
+          "coverage_status": "PARTIAL_DATA",
+          "valid_sources": 2,
+          "available": [
+            "news",
+            "reddit"
+          ],
+          "model_calls": 1,
+          "binding_calls": 1,
+          "prompt_sources": [
+            "news",
+            "reddit"
+          ],
+          "header_band": "Neutral",
+          "header_score": 5.0
+        }
+      },
+      {
+        "case": "mask_110",
+        "expected_available": [
+          "news",
+          "stocktwits"
+        ],
+        "baseline": {
+          "header_band": "Neutral",
+          "header_score": 5.0,
+          "model_calls": 1,
+          "prompt_sources": [
+            "news",
+            "stocktwits"
+          ]
+        },
+        "candidate": {
+          "assessment_status": "MEASURED",
+          "overall_band": "Neutral",
+          "overall_score": 5.0,
+          "coverage_status": "PARTIAL_DATA",
+          "valid_sources": 2,
+          "available": [
+            "news",
+            "stocktwits"
+          ],
+          "model_calls": 1,
+          "binding_calls": 1,
+          "prompt_sources": [
+            "news",
+            "stocktwits"
+          ],
+          "header_band": "Neutral",
+          "header_score": 5.0
+        }
+      },
+      {
+        "case": "mask_111",
+        "expected_available": [
+          "news",
+          "stocktwits",
+          "reddit"
+        ],
+        "baseline": {
+          "header_band": "Neutral",
+          "header_score": 5.0,
+          "model_calls": 1,
+          "prompt_sources": [
+            "news",
+            "stocktwits",
+            "reddit"
+          ]
+        },
+        "candidate": {
+          "assessment_status": "MEASURED",
+          "overall_band": "Neutral",
+          "overall_score": 5.0,
+          "coverage_status": "AVAILABLE",
+          "valid_sources": 3,
+          "available": [
+            "news",
+            "reddit",
+            "stocktwits"
+          ],
+          "model_calls": 1,
+          "binding_calls": 1,
+          "prompt_sources": [
+            "news",
+            "stocktwits",
+            "reddit"
+          ],
+          "header_band": "Neutral",
+          "header_score": 5.0
+        }
+      },
+      {
+        "case": "news_before_start",
+        "expected_available": [],
+        "baseline": {
+          "header_band": "Neutral",
+          "header_score": 5.0,
+          "model_calls": 1,
+          "prompt_sources": [
+            "news"
+          ]
+        },
+        "candidate": {
+          "assessment_status": "UNKNOWN",
+          "overall_band": "UNKNOWN",
+          "overall_score": null,
+          "coverage_status": "NO_DATA",
+          "valid_sources": 0,
+          "available": [],
+          "model_calls": 0,
+          "binding_calls": 0,
+          "prompt_sources": [],
+          "header_band": "UNKNOWN",
+          "header_score": null
+        }
+      },
+      {
+        "case": "news_at_excluded_end",
+        "expected_available": [],
+        "baseline": {
+          "header_band": "Neutral",
+          "header_score": 5.0,
+          "model_calls": 1,
+          "prompt_sources": [
+            "news"
+          ]
+        },
+        "candidate": {
+          "assessment_status": "UNKNOWN",
+          "overall_band": "UNKNOWN",
+          "overall_score": null,
+          "coverage_status": "NO_DATA",
+          "valid_sources": 0,
+          "available": [],
+          "model_calls": 0,
+          "binding_calls": 0,
+          "prompt_sources": [],
+          "header_band": "UNKNOWN",
+          "header_score": null
+        }
+      },
+      {
+        "case": "news_wrong_ticker",
+        "expected_available": [],
+        "baseline": {
+          "header_band": "Neutral",
+          "header_score": 5.0,
+          "model_calls": 1,
+          "prompt_sources": [
+            "news"
+          ]
+        },
+        "candidate": {
+          "assessment_status": "UNKNOWN",
+          "overall_band": "UNKNOWN",
+          "overall_score": null,
+          "coverage_status": "NO_DATA",
+          "valid_sources": 0,
+          "available": [],
+          "model_calls": 0,
+          "binding_calls": 0,
+          "prompt_sources": [],
+          "header_band": "UNKNOWN",
+          "header_score": null
+        }
+      },
+      {
+        "case": "news_undated",
+        "expected_available": [],
+        "baseline": {
+          "header_band": "Neutral",
+          "header_score": 5.0,
+          "model_calls": 1,
+          "prompt_sources": [
+            "news"
+          ]
+        },
+        "candidate": {
+          "assessment_status": "UNKNOWN",
+          "overall_band": "UNKNOWN",
+          "overall_score": null,
+          "coverage_status": "NO_DATA",
+          "valid_sources": 0,
+          "available": [],
+          "model_calls": 0,
+          "binding_calls": 0,
+          "prompt_sources": [],
+          "header_band": "UNKNOWN",
+          "header_score": null
+        }
+      },
+      {
+        "case": "news_at_start",
+        "expected_available": [
+          "news"
+        ],
+        "baseline": {
+          "header_band": "Neutral",
+          "header_score": 5.0,
+          "model_calls": 1,
+          "prompt_sources": [
+            "news"
+          ]
+        },
+        "candidate": {
+          "assessment_status": "MEASURED",
+          "overall_band": "Neutral",
+          "overall_score": 5.0,
+          "coverage_status": "PARTIAL_DATA",
+          "valid_sources": 1,
+          "available": [
+            "news"
+          ],
+          "model_calls": 1,
+          "binding_calls": 1,
+          "prompt_sources": [
+            "news"
+          ],
+          "header_band": "Neutral",
+          "header_score": 5.0
+        }
+      },
+      {
+        "case": "news_last_second",
+        "expected_available": [
+          "news"
+        ],
+        "baseline": {
+          "header_band": "Neutral",
+          "header_score": 5.0,
+          "model_calls": 1,
+          "prompt_sources": [
+            "news"
+          ]
+        },
+        "candidate": {
+          "assessment_status": "MEASURED",
+          "overall_band": "Neutral",
+          "overall_score": 5.0,
+          "coverage_status": "PARTIAL_DATA",
+          "valid_sources": 1,
+          "available": [
+            "news"
+          ],
+          "model_calls": 1,
+          "binding_calls": 1,
+          "prompt_sources": [
+            "news"
+          ],
+          "header_band": "Neutral",
+          "header_score": 5.0
+        }
+      },
+      {
+        "case": "news_word_unavailable",
+        "expected_available": [
+          "news"
+        ],
+        "baseline": {
+          "header_band": "Neutral",
+          "header_score": 5.0,
+          "model_calls": 1,
+          "prompt_sources": [
+            "news"
+          ]
+        },
+        "candidate": {
+          "assessment_status": "MEASURED",
+          "overall_band": "Neutral",
+          "overall_score": 5.0,
+          "coverage_status": "PARTIAL_DATA",
+          "valid_sources": 1,
+          "available": [
+            "news"
+          ],
+          "model_calls": 1,
+          "binding_calls": 1,
+          "prompt_sources": [
+            "news"
+          ],
+          "header_band": "Neutral",
+          "header_score": 5.0
+        }
+      },
+      {
+        "case": "invalid_news_valid_stocktwits",
+        "expected_available": [
+          "stocktwits"
+        ],
+        "baseline": {
+          "header_band": "Neutral",
+          "header_score": 5.0,
+          "model_calls": 1,
+          "prompt_sources": [
+            "news",
+            "stocktwits"
+          ]
+        },
+        "candidate": {
+          "assessment_status": "MEASURED",
+          "overall_band": "Neutral",
+          "overall_score": 5.0,
+          "coverage_status": "PARTIAL_DATA",
+          "valid_sources": 1,
+          "available": [
+            "stocktwits"
+          ],
+          "model_calls": 1,
+          "binding_calls": 1,
+          "prompt_sources": [
+            "stocktwits"
+          ],
+          "header_band": "Neutral",
+          "header_score": 5.0
+        }
+      }
+    ],
+    "network_attempts": 0,
+    "candidate": "b2816ecb4b6dc465c38bd0ff213ea215a0662825",
+    "baseline": "9fa1196fffbcfd9de5146d2dd2869df84ab99838"
+  },
+  "school": {
+    "tested_application": "06d160a70f41b5a7b81b5b6f7f332680b2381cc9",
+    "passed": 3,
+    "http_attempts": 2,
+    "attempt_limit": 4,
+    "thinking": "disabled",
+    "output_allowance": 4096,
+    "stream": true,
+    "fixture_type": "synthetic collector replacements; real school model",
+    "latest_business_hardening_rerun": false,
+    "billed_usage_measured": false
+  },
+  "ci_application": {
+    "url": "https://github.com/EverForests/TradingAgents_Pro/actions/runs/44090902155",
+    "status": "completed",
+    "id": 44090902155,
+    "conclusion": "success"
+  },
+  "source_sha256": {
+    "tradingagents/agents/sentiment_coverage.py": "e8ba70f44393e4f00f8640f2a470187af33dd9718a0d5b71b4c66679197220f5",
+    "tradingagents/agents/analysts/sentiment_analyst.py": "73dee18636f2eea7c7b385116fd92c47f161a797f532d24ea6ce7b3c51395ee9",
+    "test/offline/test_fr03_boundary_hardening.py": "bc5a3bf859e867d046ea4f96ee7844ec89e22d14248f604f8e6b90410fabe0e5",
+    "test/offline/test_fr03_paired.py": "ebbcc8e1dfa3d9eef66e00e4711d654041449745c01366ff57a3e719057b3380"
+  },
+  "original_artifact_sha256": {
+    "hardening-followup-all.txt": "cdddbe4e160796028d626c2a60a58b0cea8def3261b571bba6314a17e21093a3",
+    "hardening-followup-green.txt": "edb6fd73490e4ff0cb34d8423b6c7a65cff3efb783ede6ec33838e1232f59168",
+    "hardening-final-paired.txt": "0e9124dbaf8ed39af61543ff074ef80833afe413c6c4febfd62ae5fcbba3d8f5",
+    "hardening-red.txt": "afe7db0048ec1621ec37c3e43b756dbf95eb67e38e34a9db902fee64f25e9c66",
+    "hardening-overflow-red.txt": "e7ec04611107b41346f484dc5b375cfbd246f63124f442388b7c53d8be602d5f",
+    "hardening-followup-red.txt": "5eb0ca2bd53b627ae98e8bd1f74bacd8f922858576e7b16108f7342cec5e0b9f",
+    "hardening-alias-red.txt": "bc24852b0b49c602495bf47aac28b5ecc9a550369ed8d9e8ffa621f4655729f1",
+    "school-current.txt": "4fc53ce05d6c9b57eef355ea493784dc1e8e2f62ce2f3e24db65c4560881fc8a",
+    "paired_run_20261117_final/comparison.json": "34275533044ff0dd0dbfeed07bc4542c0d3bbe1eab7f82404afb6647580378c0"
+  },
+  "limitations": [
+    "natural-model accuracy improvement",
+    "real-provider full-graph quality",
+    "investment returns/backtest improvement",
+    "joint C1/C4 acceptance",
+    "formal human PR/course acceptance"
+  ],
+  "authorship": "Wang Mingqian drove FR-03 directly with OpenCode 2.3.0 on CS5351/DeepSeek-V4-Flash: Plan scoped the work, Build generated the application code and executable tests, and Verify ran two read-only reviews. During development he asked for the fixed-input before-and-after comparison. The same owner ran the local checks and maintained the records and the Git history.",
+  "privacy": "Derived allowlisted aggregate evidence; no credentials, raw transcripts or local machine paths."
+}

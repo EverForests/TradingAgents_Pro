@@ -1,7 +1,28 @@
-from typing import Annotated
+from typing import Annotated, Any
+from uuid import uuid4
 
 from langgraph.graph import MessagesState
 from typing_extensions import TypedDict
+
+CONTRACT_VERSION = "1.0"
+# Product profile for one single-stock run (see the interface contracts).
+REQUEST_LIMIT = 40
+
+
+def new_course_run(ticker: str, as_of_date: str) -> dict[str, Any]:
+    """A fresh C0 run identity: new ``run_id``, RUNNING, product request limit.
+
+    Lives here, beside the state it fills, so agents can mint an identity for a
+    direct entry without importing the graph package (which imports the agents).
+    """
+    return {
+        "contract_version": CONTRACT_VERSION,
+        "run_id": f"run-{uuid4().hex}",
+        "ticker": ticker,
+        "as_of_date": as_of_date,
+        "execution_status": "RUNNING",
+        "request_limit": REQUEST_LIMIT,
+    }
 
 
 # Researcher team state
@@ -71,3 +92,11 @@ class AgentState(MessagesState):
     past_context: Annotated[str, "Memory log context for the Portfolio Manager (same-ticker decisions + cross-ticker lessons), written by the Memory Log step"]
     memory_note: Annotated[str, "What the Memory Log step could not settle or read this run, for the report; empty when all went well"]
     portfolio_context: Annotated[str, "Caller-supplied holdings and cash, rendered at run start; empty when not provided"]
+
+    # Run identity (C0) and the authoritative sentiment record (C3). Both are
+    # separate keys: a node writes only the key it owns, and no parallel node
+    # overwrites a whole shared dictionary.
+    course_run: Annotated[dict, "Run identity and execution state: run_id, ticker, as_of_date"]
+    sentiment_assessment: Annotated[
+        dict | None, "Authoritative sentiment record: coverage, band, score, confidence, narrative"
+    ]
