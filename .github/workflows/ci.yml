@@ -142,7 +142,7 @@ jobs:
           scripts = [p for p in names if p.startswith('.github/scripts/d7_') and p.endswith('.py')]
           if not scripts:
               activation = '7da6ecc9ff665d096b3def5be9ee9601628ae05e'
-              policy_revision = 'd7332d24cce9f1eee3eb329a1423d25b758973c0'
+              policy_revision = '7d16d57adbe3c9d92dca4d00dde2bfc372401472'
               subprocess.run(['git', 'merge-base', '--is-ancestor', base, activation], check=True)
               subprocess.run(['git', 'merge-base', '--is-ancestor', activation, 'HEAD'], check=True)
               subprocess.run(['git', 'merge-base', '--is-ancestor', policy_revision, 'HEAD'], check=True)
