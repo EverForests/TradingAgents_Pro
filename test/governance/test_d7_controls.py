@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import hashlib
 import importlib
 import json
 import os
@@ -27,16 +28,16 @@ def corpus():
 
 
 def test_independent_exact_test_review_before_implementation_passes():
-    review = {"state": "APPROVED", "commit_id": "a" * 40,
+    review = {"state": "APPROVED", "author_association": "COLLABORATOR", "commit_id": "a" * 40,
               "user": {"login": "asling3", "type": "User"},
               "submitted_at": "2026-01-01T10:00:00Z"}
     assert policy.review_approval("a" * 40, [review], "EverForests",
-                                  "2026-01-01T11:00:00Z") == review
+                                  "2026-01-01T11:00:00Z", test_committed_at="2026-01-01T09:00:00Z") == review
 
 
 @pytest.mark.parametrize("mutation", ["self", "late", "wrong-sha", "bot", "unapproved", "unknown"])
 def test_missing_or_invalid_prior_review_is_refused(mutation):
-    review = {"state": "APPROVED", "commit_id": "a" * 40,
+    review = {"state": "APPROVED", "author_association": "COLLABORATOR", "commit_id": "a" * 40,
               "user": {"login": "asling3", "type": "User"},
               "submitted_at": "2026-01-01T10:00:00Z"}
     if mutation == "self":
@@ -52,12 +53,12 @@ def test_missing_or_invalid_prior_review_is_refused(mutation):
     else:
         review["user"]["login"] = "untrusted-fixture"
     with pytest.raises(policy.PolicyFailure, match="No independent"):
-        policy.review_approval("a" * 40, [review], "EverForests", "2026-01-01T11:00:00Z")
+        policy.review_approval("a" * 40, [review], "EverForests", "2026-01-01T11:00:00Z", test_committed_at="2026-01-01T09:00:00Z")
 
 
 def test_absent_prior_review_does_not_become_an_approval():
     with pytest.raises(policy.PolicyFailure):
-        policy.review_approval("a" * 40, [], "EverForests", "2026-01-01T11:00:00Z")
+        policy.review_approval("a" * 40, [], "EverForests", "2026-01-01T11:00:00Z", test_committed_at="2026-01-01T09:00:00Z")
 
 
 def test_aggregate_accepts_exactly_all_success():
@@ -133,10 +134,13 @@ def test_reviewed_model_output_can_pass_the_frozen_rubric():
     receipt = {
         "evidence_class": "recorded-model-output",
         "configuration_sha256": semantic.configuration_digest(ROOT),
-        "corpus_sha256": "corpus-digest", "model_id": "synthetic-provenance-control",
-        "provider": "synthetic-fixture-not-a-live-result", "captured_at": "2026-01-01T00:00:00Z",
+        "corpus_sha256": "corpus-digest", "model_id": "CS5351/DeepSeek-V4-Flash",
+        "provider": "school-hosted OpenAI-compatible DeepSeek", "captured_at": "2026-01-01T00:00:00Z",
         "provider_response_sha256": "a" * 64, "answers": corpus()["positive_controls"],
     }
+    raw = json.dumps(receipt["answers"], sort_keys=True)
+    receipt["raw_response"] = raw
+    receipt["provider_response_sha256"] = hashlib.sha256(raw.encode()).hexdigest()
     assert not semantic.validate_model_receipt(ROOT, corpus(), "corpus-digest", receipt)["failures"]
 
 
@@ -224,3 +228,131 @@ def test_real_schema_and_reference_gate_refuses_corrupt_registry(tmp_path, monke
 def test_schema_gate_accepts_the_current_registry(monkeypatch):
     monkeypatch.chdir(ROOT)
     artifacts.check_registry()
+
+
+def test_review_cannot_predate_the_exact_test_commit():
+    review = {"state": "APPROVED", "author_association": "COLLABORATOR", "commit_id": "a" * 40,
+              "user": {"login": "asling3", "type": "User"},
+              "submitted_at": "2026-01-01T08:00:00Z"}
+    with pytest.raises(policy.PolicyFailure):
+        policy.review_approval("a" * 40, [review], "EverForests", "2026-01-01T11:00:00Z",
+                              test_committed_at="2026-01-01T09:00:00Z")
+
+
+def test_naive_review_timestamp_is_refused():
+    with pytest.raises(policy.PolicyFailure, match="timezone-aware"):
+        policy.review_approval("a" * 40, [], "EverForests", "2026-01-01T11:00:00",
+                              test_committed_at="2026-01-01T09:00:00Z")
+
+
+def test_initial_nonruntime_profile_is_bounded_to_reviewed_registration():
+    current = {"model": "reviewed-profile"}
+    assert not semantic.profile_change_requires_receipt(True, False, current, current)
+    with pytest.raises(policy.PolicyFailure):
+        semantic.profile_change_requires_receipt(True, False, {"model": "unreviewed"}, current)
+    assert semantic.profile_change_requires_receipt(True, True, current, current)
+
+
+def fixture_history(tmp_path, *, governance_tests_only=False, modify_tests=False,
+                    governance_implementation=False):
+    def run(*args, time="2026-01-01T08:00:00+00:00"):
+        env = dict(os.environ, GIT_AUTHOR_DATE=time, GIT_COMMITTER_DATE=time)
+        return subprocess.run(["git", "-C", str(tmp_path), *args], check=True,
+                              capture_output=True, text=True, env=env).stdout.strip()
+    def write(rel, text):
+        p = tmp_path / rel
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(text)
+    run("init")
+    run("config", "user.name", "Synthetic Governance Fixture")
+    run("config", "user.email", "fixture@example.invalid")
+    write(".github/scripts/d7_policy.py", "# existing installed policy fixture\n")
+    write("docs/ai-use-log.yaml", "entries:\n- id: OLD\n")
+    run("add", ".")
+    run("commit", "-m", "fixture baseline")
+    base = run("rev-parse", "HEAD")
+    test_path = "test/governance/test_fixture.py" if governance_tests_only else "test/offline/test_fixture.py"
+    write(test_path, "def test_fixture():\n    assert True\n")
+    write("docs/governance/plans/task.md", "# Synthetic exact test plan\n")
+    run("add", ".")
+    run("commit", "-m", "tests before implementation", time="2026-01-01T09:00:00+00:00")
+    test_sha = run("rev-parse", "HEAD")
+    implementation = ".github/scripts/new_gate.py" if governance_implementation else "tradingagents/fixture.py"
+    write(implementation, "value = 1\n")
+    if modify_tests:
+        write(test_path, "def test_fixture():\n    assert False\n")
+    write("docs/governance/approvals/task.json", json.dumps({
+        "test_revision": test_sha, "plan_path": "docs/governance/plans/task.md",
+        "approval_pr": 123, "implementation_paths": [implementation]}))
+    run("add", ".")
+    run("commit", "-m", "synthetic implementation", time="2026-01-01T11:00:00+00:00")
+    return base, test_sha
+
+
+def test_real_git_ancestry_and_exact_test_review_pass(tmp_path, monkeypatch):
+    base, sha = fixture_history(tmp_path)
+    monkeypatch.setattr(policy, "github_json", lambda _: [{
+        "state": "APPROVED", "author_association": "COLLABORATOR", "commit_id": sha, "submitted_at": "2026-01-01T10:00:00Z",
+        "user": {"login": "asling3", "type": "User"}}])
+    result = policy.check_prior_approval(tmp_path, base, policy.changed_paths(tmp_path, base), {
+        "pull_request": {"user": {"login": "EverForests"}}})
+    assert sha in result
+
+
+@pytest.mark.parametrize("bad_scope,changed_tests", [(True, False), (False, True)])
+def test_governance_tests_cannot_approve_business_code_or_change_after_review(
+        tmp_path, monkeypatch, bad_scope, changed_tests):
+    base, sha = fixture_history(tmp_path, governance_tests_only=bad_scope, modify_tests=changed_tests)
+    monkeypatch.setattr(policy, "github_json", lambda _: [{
+        "state": "APPROVED", "author_association": "COLLABORATOR", "commit_id": sha, "submitted_at": "2026-01-01T10:00:00Z",
+        "user": {"login": "asling3", "type": "User"}}])
+    with pytest.raises(policy.PolicyFailure, match="No valid prior"):
+        policy.check_prior_approval(tmp_path, base, policy.changed_paths(tmp_path, base), {
+            "pull_request": {"user": {"login": "EverForests"}}})
+
+
+def test_governance_change_without_new_ai_use_record_is_refused(tmp_path):
+    base, _ = fixture_history(tmp_path)
+    with pytest.raises(policy.PolicyFailure, match="AI-use update"):
+        policy.check_ai_use(tmp_path, base, [".github/workflows/ci.yml"])
+
+
+def test_governance_only_change_requires_prior_review_after_activation(tmp_path):
+    base, _ = fixture_history(tmp_path)
+    with pytest.raises(policy.PolicyFailure, match="No valid prior"):
+        policy.check_prior_approval(tmp_path, base, [".github/scripts/new_gate.py"], {
+            "pull_request": {"user": {"login": "EverForests"}}})
+
+
+def test_governance_tests_can_approve_governance_only_implementation(tmp_path, monkeypatch):
+    base, sha = fixture_history(tmp_path, governance_tests_only=True, governance_implementation=True)
+    monkeypatch.setattr(policy, "github_json", lambda _: [{
+        "state": "APPROVED", "author_association": "COLLABORATOR", "commit_id": sha,
+        "submitted_at": "2026-01-01T10:00:00Z", "user": {"login": "asling3", "type": "User"}}])
+    assert sha in policy.check_prior_approval(tmp_path, base, policy.changed_paths(tmp_path, base), {
+        "pull_request": {"user": {"login": "EverForests"}}})
+
+
+def test_semantic_boolean_cannot_masquerade_as_numeric_send_count():
+    data = corpus()
+    answers = copy.deepcopy(data["positive_controls"])
+    answers[7]["result"]["sends"] = True
+    assert semantic.evaluate_answers(data, answers)["failures"]
+
+
+def test_semantic_extra_narrative_cannot_hide_outside_the_rubric():
+    data = corpus()
+    answers = copy.deepcopy(data["positive_controls"])
+    answers[0]["unreviewed_narrative"] = "Guaranteed future profit"
+    assert semantic.evaluate_answers(data, answers)["failures"]
+
+
+def test_model_response_hash_must_be_recomputable():
+    profile = json.loads((ROOT / ".github/governance/runtime-model.json").read_text())
+    receipt = {"evidence_class": "recorded-model-output", "model_id": profile["deep_model"],
+               "provider": profile["provider"], "captured_at": "2026-01-01T00:00:00Z",
+               "configuration_sha256": semantic.configuration_digest(ROOT),
+               "corpus_sha256": "corpus-digest", "provider_response_sha256": "a" * 64,
+               "raw_response": "[]", "answers": corpus()["positive_controls"]}
+    with pytest.raises(policy.PolicyFailure, match="hash does not match"):
+        semantic.validate_model_receipt(ROOT, corpus(), "corpus-digest", receipt)

@@ -207,7 +207,9 @@
     { "action": "read", "resource": ".github/scripts/d7_*.py", "effect": "allow" },
     { "action": "read", "resource": "**/TradingAgents_Pro/.github/scripts/d7_*.py", "effect": "allow" },
     { "action": "read", "resource": ".github/CODEOWNERS", "effect": "allow" },
-    { "action": "read", "resource": "**/TradingAgents_Pro/.github/CODEOWNERS", "effect": "allow" }
+    { "action": "read", "resource": "**/TradingAgents_Pro/.github/CODEOWNERS", "effect": "allow" },
+    { "action": "read", "resource": "src/source-manifest.json", "effect": "allow" },
+    { "action": "read", "resource": "**/TradingAgents_Pro/src/source-manifest.json", "effect": "allow" }
   ],
   "agents": {
     "plan": {

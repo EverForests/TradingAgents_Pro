@@ -77,6 +77,8 @@ def main() -> int:
     root = args.root.resolve()
     policy = args.policy_root or root / ".github/governance"
     baseline = json.loads((policy / "static-baseline.json").read_text())
+    if baseline.get("schema_version") != "1.0":
+        raise RuntimeError("Unsupported static finding-budget version")
     types, security = analyze(root)
     new_types = compare_findings(fingerprints(types), baseline["type_fingerprints"])
     new_security = compare_findings(fingerprints(security), baseline["security_fingerprints"])

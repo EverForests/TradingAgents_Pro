@@ -34,6 +34,16 @@ def configuration_digest(root: Path) -> str:
 
 
 def evaluate_answers(corpus: dict[str, Any], answers: list[dict[str, Any]]) -> dict[str, Any]:
+    def same(actual: Any, expected_value: Any) -> bool:
+        if isinstance(expected_value, bool):
+            return isinstance(actual, bool) and actual == expected_value
+        if isinstance(expected_value, (int, float)):
+            return isinstance(actual, (int, float)) and not isinstance(actual, bool) and actual == expected_value
+        if isinstance(expected_value, dict):
+            return (isinstance(actual, dict) and set(actual) == set(expected_value)
+                    and all(same(actual[k], v) for k, v in expected_value.items()))
+        return type(actual) is type(expected_value) and bool(actual == expected_value)
+
     expected = {case["id"]: case for case in corpus["cases"]}
     actual = {answer["id"]: answer for answer in answers}
     require(len(actual) == len(answers), "Duplicate semantic answers")
@@ -41,11 +51,13 @@ def evaluate_answers(corpus: dict[str, Any], answers: list[dict[str, Any]]) -> d
     failures = []
     for identifier, case in expected.items():
         answer = actual[identifier]
-        if answer.get("result") != case["expected"]:
+        if set(answer) != {"id", "result", "supported_facts", "unsupported_claims"}:
+            failures.append(identifier + ":unexpected-answer-field")
+        if not same(answer.get("result"), case["expected"]):
             failures.append(identifier)
         if set(answer.get("supported_facts", [])) != set(case["required_facts"]):
             failures.append(identifier + ":unsupported-or-missing-fact")
-        if answer.get("unsupported_claims", []) != []:
+        if answer.get("unsupported_claims") != []:
             failures.append(identifier + ":unsupported-claim")
     return {"cases": len(expected), "failures": failures,
             "required_field_agreement": (len(expected) - len({x.split(":")[0] for x in failures})) / len(expected)}
@@ -61,9 +73,28 @@ def validate_model_receipt(root: Path, corpus: dict[str, Any], corpus_sha: str,
     for key in ["model_id", "provider", "captured_at", "provider_response_sha256"]:
         require(isinstance(receipt.get(key), str) and receipt[key].strip(),
                 "Incomplete model-output provenance: " + key)
+    profile = json.loads((root / ".github/governance/runtime-model.json").read_text())
+    require(receipt["model_id"] in {profile["quick_model"], profile["deep_model"]}
+            and receipt["provider"] == profile["provider"], "Evaluation model/provider differs from declared profile")
+    raw = receipt.get("raw_response")
+    if not isinstance(raw, str):
+        raise PolicyFailure("Retain the synthetic-source response for hash verification")
+    require(hashlib.sha256(raw.encode()).hexdigest() == receipt["provider_response_sha256"],
+            "Provider response hash does not match retained response")
+    require(json.loads(raw) == receipt["answers"], "Evaluation answers differ from retained model output")
     evaluation = evaluate_answers(corpus, receipt["answers"])
     require(not evaluation["failures"], "Frozen semantic threshold failed")
     return evaluation
+
+
+def profile_change_requires_receipt(changed: bool, existed: bool,
+                                    candidate: dict[str, Any], registered: dict[str, Any]) -> bool:
+    if not changed:
+        return False
+    if existed:
+        return True
+    require(candidate == registered, "Initial profile differs from the reviewed non-runtime registration")
+    return False
 
 
 def main() -> int:
@@ -92,7 +123,10 @@ def main() -> int:
         paths = changed_paths(root, active_base)
         profile = ".github/governance/runtime-model.json"
         existing_profile = bool(git(root, "ls-tree", "--name-only", active_base, "--", profile))
-        changed = any(p.startswith(SEMANTIC) or (p == profile and existing_profile) for p in paths)
+        profile_changed = profile_change_requires_receipt(
+            profile in paths, existing_profile, json.loads((root / profile).read_text()),
+            json.loads((policy / "runtime-model.json").read_text()))
+        changed = any(p.startswith(SEMANTIC) for p in paths) or profile_changed
         report["model_change"] = changed
         if changed:
             receipts = list((root / "docs/governance/evaluations").glob("*.json"))

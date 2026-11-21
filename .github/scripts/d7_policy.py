@@ -10,17 +10,20 @@ import ast
 import hashlib
 import json
 import os
+import re
 import subprocess
 import sys
 import urllib.request
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
 APP = ("tradingagents/", "cli/", "src/", "prompts/")
+IMPLEMENTATION = (*APP, ".github/scripts/")
 SENSITIVE = (*APP, ".github/", ".opencode/", "mypy.ini", "pyproject.toml")
 SEMANTIC = ("prompts/", "tradingagents/agents/", "tradingagents/llm_clients/",
-            "tradingagents/default_config.py")
+            "tradingagents/default_config.py", "AGENTS.md", "Prompt.md",
+            ".opencode/rules.md", ".agent/rules.md")
 REVIEWERS = {"EverForests", "KyrieT331", "wmq12138", "majiaqi-yan", "asling3"}
 ACTIVATION = "7da6ecc9ff665d096b3def5be9ee9601628ae05e"
 
@@ -39,7 +42,7 @@ def git(root: Path, *args: str) -> str:
 
 
 def changed_paths(root: Path, base: str, head: str = "HEAD") -> list[str]:
-    require(bool(base) and len(base) == 40, "A full comparison base is required")
+    require(bool(re.fullmatch("[0-9a-f]{40}", base)), "A full comparison base is required")
     return [x for x in git(root, "diff", "--name-only", base, head).splitlines() if x]
 
 
@@ -63,12 +66,16 @@ def api_surface(root: Path) -> dict[str, str]:
             for node in tree.body:
                 if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
                     if not node.name.startswith("_"):
-                        result[f"{rel}:{node.name}"] = ast.dump(node.args)
+                        result[f"{rel}:{node.name}"] = ast.dump(node.args) + repr(ast.dump(node.returns) if node.returns else None)
                 elif isinstance(node, ast.ClassDef) and not node.name.startswith("_"):
+                    fields = [ast.dump(n) for n in node.body if isinstance(n, ast.AnnAssign)]
+                    result[f"{rel}:{node.name}:record"] = repr(([ast.dump(b) for b in node.bases], fields))
                     for method in node.body:
                         if (isinstance(method, (ast.FunctionDef, ast.AsyncFunctionDef))
                                 and (not method.name.startswith("_") or method.name == "__init__")):
-                            result[f"{rel}:{node.name}.{method.name}"] = ast.dump(method.args)
+                            result[f"{rel}:{node.name}.{method.name}"] = (ast.dump(method.args)
+                                + repr(ast.dump(method.returns) if method.returns else None)
+                                + repr([ast.dump(d) for d in method.decorator_list]))
     return result
 
 
@@ -90,6 +97,14 @@ def check_contracts(root: Path, paths: list[str], policy_root: Path) -> None:
     right = root / ".opencode/permissions.jsonc"
     require(left.read_bytes() == right.read_bytes(), "OpenCode permission copies differ")
     baseline = json.loads((policy_root / "contracts.json").read_text())
+    require(baseline.get("schema_version") == "1.0", "Unsupported governance contract version")
+    config = json.loads(left.read_text())
+    for rule in config["permissions"]:
+        if rule["action"] == "read" and rule["effect"] == "allow":
+            resource = rule["resource"]
+            require(resource not in {"*", "**", "**/*", "**/TradingAgents_Pro/*", "**/TradingAgents_Pro/**"}
+                    and not any(p in resource for p in [".env", "auth.json", "credentials"]),
+                    "Read permissions cannot expose unbounded paths or credential files")
     require(permission_edits(json.loads(left.read_text())) == baseline["edit_permissions"],
             "Agent edit authority changed; renew the permission design and human review")
     require(runtime_dependencies((root / "pyproject.toml").read_text())
@@ -97,7 +112,13 @@ def check_contracts(root: Path, paths: list[str], policy_root: Path) -> None:
             "Runtime dependencies changed; an explicit dependency contract revision is required")
     require(api_surface(root) == baseline["api_surface"],
             "Public API surface changed; renew the API contract with ADR and human review")
-    for entry in json.loads((root / "src/source-manifest.json").read_text())["sources"]:
+    entries = json.loads((root / "src/source-manifest.json").read_text())["sources"]
+    actual = {p.relative_to(root).as_posix() for package in ["tradingagents", "cli"]
+              for p in (root / package).rglob("*.py")}
+    if (root / "main.py").exists():
+        actual.add("main.py")
+    require(actual == {entry["runnable_path"] for entry in entries}, "Source manifest omits or invents modules")
+    for entry in entries:
         # Manifest field names are intentionally taken from the frozen source format.
         original = root / entry["runnable_path"]
         copied = root / entry["course_source_path"]
@@ -105,24 +126,33 @@ def check_contracts(root: Path, paths: list[str], policy_root: Path) -> None:
         require(hashlib.sha256(original.read_bytes()).hexdigest() == entry["sha256"],
                 "Course source manifest hash differs")
     if any(p.startswith(SENSITIVE) or p == "main.py" for p in paths):
-        require(any(p.startswith("docs/architecture/adr/") and p.endswith(".md") for p in paths),
-                "Safety/governance changes require an accompanying ADR")
+        adrs = [root / p for p in paths if p.startswith("docs/architecture/adr/") and p.endswith(".md")]
+        require(any(p.is_file() and len(p.read_text()) >= 120
+                    and all(key in p.read_text().lower() for key in ["date", "status", "decision"])
+                    for p in adrs), "Safety/governance changes require a substantive dated ADR")
         owners = (root / ".github/CODEOWNERS").read_text()
         for pattern in ["/.github/", "/tradingagents/", "/docs/architecture/adr/"]:
             require(pattern in owners, "A safety path lacks a CODEOWNERS rule")
 
 
 def review_approval(test_sha: str, reviews: list[dict[str, Any]], author: str,
-                    first_implementation_at: str) -> dict[str, Any]:
-    before = datetime.fromisoformat(first_implementation_at.replace("Z", "+00:00"))
+                    first_implementation_at: str, *, test_committed_at: str) -> dict[str, Any]:
+    def aware(value: str) -> datetime:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        require(parsed.tzinfo is not None, "Approval chronology needs timezone-aware timestamps")
+        return parsed.astimezone(UTC)
+
+    before = aware(first_implementation_at)
+    test_at = aware(test_committed_at)
     for review in reviews:
         user = review.get("user", {})
         if (review.get("state") != "APPROVED" or review.get("commit_id") != test_sha
                 or user.get("login") not in REVIEWERS or user.get("login") == author
-                or user.get("type") != "User"):
+                or user.get("type") != "User" or review.get("author_association")
+                not in {"OWNER", "MEMBER", "COLLABORATOR"}):
             continue
-        when = datetime.fromisoformat(review["submitted_at"].replace("Z", "+00:00"))
-        if when < before:
+        when = aware(review["submitted_at"])
+        if test_at <= when < before:
             return review
     raise PolicyFailure("No independent exact-test approval before implementation")
 
@@ -139,16 +169,26 @@ def github_json(path: str) -> Any:
 
 
 def check_prior_approval(root: Path, base: str, paths: list[str], event: dict[str, Any]) -> str:
-    if not any(p.startswith(APP) or p == "main.py" for p in paths):
-        return "not-applicable: no application or runtime-prompt implementation"
+    installed = bool(git(root, "ls-tree", "--name-only", base, "--", ".github/scripts/d7_policy.py"))
+    guarded = IMPLEMENTATION if installed else APP
+    if not any(p.startswith(guarded) or p == "main.py" for p in paths):
+        return ("not-applicable: no new implementation" if installed
+                else "governance-only first activation; no new application implementation")
     records = sorted((root / "docs/governance/approvals").glob("*.json"))
     require(records, "Application changes require a prior test-approval record")
     commits = git(root, "rev-list", "--reverse", f"{base}..HEAD", "--",
-                  "tradingagents", "cli", "src", "prompts", "main.py").splitlines()
+                  "tradingagents", "cli", "src", "prompts", "main.py",
+                  *([".github/scripts"] if installed else [])).splitlines()
     require(commits, "Cannot identify first implementation commit")
     first = commits[0]
     first_at = git(root, "show", "-s", "--format=%cI", first)
     author = event.get("pull_request", {}).get("user", {}).get("login", "")
+    if not author:
+        head = git(root, "rev-parse", "HEAD")
+        associated = github_json(f"/repos/EverForests/TradingAgents_Pro/commits/{head}/pulls")
+        merged = [pr for pr in associated if pr.get("merged_at") and pr.get("merge_commit_sha") == head]
+        if merged:
+            author = merged[0].get("user", {}).get("login", "")
     require(author, "Application approval requires pull-request context; direct push is refused")
     reasons = []
     for path in records:
@@ -158,20 +198,28 @@ def check_prior_approval(root: Path, base: str, paths: list[str], event: dict[st
             record = json.loads(path.read_text())
             sha = record["test_revision"]
             require(bool(__import__("re").fullmatch("[0-9a-f]{40}", sha)), "Use full test SHA")
+            plan = record["plan_path"]
+            require(isinstance(plan, str) and plan.startswith("docs/") and ".." not in plan,
+                    "Approval must identify the reviewed plan")
+            require(git(root, "show", f"{sha}:{plan}"), "The exact reviewed test commit lacks its plan")
             require(set(record["implementation_paths"]) == {
-                p for p in paths if p.startswith(APP) or p == "main.py"
+                p for p in paths if p.startswith(guarded) or p == "main.py"
             }, "Approval scope differs from the application patch")
             git(root, "merge-base", "--is-ancestor", sha, first)
             test_paths = git(root, "diff-tree", "--no-commit-id", "--name-only", "-r", sha)
-            require(any(p.startswith(("tests/", "test/")) for p in test_paths.splitlines()),
-                    "Approved revision contains no tests")
-            require(not any(p.startswith(APP) or p == "main.py" for p in test_paths.splitlines()),
+            relevant_tests = (("tests/", "test/offline/", "test/live/")
+                              if any(p.startswith(APP) or p == "main.py" for p in paths)
+                              else ("test/governance/",))
+            require(any(p.startswith(relevant_tests) for p in test_paths.splitlines()),
+                    "Approved revision has no tests for this implementation scope")
+            require(not any(p.startswith(IMPLEMENTATION) or p == "main.py" for p in test_paths.splitlines()),
                     "Approved test revision already changes application code")
             require(not git(root, "diff", "--name-only", sha, "HEAD", "--", "tests", "test"),
                     "Tests changed after their approval; renew exact-test review")
             number = int(record["approval_pr"])
             reviews = github_json(f"/repos/EverForests/TradingAgents_Pro/pulls/{number}/reviews")
-            review_approval(sha, reviews, author, first_at)
+            review_approval(sha, reviews, author, first_at,
+                            test_committed_at=git(root, "show", "-s", "--format=%cI", sha))
             return f"approved tests {sha} through PR {number}"
         except (KeyError, ValueError, subprocess.CalledProcessError) as exc:
             reasons.append(type(exc).__name__)
@@ -189,6 +237,14 @@ def check_ai_use(root: Path, base: str, paths: list[str]) -> None:
     old_ids = set(__import__("re").findall(r"^- id: (.+)$", previous, __import__("re").M))
     new_ids = set(__import__("re").findall(r"^- id: (.+)$", current, __import__("re").M))
     require(new_ids - old_ids, "Add an attributable new AI-use entry; edits alone do not qualify")
+
+
+def check_added_secrets(root: Path, paths: list[str]) -> None:
+    pattern = re.compile(r"(?:sk-[A-Za-z0-9_-]{24,}|gh[opusr]_[A-Za-z0-9_]{30,}|-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----)")
+    for rel in paths:
+        path = root / rel
+        if path.is_file() and path.stat().st_size < 2_000_000:
+            require(not pattern.search(path.read_text(errors="ignore")), "Credential-shaped material in changed file: " + rel)
 
 
 def aggregate(results: dict[str, str]) -> None:
@@ -215,6 +271,7 @@ def main() -> int:
         require(os.environ.get("GITHUB_EVENT_NAME") != "pull_request_target",
                 "Privileged execution of untrusted head is forbidden")
         paths = changed_paths(root, args.base)
+        check_added_secrets(root, changed_paths(root, prospective_base(root, args.base)))
         check_contracts(root, paths, policy_root)
         report["checks"]["contracts_api_permissions"] = "pass"
         active_base = prospective_base(root, args.base)
