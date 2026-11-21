@@ -15,7 +15,7 @@ The 20 November gaps below are retained as historical findings. The coordinator 
 | Required aggregate | Failed, missing, skipped or cancelled dependency prevents `d7-required` success. Actual initial hosted upload failure produced a failed aggregate. |
 | Hosted human review | Actual branch-rule read-back and final peer approval are independent of the preceding local/CI results; see verification record. |
 
-This closes the missing-check implementation findings within the stated scope. A final merge still depends on observed corrected CI and actual hosted protection/review. Historical approval gaps and retained scanner debt are not retroactively erased. Presentation assets remain outside the repository and course ZIP.
+This closes the missing-check implementation findings within the stated scope. Corrected PR and push CI at e480c2a passed. Final main merge requires the configured independent review and checks; the coordinator declined integration protection, so integration CI is not a forced merge condition. Historical approval gaps and retained scanner debt are not retroactively erased. Presentation assets remain outside the repository and course ZIP.
 
 ---
 

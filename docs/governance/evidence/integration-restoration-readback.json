@@ -1,0 +1,13 @@
+{
+  "observed_on": "2026-11-21",
+  "evidence_class": "maintainer-browser-readback",
+  "settings_url": "https://github.com/EverForests/TradingAgents_Pro/settings/branches",
+  "final_list": [
+    "main"
+  ],
+  "integration_protection_rule": null,
+  "observation": "GitHub confirmed the temporary integration rule was successfully deleted; only main remained in the final list.",
+  "authorization": "Coordinator explicitly confirmed removing only the newly created integration rule and restoring the prior state.",
+  "main_protection": "Preserved unchanged",
+  "consequence": "Integration CI reports failures but does not itself forbid merging there; main remains the protected release boundary."
+}

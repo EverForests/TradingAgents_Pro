@@ -1,5 +1,12 @@
 format_version: 1
 entries:
+- id: AI-D7-BOUNDARY-20261121
+  date: '2026-11-21'
+  tool: automation tools
+  scope: Actual hosted boundary disposition and final public/private evidence synchronization
+  human_direction: The coordinator declined saving integration protection; preserve its current settings while keeping already saved main protection.
+  evidence: Delivery e480c2a passed PR44884725839 and push44884720516; main rule read back; temporary integration rule removed after explicit coordinator direction and main-only list read back. Controlled PR12 remains a disposable negative experiment.
+  review_status: Release protection is claimed for main only; no historical or current peer approval fabricated.
 - id: AI-D7-DELIVERY-20261121
   date: '2026-11-21'
   tool: OpenCode read-only course-verify; automation tools

@@ -12,5 +12,11 @@
   "push_reason": "Workflow safety change lacked a changed accompanying ADR; subsequent documentation patch includes the actual ADR decision.",
   "negative_control_pr": 12,
   "negative_control_revision": "6a17b7ea30904a592a14db4392fef69d7b476276",
-  "negative_control": "Deliberately missing AI-use entry, never merge."
+  "negative_control": "Deliberately missing AI-use entry, never merge.",
+  "delivery_revision": "e480c2a4636915c50bf1e30b9afa8c71ed224e5a",
+  "delivery_pull_request_run": 44884725839,
+  "delivery_push_run": 44884720516,
+  "delivery_both_conclusions": "success",
+  "protected_release_branch": "main",
+  "integration_protection": "Coordinator declined saving the rule; remains unchanged/unprotected."
 }
