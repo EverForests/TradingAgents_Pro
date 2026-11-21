@@ -1,6 +1,8 @@
 # Invariant register
 
-Status: Proposed. Source requirements: [D1](../req/requirements.yaml).
+Current document review: **Approved**, recorded on 21 November 2026. [Offline review record](../governance/offline-review-20261121.md) distinguishes current acceptance from historical implementation approvals and separate hosted review.
+
+Status: Approved. Source requirements: [D1](../req/requirements.yaml).
 
 | ID | Statement / source | Enforcer | Verification | Operational fallback |
 | --- | --- | --- | --- | --- |

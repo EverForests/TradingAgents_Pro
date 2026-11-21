@@ -1,5 +1,7 @@
 # Candidate evaluation
 
+Current document review: **Approved**, recorded on 21 November 2026. [Offline review record](../governance/offline-review-20261121.md) distinguishes current acceptance from historical implementation approvals and separate hosted review.
+
 Design assessment only; no benchmark results are claimed.
 
 | Candidate | FR-01 | FR-02 | FR-03 | NFR-01 | NFR-02 | Decision |

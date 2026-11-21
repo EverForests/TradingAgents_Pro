@@ -1,5 +1,11 @@
 # PR review memo
 
+## Current conclusion — 21 November 2026
+
+**Verdict: APPROVE.** The coordinator confirmed that the reviewed project and documentation passed offline team review. The five feature outcomes are approved under the recorded peer-review arrangement; see the [offline review record](governance/offline-review-20261121.md). The D7 implementation, retained successful CI and protected-main negative control support the current scoped delivery assessment. This entry supersedes older proposed labels and historical CHANGES REQUIRED conclusions as the current status.
+
+Historical entries below retain their original revisions, evidence gaps and decisions. Current offline approval is not proof of approval before an earlier implementation, a submitted GitHub Review or permission to bypass main's required checks. This documentation-only reconciliation runs no tests and makes no application change.
+
 Add one dated entry per PR. Link pre-code plan/test approval and the actual results for the revision under review. Keep the memo free of credentials and raw session bodies; the roster belongs in Report.md and full D5 records in transcripts/.
 
 | Required review area | What to record |
@@ -390,7 +396,7 @@ The following are documentation reconciliation verdicts against recorded integra
 
 Recorded complete regression after the adapter: 1,832 passed, one skipped, one deselected and 100 passing subtests. A real cached-data API replay approved Overweight after 18 successful DeepSeek responses. The subsequent CLI batch approved five of five with fresh per-company caches. These establish the stated behaviors, not trading performance or complete source availability.
 
-**Delivery-governance verdict: CHANGES REQUIRED for complete D7 enforcement.** [Gate audit](delivery-readiness.md#d7-gate-audit) identifies the remaining checks and hosted-protection evidence. This does not reverse the scoped feature assessments. Final `main` merge is a coordinator action after the required peer and repository conditions are met. No merge or review event is created by this document.
+**Historical delivery-governance verdict — 20 November 2026: CHANGES REQUIRED.** Superseded as the current assessment by the 21 November D7 repair and confirmed offline APPROVE record above; retained here as the original finding. [Gate audit](delivery-readiness.md#d7-gate-audit) identifies the remaining checks and hosted-protection evidence. This does not reverse the scoped feature assessments. Final `main` merge is a coordinator action after the required peer and repository conditions are met. No merge or review event is created by this document.
 
 ## Repository structure reconciliation — 20 November 2026
 
@@ -413,3 +419,9 @@ Final read-only OpenCode disposition: no additional code blocker in the files ac
 Coordinator decision: do not save integration branch protection. The temporary integration rule was removed and the final list read back as main only; main remains the actual protected release boundary. Latest verified delivery e480c2a passed both PR44884725839 and push44884720516. This explicit scope decision supersedes the initial two-branch protection target; no integration merge-block claim is made.
 
 Observed final negative control: protected-main PR12 at fcce84e, run44885810283, seven successful jobs and deliberately failed duplicate-ID schema/artifact + required aggregate. The normal authenticated UI showed required d7-required, disabled Merge and missing independent latest-push approval. The experiment was retained and closed without merging; no invalid audit record entered integration or main.
+
+## Confirmed offline review and document reconciliation — 21 November 2026
+
+The coordinator explicitly confirmed offline approval of the reviewed materials. Requirement/interface revision status and architecture labels now read Approved; the report compilation/evidence dates include 21 November. Five existing feature-verification outcomes remain distinct from that current human review. Public/private documents are synchronized while private identities and original D5 exports remain private. No business code, runtime prompt, previous test, gate implementation or historical approval is rewritten.
+
+**Verdict: APPROVE** for the current reviewed project and compiled documentation. Main publication remains a separate coordinator operation under actual GitHub checks and review rules.

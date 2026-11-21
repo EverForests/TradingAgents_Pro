@@ -1,5 +1,7 @@
 # Architecture risks and review triggers
 
+Current document review: **Approved**, recorded on 21 November 2026. [Offline review record](../governance/offline-review-20261121.md) distinguishes current acceptance from historical implementation approvals and separate hosted review.
+
 | ID | Assumption or exposure | Impact | Owner | Mitigation and review trigger |
 | --- | --- | --- | --- | --- |
 | R-01 | A reference can resolve without semantically supporting its argument. | A formally valid chain can accompany weak reasoning. | FR-01 owner | State the reference-integrity scope. Introduce a labelled support rubric before making faithfulness claims. |

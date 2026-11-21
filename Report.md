@@ -4,13 +4,13 @@
 | --- | --- |
 | Course | CS5351 Agentic Software Engineering |
 | Deliverable | D6 project report |
-| Status | Consolidated course report |
+| Status | Approved in confirmed offline team review |
 | Repository | [EverForests/TradingAgents_Pro](https://github.com/EverForests/TradingAgents_Pro) |
 | Upstream reference | `upstream-baseline` at `9fa1196fffbcfd9de5146d2dd2869df84ab99838` |
 | Verified application and tests | `df8a9d6419dfa0aab2f4d8986d0a44060354cdb9` on `integration/course-project` |
 | Consolidated evidence baseline | `b8a7564ed9c2ac82d0bab92f548bbe6daea763f3`; [integration PR #11](https://github.com/EverForests/TradingAgents_Pro/pull/11) |
-| Report compilation | 20 November 2026, Asia/Hong_Kong |
-| Recorded evidence period | 15–20 November 2026 |
+| Report compilation | Updated 21 November 2026, Asia/Shanghai |
+| Recorded evidence period | 15–21 November 2026 |
 
 ## 1. Project summary
 
@@ -107,6 +107,8 @@ Feature ownership did not imply exclusive review authority. The team used the ci
 The coordinator retrieved current PR bodies and review metadata on 20 November. PR #8 and #10 had merged through GitHub on 18 November, while the other feature changes were included through the local integration history. PR #6 had newer documentation at its current head. The report preserves the tested code revisions rather than treating each newly fetched document head as a new test result. Source claims in a PR body are author-reported until matched to a receipt. Assigned reviewers are named as responsible peers without inventing submitted GitHub Review events.
 
 The original supervision record also includes broad continuation instructions and automation tools acting under delegated scope. These actions are distinguished from a student's specific intervention and from formal peer approval. For example, the latest FR-03 collection supplies the owner's rationale for requesting the before/after comparison, while earlier execution receipts preserve which work automation tools performed. The purpose of this distinction is to make individual learning and delivery decisions inspectable without rewriting original messages.
+
+The coordinator confirmed that the reviewed project and materials passed offline team review, recorded on 21 November. Current requirement and architecture status is Approved; the review memo records the peer-review ring and outcome. This does not backdate missing historical approvals or create GitHub Review events. [Current offline review](docs/governance/offline-review-20261121.md)
 
 ## 5. Implementation and integration findings
 
@@ -252,7 +254,7 @@ The five deterministic requirements have implementation and acceptance evidence 
 
 The record contains distinct verification layers: controlled upstream comparisons, real models with synthetic sources, real-data cache replay, and a fresh per-company CLI batch. These layers must retain their data conditions. The later CLI results close the earlier missing saved positive CLI case. They do not close live provider-boundary byte instrumentation, comprehensive semantic faithfulness, or all fiscal examples in the same live batch. The token-budget cap remains an architectural design, while the implemented NFR-02 guarantee is the scoped byte bound.
 
-D7 maintenance implemented the previously absent prospective approval, static/safety and prompt/model evaluation controls without changing application bytes. Local deliberate-negative cases and an actual refused hosted aggregate provide enforcement evidence for their defined conditions. Existing type/security debt, historical approval gaps and independent hosted review remain explicit boundaries. Current execution and protection evidence is recorded in the [delivery audit](docs/delivery-readiness.md#d7-gate-audit); a passing checker does not replace a reviewer or establish universal semantic quality.
+D7 maintenance implemented the previously absent prospective approval, static/safety and prompt/model evaluation controls without changing application bytes. Local deliberate-negative cases and an actual refused hosted aggregate provide enforcement evidence for their defined conditions. Existing type/security debt, historical approval gaps and independent hosted review remain explicit boundaries. Current offline review has outcome APPROVE. Execution and protection evidence is recorded in the [delivery audit](docs/delivery-readiness.md#d7-gate-audit); a passing checker does not replace a reviewer or establish universal semantic quality.
 
 Five complete member collections support the course delivery. The public repository identifies contributors by GitHub account and publishes redacted existing session evidence. The restricted course submission retains student numbers and complete originals. The source package preserves the runnable upstream layout and includes a complete `src/` snapshot with hashes. Historical missing approvals remain historical gaps. The current review ring establishes responsibility, while actual signatures, timestamps and hosted review events retain their own provenance. The final merge to `main` requires the coordinator, the configured independent reviewer and required checks. The coordinator left integration unprotected; its CI alone does not block merging there.
 

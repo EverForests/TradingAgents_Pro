@@ -1,5 +1,12 @@
 format_version: 1
 entries:
+- id: AI-OFFLINE-APPROVAL-20261121
+  date: '2026-11-21'
+  tool: automation tools
+  scope: Record coordinator-confirmed offline approval, reconcile current document status and dates, synchronize public/private delivery copies
+  human_direction: The coordinator confirmed that the reviewed items passed offline review as Approved and requested all documentation updates and repository synchronization without another test run.
+  evidence: docs/governance/offline-review-20261121.md; current review-memo conclusion; updated report dates and existing versioned receipts. No application, prompt, test or CI implementation edits.
+  review_status: Current offline APPROVE; not reconstructed historical test approval or a submitted GitHub Review. No manual tests executed.
 - id: AI-D7-REFUSAL-PROOF-20261121
   date: '2026-11-21'
   tool: automation tools

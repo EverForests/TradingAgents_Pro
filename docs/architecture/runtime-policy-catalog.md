@@ -1,5 +1,7 @@
 # Runtime policy catalog
 
+Current document review: **Approved**, recorded on 21 November 2026. [Offline review record](../governance/offline-review-20261121.md) distinguishes current acceptance from historical implementation approvals and separate hosted review.
+
 | Requirement | Trigger | Deterministic action / decision | Evidence to capture | Escalation or continuation |
 | --- | --- | --- | --- | --- |
 | FR-01 / INV-01 | Invalid rating or unresolved required evidence | Fail closed; never publish/persist rejected candidate | run ID, BLOCKED, INVALID_RATING/INSUFFICIENT_EVIDENCE, rejected-reference IDs without raw content | Stop publication; provide nonofficial diagnostic for human correction/rerun |

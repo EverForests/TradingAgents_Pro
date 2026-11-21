@@ -14,6 +14,8 @@ TradingAgents Pro is a CS5351 course project that extends TradingAgents, a multi
 - **Scope (D1):** [Requirements and acceptance criteria](docs/req/requirements.yaml) define FR-01–FR-03, NFR-01–NFR-02 and two safety invariants.
 - **Architecture (D2):** [Blueprint](architecture-blueprint.md) and [shared contracts](docs/architecture/interface-contracts.md) define component ownership, dispatch control and publication authority.
 
+**Current review status: Approved in offline team review**, confirmed by the coordinator and recorded on 21 November 2026. [Current review record](docs/governance/offline-review-20261121.md). The complete course delivery is on [`integration/course-project`](https://github.com/EverForests/TradingAgents_Pro/tree/integration/course-project); the final main merge remains subject to actual GitHub review and required checks.
+
 ## Requirements and review ownership
 
 | Requirement | Implemented control | Owner | Assigned peer reviewer |

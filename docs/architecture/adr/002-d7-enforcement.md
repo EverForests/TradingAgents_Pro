@@ -1,6 +1,8 @@
 # ADR-002 — Prospective repository enforcement without runtime changes
 
-Date: 21 November 2026. Status: Accepted for coordinator-authorized governance implementation; hosted peer review remains an independent operation.
+Current document review: **Approved**, recorded on 21 November 2026. [Offline review record](../../governance/offline-review-20261121.md) distinguishes current acceptance from historical implementation approvals and separate hosted review.
+
+Date: 21 November 2026. Status: Approved in the confirmed offline team review; hosted peer review remains an independent operation.
 
 ## Context and decision
 

@@ -1,8 +1,10 @@
 # Architecture blueprint
 
-Status: Proposed. Interface version: 1.0. Scope and fit criteria: [D1 registry](docs/req/requirements.yaml). Extend TradingAgents at `upstream-baseline` (`9fa1196fffbcfd9de5146d2dd2869df84ab99838`); retain the single-stock graph, providers, CLI and Python entry points. No brokerage execution, arbitrary prose arithmetic, or new external provider is in scope.
+Current document review: **Approved**, recorded on 21 November 2026. [Offline review record](docs/governance/offline-review-20261121.md) distinguishes current acceptance from historical implementation approvals and separate hosted review.
 
-| Requirement | Planned owner module | Contract and authority |
+Status: Approved. Interface version: 1.0. Scope and fit criteria: [D1 registry](docs/req/requirements.yaml). Extend TradingAgents at `upstream-baseline` (`9fa1196fffbcfd9de5146d2dd2869df84ab99838`); retain the single-stock graph, providers, CLI and Python entry points. No brokerage execution, arbitrary prose arithmetic, or new external provider is in scope.
+
+| Requirement | Owner module | Contract and authority |
 | --- | --- | --- |
 | FR-01 / INV-01 | `tradingagents/graph/publication_gate.py` | Build run-local evidence index, validate candidate rating and argument references, and return an approved decision or blocked status/reason. Model text is advisory. Apply the same outcome before CLI/API/report/memory publication. No free-text fallback around the gate. |
 | FR-02 | `tradingagents/agents/verified_metrics.py` | Validate provenance, comparable periods, units and operands; produce immutable verified records keyed by metric ID. Resolve controlled fields by ID, not model-supplied values. |

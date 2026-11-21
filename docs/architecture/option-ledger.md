@@ -1,5 +1,7 @@
 # Architecture option ledger
 
+Current document review: **Approved**, recorded on 21 November 2026. [Offline review record](../governance/offline-review-20261121.md) distinguishes current acceptance from historical implementation approvals and separate hosted review.
+
 | Option | Decision and reason | Reconsideration trigger | Evidence |
 | --- | --- | --- | --- |
 | Prompt-only enforcement | Rejected. Instructions cannot stop an unsupported candidate at every sink or atomically limit concurrent sends. | A requirement becomes presentation-only and requires no deterministic guarantee. | FR-01 missing-evidence counterexample; C4 race tests. |

@@ -1,5 +1,9 @@
 # Delivery audit — updated 21 November 2026
 
+## Current review disposition
+
+**APPROVE**, based on the coordinator-confirmed offline team review recorded on 21 November 2026. The [current review record](governance/offline-review-20261121.md) applies to the delivered requirement, architecture, governance and compiled evidence scope. Earlier audits below are historical findings, not the current verdict. Independent GitHub review/main merge and presentation production remain separate operations; historical missing pre-implementation evidence is not reconstructed.
+
 ## D7 gate audit
 
 The 20 November gaps below are retained as historical findings. The coordinator subsequently authorized a governance-only repair. The new controls are implemented, with 64 passing governance cases, nine fixed semantic controls, fourteen actual behavioral replays, exact type/security finding budgets and trusted-base policy execution. All 331 frozen runtime/prompt/original-test files remain byte-identical. [Measured verification, exclusions and hosted status](governance/d7-verification.md) is the authoritative current evidence account.
@@ -39,7 +43,7 @@ Five member D5 and D6 collections have been received. The public repository cont
 | AI-use log | The artifact checker requires a new tool/scope record when application or runtime-prompt paths change. | Implemented for its declared path scope. This is not proof of authorship or prior approval. |
 | Branch protection and safety review | Successful Actions receipts exist for the recorded revision. | Hosted required-check rules, enforced human review and accompanying ADR protection have not been independently verified in this documentation pass. |
 
-**D7 compliance verdict: CHANGES REQUIRED.** Successful feature acceptance and recorded CI do not close the missing enforcement requirements. This is a delivery-governance finding, not an assertion of a failing runtime feature. Closing it requires actual configured checks/protection and enforcement evidence, rather than an editorial status change.
+**Historical D7 verdict — 20 November 2026: CHANGES REQUIRED (superseded as the current assessment).** Successful feature acceptance and recorded CI do not close the missing enforcement requirements. This is a delivery-governance finding, not an assertion of a failing runtime feature. Closing it requires actual configured checks/protection and enforcement evidence, rather than an editorial status change.
 
 ## Coordinator disposition — 20 November 2026
 

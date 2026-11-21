@@ -1,6 +1,8 @@
 # Shared interface contracts
 
-Version: 1.0. Status: Proposed. Shared boundaries use JSON-compatible records. Internal dataclasses, TypedDict or Pydantic models may use adapters that preserve these fields and semantics. ADR-001 records the design decision.
+Current document review: **Approved**, recorded on 21 November 2026. [Offline review record](../governance/offline-review-20261121.md) distinguishes current acceptance from historical implementation approvals and separate hosted review.
+
+Version: 1.0. Status: Approved. Shared boundaries use JSON-compatible records. Internal dataclasses, TypedDict or Pydantic models may use adapters that preserve these fields and semantics. ADR-001 records the design decision.
 
 ## Ownership and integration
 

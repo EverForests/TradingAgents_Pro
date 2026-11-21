@@ -177,8 +177,9 @@ requirements:
   - T-INV02-RACE
 revision:
   id: interface-v1.0
-  status: proposed
-  approval: Team contract approval and per-feature plan/test approval are recorded separately in the review
-    memo.
+  status: approved
+  approval: Current requirement and interface baseline approved in offline team review, confirmed by the coordinator
+    and recorded on 21 November 2026 in docs/governance/offline-review-20261121.md. Historical pre-implementation
+    approval evidence and submitted GitHub Reviews remain separate.
   contracts: docs/architecture/interface-contracts.md
   preparation_base: ec1cb8b2177bafdf09c86cd8f072119c487fdce8

@@ -1,5 +1,7 @@
 # Memory and state design
 
+Current document review: **Approved**, recorded on 21 November 2026. [Offline review record](../governance/offline-review-20261121.md) distinguishes current acceptance from historical implementation approvals and separate hosted review.
+
 | Requirement | Session state and lifecycle |
 | --- | --- |
 | FR-01 | Evidence/argument IDs and candidate status are scoped to one run; only allowed decisions reach existing decision memory. Do not resolve references from a prior run. |

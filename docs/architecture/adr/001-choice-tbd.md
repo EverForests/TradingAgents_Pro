@@ -1,6 +1,8 @@
 # ADR-001 — Deterministic extensions at existing application boundaries
 
-Status: Proposed. Interface version: 1.0.
+Current document review: **Approved**, recorded on 21 November 2026. [Offline review record](../../governance/offline-review-20261121.md) distinguishes current acceptance from historical implementation approvals and separate hosted review.
+
+Status: Approved. Interface version: 1.0.
 
 ## Context and drivers
 

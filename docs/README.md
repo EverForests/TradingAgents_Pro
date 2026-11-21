@@ -35,3 +35,7 @@ The coordinator selected de-identified public publication on 20 November 2026. T
 ## D7 governance maintenance — 21 November 2026
 
 The [current verification record](governance/d7-verification.md), [ADR-002](architecture/adr/002-d7-enforcement.md), [fixed semantic rubric](governance/semantic-rubric.v1.md) and [prospective approval format](governance/approvals/README.md) document the new executable gates and their evidence boundaries. Historical application acceptance remains at df8a9d6; governance-only changes leave application/prompt/original-test bytes unchanged. Presentation assets remain external.
+
+## Current offline approval
+
+The coordinator confirmed offline team review with outcome **APPROVE**, recorded on 21 November 2026. The [review record](governance/offline-review-20261121.md) supersedes proposed-status labels and identifies the five assigned peer reviewers. It does not replace historical pre-implementation evidence or a submitted GitHub Review. The [review memo](review-memo.md#current-conclusion--21-november-2026) is the current disposition.

@@ -1,6 +1,8 @@
 # Requirement trace matrix
 
-The first table preserves the original design mapping; later dated sections supply measured evidence. Proposed owner paths and evidence. Case IDs are defined in [verification constraints](../code-governance/verification-constraints.md) and D1; none imply executable tests or pass results. Shared contracts: [C0–C5](interface-contracts.md).
+Current document review: **Approved**, recorded on 21 November 2026. [Offline review record](../governance/offline-review-20261121.md) distinguishes current acceptance from historical implementation approvals and separate hosted review.
+
+The first table preserves the original design mapping and case identifiers; later dated sections supply measured evidence. Case IDs are defined in [verification constraints](../code-governance/verification-constraints.md) and D1; none imply executable tests or pass results. Shared contracts: [C0–C5](interface-contracts.md).
 
 | Requirement | Enforcer / integration | Planned case IDs | Runtime monitor and failure |
 | --- | --- | --- | --- |
