@@ -226,3 +226,5 @@ reports/
 .DS_Store
 /presentation/
 /Report.pdf
+/.d7-receipts/
+/.d7-trusted/

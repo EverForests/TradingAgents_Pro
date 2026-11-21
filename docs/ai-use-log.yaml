@@ -1,5 +1,13 @@
 format_version: 1
 entries:
+- id: AI-D7-ENFORCEMENT-20261121
+  date: '2026-11-21'
+  tool: OpenCode course-plan and course-verify with the school DeepSeek model; automation tools
+  scope: Governance-only D7 gates, independent governance counterexamples, public/private evidence reconciliation and teacher-aligned presentation materials; application, runtime prompts and existing tests frozen
+  base_commit: 7da6ecc9ff665d096b3def5be9ee9601628ae05e
+  human_direction: EverForests requested repair of the remaining D7 checks without business-code changes, coordination with OpenCode, and synchronization of delivery and presentation materials.
+  evidence: Read-only OpenCode plan ses_e031006c3ffeX6NzfdNuWB7B6d; workflow-contract tests recorded five intended failures and one positive control before implementation. New governance checks and their measured receipts are documented in docs/governance/d7-verification.md.
+  review_status: Prospective governance maintenance under coordinator authorization; historical peer approvals are not reconstructed and hosted owner review remains independent.
 - id: AI-DOC-PREDEV-001
   date: '2026-11-15'
   tool: automation tools

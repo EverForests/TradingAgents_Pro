@@ -1,0 +1,1370 @@
+{
+  "schema_version": "1.0",
+  "source_revision": "7da6ecc9ff665d096b3def5be9ee9601628ae05e",
+  "mypy_version": "1.20.2",
+  "bandit_version": "1.9.4",
+  "type_fingerprints": [
+    "027ff386096022485d1401df7c20d480ee1c73e1c522c27ed4885ca1968f3f1e",
+    "04d300e6ff46a4f6ac51adfcb3fb66e21a22602787848298541c36aaa612dc65",
+    "071dc99fd314cd2b7a58b4d61eb28658be684ca24922f2282f153242c4bdb931",
+    "0dc0ebc2fdaf52cfdedd2b2b42adee8f150a2bec8731a390809db82dcd1bbe35",
+    "0ed5e1e9f933845a502eea5bfa83bca97f26f9dfd0f2603b9e80f965757c1c82",
+    "12fbb62de7dd9b9686315dcbde5bcf5e50fb114d316aadc86a1e81bc1fc9427e",
+    "14c60d8b379b25bc41c69d4fabeb23201c09efb71bafbafba2d6c832cbcf6c22",
+    "1c39974d89a6a6e2fde37de826627fc6554c43f9b8dd9442056605fabd0913e2",
+    "1f23c693d364642cf4aef3b02c5468ea03d5cf36a3f7f33ac3037a6401123ee9",
+    "1f4c94737ba1d5da539215449eb24a72eafb254347641d0f79f87b2da2d47677",
+    "1f7547c1c28b2cc87c9513bd7ad698c759131f63e64521cb4f65ee89ab8d6e4c",
+    "225cdf22f6e1e5e4dc2c0510fbaf55d5b2fcdca7823d6ed8691db5c32e3586d4",
+    "26a337cb9d9efed6675c63e76cfedb60074ce5f4281151a8b847039268b352d7",
+    "27872e6f6e3ddb5fffa4ab60e916ddb6a64c3bc93ba6a83fef3b1531ac78b789",
+    "28341f933b056024f7797742123db35ad6ba4d365ff715c2d43661ba9bdfd21c",
+    "2aba5289132955590619a51495a5b0386fc3beddb9b7a112180a1f0d20440da1",
+    "2af625e06915e53c322e99802b95bc2295b14d0c80a5be84a3e1fb40aef72243",
+    "2ba3048f9682582f77174d3398f2625118a75ab045ff214a82c4184ef904eec1",
+    "2bee392b86d892a32e132bce00ef929e773c6e24de9d8ca8fce8880928ba10d4",
+    "2e9fdf6532b387ce2da7d219057f8924804af6afdcc3f1b8b29967fff6691f56",
+    "304c22b1f8c7d9be2407b0e9f0421413684be643806e29c8e745164d519ac994",
+    "31a5f796a8836ee337f7b162f90a77b8845e53827ebfd75f8853597ea5f25608",
+    "31d3571003f48a4bdcf28ea5067f735cd4a6383f6e1b6a46ff28987bfdb5db96",
+    "3259447bbfa48f3bee261067ebce60f45b92a7cb49d15839b6457fdeb417d9fe",
+    "32aa29570aad5022dab2ee8b0d2e2aad7156081c55b5d8b898f134d60af51fde",
+    "341584bc507040d02cb4172d0c624b905d4c7a8fc1762a9bda49fd47f099d8d2",
+    "3714909475924933ab0bbd60991a113e04bb0f0aabff488110c85364c4f9550f",
+    "378022728e0db482cad473edc1d9647cb52acdde09987a67859feac824d529ef",
+    "393f6874ef76fd607a8af327bb86a14a8c21b58628dc7e129831d7d5511bf3ac",
+    "3ecceb88ba05aa7f6d4aacc8e3290189df855fdc13bd8ab67dbaa2a0f959f093",
+    "43cf173409440df9448380317c4bda38df8f2fe7776443036b5260ee75677392",
+    "44507f3acaf735ec46825fa8692e8ecd314b8f3de8b87b1755453a0f12ce3c36",
+    "44770c5b52f21a608ff86a02b95f1c6d7c07fd5dba237d94eafdaa9374b5fde8",
+    "47c50fee3720e4d19d15ea3071d792b5c288aa2b0695fd6e0e220be4f842979c",
+    "48b83028c3d02d506ff59bda3a5508538214607b645d7c6f4cee8a5d5451bc35",
+    "49b860f81ab91265c283098c93f3e46fcc7b715e767e8767613833f0e7bf0bae",
+    "4cfb26abee4b61abf5eaac45f1e828cbe6d155a147629cb0b19e8a59f5c4013c",
+    "4d52373813c0b42e6f48965027931a4600d921a70f773430d306fb109fa64691",
+    "4de1a95e539685db1873072b344f3e81290cf6beaeeecf9b525811a74f6e2fcc",
+    "4ff42885022a4883de902fa0326466a81f5752ca270448ab109a62d1dcfe4c61",
+    "5245ade95fd0d758d78cf2419aa4ae0b48d58be4125a01a9bd66b467f336d265",
+    "5ec3d2ad9e212096b4c6efdfd365a6ce24c5d78722694ef11884f3b48da235d5",
+    "5f40f8b5d8b7f30030f676ca8344f552a650b3041c3e8c5c66ad4369e7697e0d",
+    "5fec7ad10f0bcc02a674b0e181541dac959ff919d1c24a7488a1e67dc1ae7f17",
+    "61467d9d2c5072fc5abab482723327c6cbffe679c7190cc9f767fd9af8026bf3",
+    "61d9b6e39e365b3e0cc339c86bbb28ad0886463446f5d9ae742ca5164ddbc6a6",
+    "62fae88fada9abb627070f5c9742a0f2b0360f063d63cd0c03e3c78e3843ef00",
+    "630a3c323fe25c2859dadd982f2136babc3c6efab88ad6caafa283d74a9789e6",
+    "648091f2b0545d34f8a7c810b7ca88d5c96a90d8f7764529d8a6a5b82a2eebd8",
+    "657d80f8f5223432f2991c627e2586bdd0c40b80b843cc161a83db9d71b176e9",
+    "6743e85474fd183093889984c4337eb821744c17fdb06807a1c6a412c5f1723b",
+    "699e77d012546bf6936f92b4eb8ff313e3c1fba59f88ff9936f7acfa55d3bcc3",
+    "6bb7cd3357a78b921aac611da0cf9703bfbae5d337a0a07ef9adbf945fcd4d0b",
+    "6c5c8eda879ab6207846ece24b7a5b9cca92bf75fdad8edb8dc0d0371ba74b92",
+    "707aee1ca419d4fb1b7b9eea4dd02beda9a69dd10f697b8290de93f9b9790a6b",
+    "7488da2cf439d15c9333b14b9e939a689113e7541b8d9d253a45a5181e9e0924",
+    "75b4038d7721566a46fc2072052dfee54989ee2ff6eff5b9fcb56f8c45d852da",
+    "75e6cb7c59c61f526949d95782de382b50dfba388247eda6e2af3faa3e50342b",
+    "7632e21af794cba92e5da7129b45980efcb1b0267e6589746daeeb3526d3cfe9",
+    "76d80c45deaa37e15c6dc53dfc681fe34be66b98d49327356335e13ddff63f64",
+    "7cb2b3fe44742ee245be69f4e6329c03da88dca47158208a805d45a63dc34a4d",
+    "7ebad67ac7be86b42eca799fb38aea4dc2121c76a332c836537874b90b27da00",
+    "801146e6e7e26a6f288fcc29d951217173974aed364e57bd7c1f206c58d7a2a0",
+    "852e3f576d19a7fa0d8b928c733029cceacfb353949664daead7445badd42fe1",
+    "88aa52ab73d8495c900cfc06d1a520054805475fae9649607af2b638c215fe49",
+    "8b8219662c400c0922bb8ca02163177b04fb0101ecc470516e951d8583ad9c7c",
+    "8cb24bce79332689c712b1a6cfae48f423a1e7252438f56aebae8483e1c27f5b",
+    "8fc2800c78000524ecbb0cfab6b7aca52d24c76fec9f050e0763f2901bb4f9f3",
+    "911b77d96261ee7990787c2298b1d0e7ce8cd12ccc9a5ac4da8f494f4d83434b",
+    "9174e836c84038391f0e1c3a5bb2d67078805185adde0c69a69fd7856ae042c2",
+    "9b38ca1e5f7e2922c4f61a15d2bdc589efd83a7c1de81ebdd991711c02c12218",
+    "9bb27e0ba9b1cd9817ec42fed757ead0e04346f630b5d2c510a57dce5662ceed",
+    "9be32a342fc1000fe0aa88b743bbf8eb95a8ec7a34f31eb4b49caa8cc2fa9654",
+    "9ce9a9b7c944bda01c50a040567bbceef80f8070354087567bb93dd47f353332",
+    "aacde39cf16a1e477f1c2974d674d78e9f44d6204d1412f398b7b5f1363077d0",
+    "ab38d89dee176954b8eac575dd569c2bd7da426b8dffd240f15ffaf6e946f66d",
+    "abca64cf58159d1af0fae4ee1f6e2cf8749954343e9a3cdf2e2029884473fe1e",
+    "ae0e81949ca906e794dbcffef43c02893a9f607a1ec515c407d8a4a4d3321296",
+    "aebd3e16cbb183e1dc2ef14a56d55df58fd4f77654bbd82d4eb2410fb5142b82",
+    "b07ea256004053ce70ec7a3cb2c1057de753e2a357e13680056c344426bae853",
+    "b0dd3273788a5a25839089173f96c9222a9c7937add2b85ff1183034c9714e0c",
+    "b2b1807b598d36e3e15b24fc065e6df62a73f4a8e093795aa8320054c3f59b34",
+    "b575e321d08567c7530755149f512328d899c6890d327ca0b24704a8ef46418d",
+    "b5c81a98216a749d9ece26a71c134bf3d5cfbe917fca2c7392c19c7687b9d682",
+    "b8d6a8aba46f8e003c26d7284a5295741bf3ced8e0c5cd48fe7dc607b3c2ed7a",
+    "b99c65027fa86f2484f00e8e021932d301c24b07aab4cf6f0c62ff3ad49b32ee",
+    "ba30f1e3ed0eb1c8861f70d4fe03eaf9627a38c022e3df72ba3056a21b863bb0",
+    "bc89fe222b37b5cf68cefd7a611cefd901c1de659410043dc38217c38fbca0aa",
+    "becf11f33a0cad7c5519d16e27b3c779aa23df7cf775106afd68de40ec951bfa",
+    "c04e64777030658bf52ed2de39105e049dd3a88ca40a50af34dc28dd66b5ceee",
+    "c326645f8030489fee6736afd57706c70d7570fff5a0d33b117fd72f783d74a2",
+    "c46607bb985dd1286af4e09f5a257f0e5e48d2e2334635e1ce2877c98a7e071b",
+    "c762fe3a7003033608e86a8bc2966b9f5fbe85b9ce7b3476f1b7f2dff5457e09",
+    "c9bfdfd8f89e17c13b416468bb513213b5df272fa1bbd3f7ecee5697696d5860",
+    "ccf5828a35750563cc3b2d53337bf3d78cdc06d909428b696753299876cb4a5a",
+    "cffccf7a73c28be0f94601d546ed33a39d8722c7de2c1a509199f75a0d24f52e",
+    "d3ce0541fe14d2f45b13a5cd9af9c78991cdfc0587e5ad4e6ba29d5b02b30c28",
+    "d444ecc97e8277ab98c0eb362849b375c0d8dc1b2cb829676ce50c26382170cc",
+    "d9ff631af2b7e05b516cb63cb0aa16b8e3b637f52251179ef1b1d363cb3eca51",
+    "dfa136ff3c4a2aa85ef8ee6ca6e6d75050576bb2a320dcd8cc7ee9f5f27fbcbe",
+    "e0ab22b09da7c11b0c636bd87787ee037a281885809956df0fbc78a30ff5ede7",
+    "e216ab470afca09b33bc7e744f1c5635fa5846417f8764374cd3127e73b6f41a",
+    "e61e4494b1d3d62ce216b4b4b507534d750b5e3edc3430ece56dbd87d44728bc",
+    "eb692a6ce355ddd4a26a9e96ff96f13746f5fdd4be37971802c0dd7741c1ba32",
+    "ecaa8d3b4d887b2645a0ad059dc005f9fbba3964dd8dc7a0fd38d03b895f78f8",
+    "ed2a72403be6092418e2d6d6992ffd037086c1e3dff05dfb2908dfac054617de",
+    "f049d2d504388c7e1a3610c20be83bf4a9d92fcbb34e923e3b3b657af8643fbe",
+    "f12166c00d741fccd5187059223afa1103d330798c3d6a92c77825abe762dc30",
+    "f3042751bc97146f94c07575c5e2d6f67193d5ef245e02d4daffbf1b1a9f8b5a",
+    "f6c42ccf800750b4f8660737f5612d5c54cb7dcba4bd44208e30bd0de7aba4f1",
+    "f8490abd1cde469e33665bc913d4c2f266c1382424ad32fb627e754857a11622",
+    "f88265e29c941ef8b8c61706af1f4fdb5f341f3aa35cce112ebe632131badb90",
+    "fba36d0e19e274721144a0ae3735ba3b769cd03ca19ef2a6b79a2a182eb18271",
+    "fe0e08fd55ce85332a1b89a2bdf661520107f1ef1edd9f16f2ea4bccb2514b5b",
+    "fe159acbb62ce384d5d5e5f480f39f86789e6b3d92c06add8d8b2e85e98c4883"
+  ],
+  "security_fingerprints": [
+    "01849741757c4eeba7d529bbd8287e3304c804f8a35ce8e1c2acac1b138e3ecc",
+    "103c3e51bdaf4192f099a82d5660eff8f4045ed947f2817a072103b9fe553c84",
+    "2214f200eb1156dbfe9126d0c7fa8f03b3e49e82bb93eaa39b5d4274b9fe5e08",
+    "2f9286dcf195a8ec4cb2ab2927964a39a520e15afb8eb10c9b291cdc5fc1d934",
+    "34c9722d6d4bbb5e5cee448a81f716af6bf219fa4b4d148a07207fdadeee997c",
+    "3fc561b788ce1a0067e43d4c8b6972a4effea1c7cc36a7b186659eb6394d2462",
+    "478761b8edf6d0ec3d00992139d08224c5176ce4866555e4e24bd9c2e6828db3",
+    "5a95d024126e780e141de3afb6057de8f649538b3472b43e5c5280aada46e781",
+    "5b1cb7568ca61ac2640329dc3b44302ca7de8dbc2dfb5d90269477b6613eaaa8",
+    "5dd737edd89f1df0a236ba047b3baf95508c3e72b424ac8e1ec1881443b47567",
+    "705484781c73e5c6ce483ecb1d7a3d5db7fbf335e817e404a43c7c70f20f465c",
+    "72dbbcdeffaff909bad08fa39e100ea49a1e5327a61f2765357857a07bcb8573",
+    "737c47dd7a8214348ac79751eb9f72f48eca60b513135f4f19c24ccf98ac7afc",
+    "760daad1c7d6052c1905f8421d252e6a134f954d21380dc334591fe4fd9cd9d7",
+    "7c082b837a466dc8e4104d7a7fdbb8b82d170a412a1e1ba97780136b889cadd5",
+    "81ec5b413a3aea530a6a3b6e5e5776201cf0134d1989e964e5c124cce660a6a6",
+    "888afa0d0d0702a73b3328fa6d9ddf7e0e2cf0cd033adfdf062e6b8b81ebead8",
+    "8cf44e8aa59ddbfb0a96ac3942e5068bab50d2aac223ce354c820b822129ed98",
+    "8d6c313b81b3fe11b3bb2d76cc721886581c0b2a1eb54fd765e6364fead18f6b",
+    "9ea4c6bb5a48605206d1905d988a9b3c7542f45f9416180a4e4aa6b913021079",
+    "aaa2a9923859aa7362b9a03a31087f7f5047a520ffc166c8e5f84534b63b4438",
+    "aacc19a596938c3809d0ab0ed888b8ec64a67fca41669b21d8a055c02a2c8361",
+    "b21bc9d03c0855e9d72ca0b9e70a7aff30e18671292a488f49a8f2b78775a1fe",
+    "b5cd68854f71b6e3599f4e7b5f1590a5fc6c101b5ad0fa5fccb8eceff94964fe",
+    "b615aee108563c4fdb5fd71e75523f2a60b7b6ffb0a1cefb0a42240377aaa01c",
+    "bf021fa1c8e3ef96c81390cd2e4dadbccee06c23e7edcf3d9810e4ef2d855335",
+    "c57adbe9328bf00f6bd97e018ca621fce80c2d314ad8ced4c9c6ecc4463ae07d",
+    "d05ff2b33f0fe294709f9037a5593b0e2b1a79a474ccf8086b5da1057eba0f05",
+    "d9adf4443317a3bb1527bcf36379bf89cbceeb42c7c02d556b0c5fa9b23e33c0",
+    "e224c051195b0f07c8c689b268f6a410a4b056bbe476ea2d679115670ca0bafd",
+    "e59e0c376e54d40f5c1c39452bf857ae37b5e3d69f4689e7fea461220e71bc4b",
+    "ed39b66e21fe0f88f1844ec164e1e97877dff27508fd2155704b0b3cd86278c4"
+  ],
+  "type_findings": [
+    {
+      "file": "tradingagents/dataflows/net.py",
+      "line": 3,
+      "column": 0,
+      "code": "import-untyped",
+      "message": "Library stubs not installed for \"requests\"",
+      "source_line_sha256": "06185522e4085460db5f973d6987f2c5f42519fccd56836e5e5ed9842962de8d"
+    },
+    {
+      "file": "tradingagents/dataflows/config.py",
+      "line": 41,
+      "column": 11,
+      "code": "arg-type",
+      "message": "Argument 1 to \"_merge\" has incompatible type \"dict[Any, Any] | None\"; expected \"dict[Any, Any]\"",
+      "source_line_sha256": "cfaad742b2be560506a6611ab414de21d5749369ae061d080b7482892a95810e"
+    },
+    {
+      "file": "tradingagents/dataflows/config.py",
+      "line": 72,
+      "column": 20,
+      "code": "arg-type",
+      "message": "Argument 1 to \"deepcopy\" has incompatible type \"dict[Any, Any] | None\"; expected \"dict[Any, Any]\"",
+      "source_line_sha256": "f209e1585b37c029a7516604757285f54e0ba1c85b80ac528eb6bd9be80df4a5"
+    },
+    {
+      "file": ".github/scripts/verify_course_artifacts.py",
+      "line": 9,
+      "column": 0,
+      "code": "import-untyped",
+      "message": "Library stubs not installed for \"yaml\"",
+      "source_line_sha256": "1ba25a0ad00c4511b591046805e6342b82d740583998a6e7a79a83be33fa67bf"
+    },
+    {
+      "file": ".github/scripts/verify_course_artifacts.py",
+      "line": 30,
+      "column": 4,
+      "code": "var-annotated",
+      "message": "Need type annotation for \"cases\" (hint: \"cases: set[<type>] = ...\")",
+      "source_line_sha256": "3c5021eacbd658b018231deea8c6300ac0d2b0e2f16736ea68b91e31f5cac77b"
+    },
+    {
+      "file": "tradingagents/llm_clients/context_limit.py",
+      "line": 178,
+      "column": 16,
+      "code": "misc",
+      "message": "List comprehension has incompatible type List[Mapping[str, Any]]; expected List[dict[str, Any]]",
+      "source_line_sha256": "b55df9f67594f5b6d6cb718eafdd7e92ed91020357e982fea3d5d77edbc26673"
+    },
+    {
+      "file": "tradingagents/llm_clients/context_limit.py",
+      "line": 383,
+      "column": 59,
+      "code": "attr-defined",
+      "message": "\"object\" has no attribute \"required\"",
+      "source_line_sha256": "6ffbf97aa3bd1536d522d0813c42858596c3b812e744ee3d605e2189bfde00ec"
+    },
+    {
+      "file": "tradingagents/llm_clients/context_limit.py",
+      "line": 394,
+      "column": 57,
+      "code": "attr-defined",
+      "message": "\"object\" has no attribute \"required\"",
+      "source_line_sha256": "56d16b7942190edca5878cf9b072416d3982c31a9d0f718e9c4e73ef2ca1431d"
+    },
+    {
+      "file": "tradingagents/dataflows/source_receipt.py",
+      "line": 65,
+      "column": 44,
+      "code": "attr-defined",
+      "message": "\"SourceText\" has no attribute \"source_receipt\"",
+      "source_line_sha256": "8169cbfdc1f4eb64dc62e72d5aa7bcf44afc466d68a1ca26a725266c4422c37f"
+    },
+    {
+      "file": "tradingagents/dataflows/date_window.py",
+      "line": 74,
+      "column": 33,
+      "code": "arg-type",
+      "message": "Argument 1 to \"strptime\" of \"datetime\" has incompatible type \"str | None\"; expected \"str\"",
+      "source_line_sha256": "3fd2e7992f7dcc6d2429d95b4dd6b67dca0388b42da3686a9d026f0f5f572a66"
+    },
+    {
+      "file": "tradingagents/dataflows/date_window.py",
+      "line": 90,
+      "column": 58,
+      "code": "operator",
+      "message": "Unsupported operand types for <= (\"datetime\" and \"None\")",
+      "source_line_sha256": "d7953b497bcea7f8314528e53cdd28e58af213698864d469d937daa5dd38bed1"
+    },
+    {
+      "file": "tradingagents/dataflows/date_window.py",
+      "line": 109,
+      "column": 15,
+      "code": "return-value",
+      "message": "Incompatible return value type (got \"tuple[str, str | None]\", expected \"tuple[str, str]\")",
+      "source_line_sha256": "35acd8a948505c3d30564420c7a48e7031b27dc436b4d376a97f4bf2812992e2"
+    },
+    {
+      "file": "tradingagents/dataflows/date_window.py",
+      "line": 111,
+      "column": 11,
+      "code": "return-value",
+      "message": "Incompatible return value type (got \"tuple[str, str | None]\", expected \"tuple[str, str]\")",
+      "source_line_sha256": "6f79b2504f4eae2bae791a4fcaad4c2c5699824dc51b2c3a8c645bc55563671e"
+    },
+    {
+      "file": "tradingagents/agents/state.py",
+      "line": 57,
+      "column": 4,
+      "code": "var-annotated",
+      "message": "Need type annotation for \"merged\" (hint: \"merged: dict[<type>, <type>] = ...\")",
+      "source_line_sha256": "cae20ab92b7cc4d56b233f78f9678c236c56163c8511e4ef82bebc422826e3a5"
+    },
+    {
+      "file": "tradingagents/agents/verified_metrics.py",
+      "line": 110,
+      "column": 0,
+      "code": "var-annotated",
+      "message": "Need type annotation for \"_ISSUED\" (hint: \"_ISSUED: dict[<type>, <type>] = ...\")",
+      "source_line_sha256": "5ddcc6c209ef6ebf5dca22c9e73a90b82b48bb80a77addf7ff09c1c2a920f8e6"
+    },
+    {
+      "file": "tradingagents/llm_clients/google_client.py",
+      "line": 19,
+      "column": 13,
+      "code": "union-attr",
+      "message": "Item \"None\" of \"Match[str] | None\" has no attribute \"group\"",
+      "source_line_sha256": "f533b71095634a745083bee4c35176d02da0c4ef8c34775c9a3b0b111699ccbf"
+    },
+    {
+      "file": "tradingagents/llm_clients/google_client.py",
+      "line": 58,
+      "column": 41,
+      "code": "arg-type",
+      "message": "Argument 2 to \"setdefault\" of \"MutableMapping\" has incompatible type \"int\"; expected \"str\"",
+      "source_line_sha256": "af9c78bf1c863ff4749d245d73090659bc8ae2d66fc8b3fb79e2198f19cc75dd"
+    },
+    {
+      "file": "tradingagents/dataflows/vendors/alpha_vantage/stock.py",
+      "line": 42,
+      "column": 37,
+      "code": "arg-type",
+      "message": "Argument 1 to \"_filter_csv_by_date_range\" has incompatible type \"dict[Any, Any] | str\"; expected \"str\"",
+      "source_line_sha256": "d8b1db842d4fe5d634724fc4496a96aad6457adadf02a3e517eb5e07ce82e160"
+    },
+    {
+      "file": "tradingagents/dataflows/vendors/alpha_vantage/news.py",
+      "line": 99,
+      "column": 15,
+      "code": "union-attr",
+      "message": "Item \"None\" of \"ItemMeta | None\" has no attribute \"substantive\"",
+      "source_line_sha256": "882cbc945a5a6e34571878353abc0651525500770a38c356c5bbd96d3bb5d5b7"
+    },
+    {
+      "file": "tradingagents/dataflows/vendors/alpha_vantage/news.py",
+      "line": 99,
+      "column": 35,
+      "code": "union-attr",
+      "message": "Item \"None\" of \"ItemMeta | None\" has no attribute \"published_at\"",
+      "source_line_sha256": "882cbc945a5a6e34571878353abc0651525500770a38c356c5bbd96d3bb5d5b7"
+    },
+    {
+      "file": "tradingagents/dataflows/vendors/alpha_vantage/news.py",
+      "line": 105,
+      "column": 24,
+      "code": "union-attr",
+      "message": "Item \"None\" of \"ItemMeta | None\" has no attribute \"published_at\"",
+      "source_line_sha256": "976815dcb2f8e045abc75ad06efa7bae1e46a265ee07f36c05867cdad3d15c4b"
+    },
+    {
+      "file": "tradingagents/dataflows/vendors/alpha_vantage/news.py",
+      "line": 108,
+      "column": 21,
+      "code": "arg-type",
+      "message": "Argument 1 to \"append\" of \"list\" has incompatible type \"ItemMeta | None\"; expected \"ItemMeta\"",
+      "source_line_sha256": "c39d474d366ee7ee589388ad16f0826b20df7d7e786479999d7f352669c3570e"
+    },
+    {
+      "file": "tradingagents/dataflows/vendors/alpha_vantage/fundamentals.py",
+      "line": 5,
+      "column": 52,
+      "code": "assignment",
+      "message": "Incompatible default for parameter \"as_of_date\" (default has type \"None\", parameter has type \"str\")",
+      "source_line_sha256": "c921f8cf4a60965cd0b1ab16744742e0d677a5142b2bb7bfaaa388c7d9acf669"
+    },
+    {
+      "file": "tradingagents/dataflows/vendors/alpha_vantage/fundamentals.py",
+      "line": 29,
+      "column": 11,
+      "code": "return-value",
+      "message": "Incompatible return value type (got \"dict[Any, Any] | str\", expected \"str\")",
+      "source_line_sha256": "3ca0eab397542a85f6b32d79a360e68dbb8dc2ce25a4f94a24d8ba96e1ca6d84"
+    },
+    {
+      "file": "tradingagents/dataflows/vendors/alpha_vantage/fundamentals.py",
+      "line": 32,
+      "column": 78,
+      "code": "assignment",
+      "message": "Incompatible default for parameter \"as_of_date\" (default has type \"None\", parameter has type \"str\")",
+      "source_line_sha256": "f9d6935447533d6cf316726cfead22455840d8b225ffbb2fe11177dd296c228a"
+    },
+    {
+      "file": "tradingagents/dataflows/vendors/alpha_vantage/fundamentals.py",
+      "line": 40,
+      "column": 73,
+      "code": "assignment",
+      "message": "Incompatible default for parameter \"as_of_date\" (default has type \"None\", parameter has type \"str\")",
+      "source_line_sha256": "e346b17b3214a153d0ad2219d7c04fa0e371e0265706b46be46d9c9526693907"
+    },
+    {
+      "file": "tradingagents/dataflows/vendors/alpha_vantage/fundamentals.py",
+      "line": 48,
+      "column": 81,
+      "code": "assignment",
+      "message": "Incompatible default for parameter \"as_of_date\" (default has type \"None\", parameter has type \"str\")",
+      "source_line_sha256": "5f3f3b2fe3578152d0b819b03d7374a40e68ae2030b16dad7d4707688bb72a2a"
+    },
+    {
+      "file": "tradingagents/dataflows/files.py",
+      "line": 74,
+      "column": 12,
+      "code": "attr-defined",
+      "message": "Module has no attribute \"locking\"",
+      "source_line_sha256": "a0f336f9f9a19afdde260aafe77a597515ac15f50a8376b1c6512d8494451e28"
+    },
+    {
+      "file": "tradingagents/dataflows/files.py",
+      "line": 74,
+      "column": 44,
+      "code": "attr-defined",
+      "message": "Module has no attribute \"LK_LOCK\"",
+      "source_line_sha256": "a0f336f9f9a19afdde260aafe77a597515ac15f50a8376b1c6512d8494451e28"
+    },
+    {
+      "file": "tradingagents/dataflows/files.py",
+      "line": 74,
+      "column": 72,
+      "code": "attr-defined",
+      "message": "Module has no attribute \"LK_NBLCK\"",
+      "source_line_sha256": "a0f336f9f9a19afdde260aafe77a597515ac15f50a8376b1c6512d8494451e28"
+    },
+    {
+      "file": "tradingagents/dataflows/files.py",
+      "line": 88,
+      "column": 8,
+      "code": "attr-defined",
+      "message": "Module has no attribute \"locking\"",
+      "source_line_sha256": "e921dcfcc11b39f446cc707b7ede35908602f148808c86417e02c8c2261e669e"
+    },
+    {
+      "file": "tradingagents/dataflows/files.py",
+      "line": 88,
+      "column": 40,
+      "code": "attr-defined",
+      "message": "Module has no attribute \"LK_UNLCK\"",
+      "source_line_sha256": "e921dcfcc11b39f446cc707b7ede35908602f148808c86417e02c8c2261e669e"
+    },
+    {
+      "file": "tradingagents/dataflows/vendors/polymarket.py",
+      "line": 17,
+      "column": 0,
+      "code": "import-untyped",
+      "message": "Library stubs not installed for \"requests\"",
+      "source_line_sha256": "06185522e4085460db5f973d6987f2c5f42519fccd56836e5e5ed9842962de8d"
+    },
+    {
+      "file": "tradingagents/dataflows/vendors/fred.py",
+      "line": 15,
+      "column": 0,
+      "code": "import-untyped",
+      "message": "Library stubs not installed for \"pytz\"",
+      "source_line_sha256": "c9944f20fe92fe4d649b4ebbba6e908ea4ffd0224ae6f86007d32c639e9af515"
+    },
+    {
+      "file": "tradingagents/dataflows/vendors/alpha_vantage/indicator.py",
+      "line": 35,
+      "column": 0,
+      "code": "import-untyped",
+      "message": "Library stubs not installed for \"dateutil.relativedelta\"",
+      "source_line_sha256": "cbce4b4805e23fbc1818b7916a1cd24780d31d0e3187a55cd93ddb2ae4867b2d"
+    },
+    {
+      "file": "tradingagents/dataflows/vendors/alpha_vantage/indicator.py",
+      "line": 148,
+      "column": 16,
+      "code": "union-attr",
+      "message": "Item \"dict[Any, Any]\" of \"dict[Any, Any] | str\" has no attribute \"strip\"",
+      "source_line_sha256": "9e176f5ed4acaa2208d4dfc88cb0d15a3ce26704043d31065a68c6cd07606b30"
+    },
+    {
+      "file": "tradingagents/dataflows/vendors/reddit.py",
+      "line": 241,
+      "column": 36,
+      "code": "arg-type",
+      "message": "Argument 1 to \"_strip_html\" has incompatible type \"str | None\"; expected \"str\"",
+      "source_line_sha256": "ebd5b2c1a3ffc238bdc1fa90b4ed3fb2cd58c3c05fba7f37105ced441ad7e2f8"
+    },
+    {
+      "file": "tradingagents/dataflows/vendors/reddit.py",
+      "line": 358,
+      "column": 38,
+      "code": "arg-type",
+      "message": "Argument 2 to \"coverage_gap\" has incompatible type \"str | None\"; expected \"str\"",
+      "source_line_sha256": "fb20259e73b1510a58e67cf4091e7f0a99e22977ef9a73a9102df8f01f60f12a"
+    },
+    {
+      "file": "tradingagents/dataflows/vendors/reddit.py",
+      "line": 358,
+      "column": 50,
+      "code": "arg-type",
+      "message": "Argument 3 to \"coverage_gap\" has incompatible type \"str | None\"; expected \"str\"",
+      "source_line_sha256": "fb20259e73b1510a58e67cf4091e7f0a99e22977ef9a73a9102df8f01f60f12a"
+    },
+    {
+      "file": "tradingagents/dataflows/vendors/reddit.py",
+      "line": 395,
+      "column": 13,
+      "code": "var-annotated",
+      "message": "Need type annotation for \"by_sub\"",
+      "source_line_sha256": "7c9358b04a61e6dbf8a1663a789654e33107239c74d5670a06fac97b338308d8"
+    },
+    {
+      "file": "tradingagents/agents/sentiment_coverage.py",
+      "line": 376,
+      "column": 17,
+      "code": "misc",
+      "message": "\"None\" object is not iterable",
+      "source_line_sha256": "9f29980d92221fe2d17598398fc7355b31bf89e35b2de2f3dc87eb6838b36d26"
+    },
+    {
+      "file": "tradingagents/agents/sentiment_coverage.py",
+      "line": 494,
+      "column": 50,
+      "code": "operator",
+      "message": "Unsupported operand types for < (\"int\" and \"None\")",
+      "source_line_sha256": "e8a671f5d04a0d42212d37786d70b978432137a3ed009a79d430aa23e0d20e98"
+    },
+    {
+      "file": "cli/updates.py",
+      "line": 24,
+      "column": 0,
+      "code": "import-untyped",
+      "message": "Library stubs not installed for \"requests\"",
+      "source_line_sha256": "06185522e4085460db5f973d6987f2c5f42519fccd56836e5e5ed9842962de8d"
+    },
+    {
+      "file": "cli/updates.py",
+      "line": 60,
+      "column": 89,
+      "code": "arg-type",
+      "message": "Argument 2 to \"isinstance\" has incompatible type \"object\"; expected \"_ClassInfo\"",
+      "source_line_sha256": "8a0d52a45e5a52904707efd41df864d394220c6d2f5e675625a730ed17d9149a"
+    },
+    {
+      "file": "cli/updates.py",
+      "line": 112,
+      "column": 28,
+      "code": "arg-type",
+      "message": "Argument 2 to \"replace_file\" has incompatible type \"Callable[[str], int]\"; expected \"Callable[[str], None]\"",
+      "source_line_sha256": "3a002b2938314c2a237ca0862b83ffe88dbb6c93ab637636ba9897a1333b2609"
+    },
+    {
+      "file": "tradingagents/memory/log.py",
+      "line": 20,
+      "column": 38,
+      "code": "assignment",
+      "message": "Incompatible default for parameter \"config\" (default has type \"None\", parameter has type \"dict[Any, Any]\")",
+      "source_line_sha256": "4e83e15c4ca603735224703418c22dde9bc231c7a2fb8b80242266683ad4f6b9"
+    },
+    {
+      "file": "tradingagents/memory/log.py",
+      "line": 111,
+      "column": 8,
+      "code": "var-annotated",
+      "message": "Need type annotation for \"same\" (hint: \"same: list[<type>] = ...\")",
+      "source_line_sha256": "f2d92630c494e7635ed42ad15fc887f424053e3354931d89f3f145b6608c9f7f"
+    },
+    {
+      "file": "tradingagents/memory/log.py",
+      "line": 111,
+      "column": 14,
+      "code": "var-annotated",
+      "message": "Need type annotation for \"cross\" (hint: \"cross: list[<type>] = ...\")",
+      "source_line_sha256": "f2d92630c494e7635ed42ad15fc887f424053e3354931d89f3f145b6608c9f7f"
+    },
+    {
+      "file": "tradingagents/dataflows/vendors/sec_edgar.py",
+      "line": 28,
+      "column": 0,
+      "code": "import-untyped",
+      "message": "Library stubs not installed for \"requests\"",
+      "source_line_sha256": "06185522e4085460db5f973d6987f2c5f42519fccd56836e5e5ed9842962de8d"
+    },
+    {
+      "file": "tradingagents/dataflows/vendors/sec_edgar.py",
+      "line": 132,
+      "column": 23,
+      "code": "arg-type",
+      "message": "Argument 2 to \"replace_file\" has incompatible type \"Callable[[str], int]\"; expected \"Callable[[str], None]\"",
+      "source_line_sha256": "af8033f8b5f92aa160e7c3cda26c7e0cd7fc378466a655e7d12582dc250c95f8"
+    },
+    {
+      "file": "tradingagents/dataflows/vendors/sec_edgar.py",
+      "line": 197,
+      "column": 32,
+      "code": "arg-type",
+      "message": "Argument 1 to \"add\" of \"set\" has incompatible type \"tuple[Any, int | None]\"; expected \"tuple[str, int]\"",
+      "source_line_sha256": "9fe7850d946110799edec05c9e16d8dd2cda3c6ab2ffb6f3a5e4f9b651b58f02"
+    },
+    {
+      "file": "tradingagents/dataflows/vendors/sec_edgar.py",
+      "line": 198,
+      "column": 34,
+      "code": "arg-type",
+      "message": "Argument 1 to \"get\" of \"dict\" has incompatible type \"tuple[Any, int | None]\"; expected \"tuple[str, int]\"",
+      "source_line_sha256": "59ccdd149ef6841456afc9cabc8e03eba3a178349209ac9a095724bcc8d722f8"
+    },
+    {
+      "file": "tradingagents/dataflows/vendors/sec_edgar.py",
+      "line": 200,
+      "column": 27,
+      "code": "index",
+      "message": "Invalid index type \"tuple[Any, int | None]\" for \"dict[tuple[str, int], dict[Any, Any]]\"; expected type \"tuple[str, int]\"",
+      "source_line_sha256": "b4c7c3b8264770c52369e7787f927e8da89f2a9b63239215bffff5307c1ed13d"
+    },
+    {
+      "file": "tradingagents/dataflows/vendors/sec_edgar.py",
+      "line": 233,
+      "column": 13,
+      "code": "var-annotated",
+      "message": "Need type annotation for \"chosen\"",
+      "source_line_sha256": "3bbf8330b97d0df270a677975a91d39d74ba2524d65a6bbaf74e16f9112c351f"
+    },
+    {
+      "file": "tradingagents/dataflows/vendors/sec_edgar.py",
+      "line": 304,
+      "column": 53,
+      "code": "arg-type",
+      "message": "Argument 4 to \"_statement\" has incompatible type \"str | None\"; expected \"str\"",
+      "source_line_sha256": "0ca8a265602161a45db03964ded280866f881185b1ba132793c8d9ab46fdeca8"
+    },
+    {
+      "file": "tradingagents/dataflows/vendors/sec_edgar.py",
+      "line": 314,
+      "column": 56,
+      "code": "arg-type",
+      "message": "Argument 4 to \"_statement\" has incompatible type \"str | None\"; expected \"str\"",
+      "source_line_sha256": "4dd2a6e7def7f99fad37d29499d3a504599e6c75d01e124cd37b3501bb6b5bca"
+    },
+    {
+      "file": "tradingagents/dataflows/vendors/sec_edgar.py",
+      "line": 319,
+      "column": 48,
+      "code": "arg-type",
+      "message": "Argument 4 to \"_statement\" has incompatible type \"str | None\"; expected \"str\"",
+      "source_line_sha256": "54004659a3e14f1bac77aa85456086900676b2963c66dd4f1826a919d8173e62"
+    },
+    {
+      "file": "tradingagents/dataflows/vendors/yahoo/news.py",
+      "line": 8,
+      "column": 0,
+      "code": "import-untyped",
+      "message": "Library stubs not installed for \"dateutil.relativedelta\"",
+      "source_line_sha256": "cb3ac6629bc1842caaf4481a41c8a2071494bd3f8066e58744282aa9b81e3dad"
+    },
+    {
+      "file": "tradingagents/dataflows/vendors/yahoo/fundamentals.py",
+      "line": 25,
+      "column": 71,
+      "code": "assignment",
+      "message": "Incompatible default for parameter \"as_of_date\" (default has type \"None\", parameter has type \"str\")",
+      "source_line_sha256": "cac20d50240da7264521a600eb272e5e860b65295cecf26a6471e68c4ecff841"
+    },
+    {
+      "file": "tradingagents/dataflows/vendors/yahoo/fundamentals.py",
+      "line": 124,
+      "column": 70,
+      "code": "assignment",
+      "message": "Incompatible default for parameter \"as_of_date\" (default has type \"None\", parameter has type \"str\")",
+      "source_line_sha256": "4dce996956029b9519add04b97cfa8637060fdc4514a37a14f44882cb9ea245f"
+    },
+    {
+      "file": "tradingagents/dataflows/vendors/yahoo/fundamentals.py",
+      "line": 133,
+      "column": 70,
+      "code": "assignment",
+      "message": "Incompatible default for parameter \"as_of_date\" (default has type \"None\", parameter has type \"str\")",
+      "source_line_sha256": "4dce996956029b9519add04b97cfa8637060fdc4514a37a14f44882cb9ea245f"
+    },
+    {
+      "file": "tradingagents/dataflows/vendors/yahoo/fundamentals.py",
+      "line": 142,
+      "column": 70,
+      "code": "assignment",
+      "message": "Incompatible default for parameter \"as_of_date\" (default has type \"None\", parameter has type \"str\")",
+      "source_line_sha256": "4dce996956029b9519add04b97cfa8637060fdc4514a37a14f44882cb9ea245f"
+    },
+    {
+      "file": "tradingagents/llm_clients/chatgpt_auth.py",
+      "line": 24,
+      "column": 0,
+      "code": "import-untyped",
+      "message": "Library stubs not installed for \"requests\"",
+      "source_line_sha256": "06185522e4085460db5f973d6987f2c5f42519fccd56836e5e5ed9842962de8d"
+    },
+    {
+      "file": "tradingagents/llm_clients/chatgpt_auth.py",
+      "line": 372,
+      "column": 7,
+      "code": "union-attr",
+      "message": "Item \"None\" of \"dict[Any, Any] | None\" has no attribute \"get\"",
+      "source_line_sha256": "def8a3bf6d6d843669ff71cef2a920108bca59a44a82422e3f0afc0c11448b83"
+    },
+    {
+      "file": "tradingagents/llm_clients/chatgpt_auth.py",
+      "line": 373,
+      "column": 68,
+      "code": "index",
+      "message": "Value of type \"dict[Any, Any] | None\" is not indexable",
+      "source_line_sha256": "9464818e76862390eb35f5fc094e3c3404585e833f404d91de0b6eaedf160537"
+    },
+    {
+      "file": "tradingagents/llm_clients/chatgpt_auth.py",
+      "line": 374,
+      "column": 13,
+      "code": "union-attr",
+      "message": "Item \"None\" of \"dict[Any, Any] | None\" has no attribute \"get\"",
+      "source_line_sha256": "675d6add51360405891c940ede45877ad700638d9499b9f4201d05517a476067"
+    },
+    {
+      "file": "tradingagents/llm_clients/chatgpt_auth.py",
+      "line": 380,
+      "column": 35,
+      "code": "union-attr",
+      "message": "Item \"None\" of \"dict[Any, Any] | None\" has no attribute \"get\"",
+      "source_line_sha256": "1aad7549b9c5a65766b0988e4aa35ee5cac39ff7f1d1b15498032f6aa1a38905"
+    },
+    {
+      "file": "tradingagents/graph/publication_gate.py",
+      "line": 778,
+      "column": 14,
+      "code": "arg-type",
+      "message": "Argument 1 to \"PublicationResult\" has incompatible type \"**dict[str, Any | str]\"; expected \"tuple[tuple[str, str, str], ...]\"",
+      "source_line_sha256": "af95d5ad85cc86db18c104625590e3c92bc376d631ad44fc77c5c4b90846aaa3"
+    },
+    {
+      "file": "tradingagents/graph/publication_gate.py",
+      "line": 859,
+      "column": 11,
+      "code": "return-value",
+      "message": "Incompatible return value type (got \"str | None\", expected \"str\")",
+      "source_line_sha256": "f99f8169c9bb2587660d485c9ad865c23490eadade7f5ea3876dab51ef2468ba"
+    },
+    {
+      "file": "tradingagents/graph/publication_gate.py",
+      "line": 859,
+      "column": 29,
+      "code": "arg-type",
+      "message": "Argument 2 to \"as_of\" has incompatible type \"Any | None\"; expected \"str\"",
+      "source_line_sha256": "f99f8169c9bb2587660d485c9ad865c23490eadade7f5ea3876dab51ef2468ba"
+    },
+    {
+      "file": "tradingagents/graph/publication_gate.py",
+      "line": 926,
+      "column": 27,
+      "code": "arg-type",
+      "message": "Argument \"publication_status\" to \"PublicationResult\" has incompatible type \"Any | None\"; expected \"str\"",
+      "source_line_sha256": "cce6a37ad76a0bf9bc8ab090d54a17ed8cbbea79613e8cb77b346f25a635e330"
+    },
+    {
+      "file": "tradingagents/dataflows/vendors/yahoo/market.py",
+      "line": 7,
+      "column": 0,
+      "code": "import-untyped",
+      "message": "Library stubs not installed for \"dateutil.relativedelta\"",
+      "source_line_sha256": "cb3ac6629bc1842caaf4481a41c8a2071494bd3f8066e58744282aa9b81e3dad"
+    },
+    {
+      "file": "tradingagents/llm_clients/openai_client.py",
+      "line": 352,
+      "column": 23,
+      "code": "assignment",
+      "message": "Incompatible types in assignment (expression has type \"type\", variable has type \"type[NormalizedChatOpenAI]\")",
+      "source_line_sha256": "01796327ac40f3ddc8f8b8dc08498b8e5aafa5d8d08e2690d8d54cfa95741330"
+    },
+    {
+      "file": "tradingagents/llm_clients/openai_client.py",
+      "line": 378,
+      "column": 40,
+      "code": "assignment",
+      "message": "Incompatible types in assignment (expression has type \"Callable[[], str]\", target has type \"str\")",
+      "source_line_sha256": "9cd4663c1a8e1c607161b28f80e80788874c880315734cbedc28cf96a7cafe05"
+    },
+    {
+      "file": "tradingagents/llm_clients/openai_client.py",
+      "line": 394,
+      "column": 50,
+      "code": "assignment",
+      "message": "Incompatible types in assignment (expression has type \"bool\", target has type \"str\")",
+      "source_line_sha256": "a80345cd9898b836163b5df2eab4615ccd5a8dbed6bef54213aad55ea87a3d9d"
+    },
+    {
+      "file": "tradingagents/reporting.py",
+      "line": 118,
+      "column": 24,
+      "code": "assignment",
+      "message": "Incompatible types in assignment (expression has type \"Any | None\", variable has type \"dict[Any, Any]\")",
+      "source_line_sha256": "7ca049e33b13e5e03b827f9fae094126c67ea4e7a0b2a5d8f24fdfc2a29b3a07"
+    },
+    {
+      "file": "tradingagents/reporting.py",
+      "line": 123,
+      "column": 11,
+      "code": "return-value",
+      "message": "Incompatible return value type (got \"list[tuple[str, str, list[tuple[str, str, dict[Any, Any]]]]]\", expected \"list[tuple[str, str, list[tuple[str, str, str]]]]\")",
+      "source_line_sha256": "5abfce036a4a0e658b34b05727106d77d6313a760c7801c5c01b33c8bbb5171f"
+    },
+    {
+      "file": "tradingagents/dataflows/router.py",
+      "line": 160,
+      "column": 44,
+      "code": "assignment",
+      "message": "Incompatible default for parameter \"method\" (default has type \"None\", parameter has type \"str\")",
+      "source_line_sha256": "a59595e0f3a5b859afdf6b0895175cdc13d0cf05ea745591f2a79273ad032f07"
+    },
+    {
+      "file": "tradingagents/dataflows/router.py",
+      "line": 215,
+      "column": 33,
+      "code": "attr-defined",
+      "message": "\"object\" has no attribute \"keys\"",
+      "source_line_sha256": "d1d9713796ce65c2af4d86f74317202caee0d2f3ba4bfc2c3eca2fa5af476b5e"
+    },
+    {
+      "file": "tradingagents/dataflows/router.py",
+      "line": 224,
+      "column": 47,
+      "code": "operator",
+      "message": "Unsupported right operand type for in (\"object\")",
+      "source_line_sha256": "fc747a5d7ec14c7f97293372f117e3ea14b6107866503eb426fc4d781ea30afa"
+    },
+    {
+      "file": "tradingagents/dataflows/router.py",
+      "line": 238,
+      "column": 22,
+      "code": "index",
+      "message": "Value of type \"object\" is not indexable",
+      "source_line_sha256": "e5edecc2f1af4487fcce3e29e2bb949a81b8774c6698397bb7801dfa82b5cdd4"
+    },
+    {
+      "file": "tradingagents/agents/tools.py",
+      "line": 61,
+      "column": 16,
+      "code": "assignment",
+      "message": "Incompatible types in assignment (expression has type \"str | None\", variable has type \"str\")",
+      "source_line_sha256": "47e0297bf976e4c444a88f546d73f3cdbb5124bbe7d4025f42417e0f7fc32fe9"
+    },
+    {
+      "file": "tradingagents/agents/tools.py",
+      "line": 90,
+      "column": 54,
+      "code": "arg-type",
+      "message": "Argument 2 to \"build_verified_market_snapshot\" has incompatible type \"str | None\"; expected \"str\"",
+      "source_line_sha256": "41d9b4cfc1087d069cb55b56f7e418bd1a4719220305a4494bd643bf8b4d2d31"
+    },
+    {
+      "file": "tradingagents/agents/tools.py",
+      "line": 118,
+      "column": 79,
+      "code": "assignment",
+      "message": "Incompatible default for parameter \"curr_date\" (default has type \"None\", parameter has type \"str\")",
+      "source_line_sha256": "950003b52bd17424506437bd0d102b1169ef4e832dc2dd136b37563a6c26d25d"
+    },
+    {
+      "file": "tradingagents/agents/tools.py",
+      "line": 137,
+      "column": 79,
+      "code": "assignment",
+      "message": "Incompatible default for parameter \"curr_date\" (default has type \"None\", parameter has type \"str\")",
+      "source_line_sha256": "950003b52bd17424506437bd0d102b1169ef4e832dc2dd136b37563a6c26d25d"
+    },
+    {
+      "file": "tradingagents/agents/tools.py",
+      "line": 156,
+      "column": 79,
+      "code": "assignment",
+      "message": "Incompatible default for parameter \"curr_date\" (default has type \"None\", parameter has type \"str\")",
+      "source_line_sha256": "950003b52bd17424506437bd0d102b1169ef4e832dc2dd136b37563a6c26d25d"
+    },
+    {
+      "file": "tradingagents/agents/post_screen.py",
+      "line": 21,
+      "column": 0,
+      "code": "import-untyped",
+      "message": "Library stubs not installed for \"requests\"",
+      "source_line_sha256": "06185522e4085460db5f973d6987f2c5f42519fccd56836e5e5ed9842962de8d"
+    },
+    {
+      "file": "tradingagents/agents/managers/portfolio_manager.py",
+      "line": 163,
+      "column": 12,
+      "code": "var-annotated",
+      "message": "Need type annotation for \"argument_ids\" (hint: \"argument_ids: list[<type>] = ...\")",
+      "source_line_sha256": "e9a025cb51695e67a9fbe90231a8e26b5d99f28186ee9da50e59a11a068340d0"
+    },
+    {
+      "file": "cli/display.py",
+      "line": 57,
+      "column": 24,
+      "code": "var-annotated",
+      "message": "Need type annotation for \"messages\"",
+      "source_line_sha256": "9540f0ca7f3f12907048a777b835bbf56565372ea0a9d5ed290392fa3dd5a69c"
+    },
+    {
+      "file": "cli/display.py",
+      "line": 58,
+      "column": 26,
+      "code": "var-annotated",
+      "message": "Need type annotation for \"tool_calls\"",
+      "source_line_sha256": "850f30169365b20805332f7dc642815f0958809a9fd2d051054de8bf60f166bf"
+    },
+    {
+      "file": "tradingagents/graph/setup.py",
+      "line": 152,
+      "column": 11,
+      "code": "return-value",
+      "message": "Incompatible return value type (got \"str | None\", expected \"str\")",
+      "source_line_sha256": "fd8bf9038aaf0246b5ed58730e7d03caf6e35920b3a25f70264cb623cca0c7ac"
+    },
+    {
+      "file": "tradingagents/graph/setup.py",
+      "line": 233,
+      "column": 4,
+      "code": "var-annotated",
+      "message": "Need type annotation for \"results\" (hint: \"results: list[<type>] = ...\")",
+      "source_line_sha256": "9656412b6f800bc0dadf45539c38dd2c46d74c75bba512b3a1ad486cd84035f0"
+    },
+    {
+      "file": "tradingagents/graph/setup.py",
+      "line": 354,
+      "column": 51,
+      "code": "union-attr",
+      "message": "Item \"None\" of \"Any | None\" has no attribute \"strip\"",
+      "source_line_sha256": "9cd91c1dac39b073a6ded7d7a4b42b636d2dc27bd670949a7359c97c4fbe209b"
+    },
+    {
+      "file": "tradingagents/graph/setup.py",
+      "line": 529,
+      "column": 56,
+      "code": "union-attr",
+      "message": "Item \"None\" of \"Any | None\" has no attribute \"strip\"",
+      "source_line_sha256": "992146b77bd63455abb59635d45ddd4297bbbf30082f2c7ddc44965e85eb8e3f"
+    },
+    {
+      "file": "tradingagents/graph/setup.py",
+      "line": 672,
+      "column": 8,
+      "code": "var-annotated",
+      "message": "Need type annotation for \"groups\" (hint: \"groups: dict[<type>, <type>] = ...\")",
+      "source_line_sha256": "a715af5e413b61f7b24ec280bbe49a9e2cbcc68d62d82eeeee0ea7dc0c6152a8"
+    },
+    {
+      "file": "tradingagents/graph/setup.py",
+      "line": 764,
+      "column": 13,
+      "code": "misc",
+      "message": "TypedDict() expects a string literal as the first argument",
+      "source_line_sha256": "8c35621bfd2ba890c14c96d453ad95a947230c7ad6e789498709673e1efb49ec"
+    },
+    {
+      "file": "tradingagents/graph/setup.py",
+      "line": 898,
+      "column": 17,
+      "code": "arg-type",
+      "message": "Argument 1 to \"add\" of \"set\" has incompatible type \"Any | None\"; expected \"str\"",
+      "source_line_sha256": "67855e4daac3320734f9c6e37d238869f0aa91d7fe99cf2b6801ac01919eea63"
+    },
+    {
+      "file": "cli/prompts.py",
+      "line": 243,
+      "column": 0,
+      "code": "import-untyped",
+      "message": "Library stubs not installed for \"requests\"",
+      "source_line_sha256": "e0bdb2dfc95e3813fcd438746427300b5a7ffd7cd2fc69b359ef709bb05f2775"
+    },
+    {
+      "file": "cli/prefs.py",
+      "line": 57,
+      "column": 34,
+      "code": "arg-type",
+      "message": "Argument 2 to \"replace_file\" has incompatible type \"Callable[[str], int]\"; expected \"Callable[[str], None]\"",
+      "source_line_sha256": "ad4c46a2a29497c607835463ee22ca8aae6d46212724d641452b7fbe36192793"
+    },
+    {
+      "file": "tradingagents/graph/trading_graph.py",
+      "line": 60,
+      "column": 33,
+      "code": "assignment",
+      "message": "Incompatible default for parameter \"config\" (default has type \"None\", parameter has type \"dict[str, Any]\")",
+      "source_line_sha256": "730268d659f4be23e187fd8964ffa030f98c102e1a63912081afa8ca118a71b6"
+    },
+    {
+      "file": "tradingagents/graph/trading_graph.py",
+      "line": 209,
+      "column": 33,
+      "code": "assignment",
+      "message": "Incompatible types in assignment (expression has type \"_GeneratorContextManager[Any, None, None]\", variable has type \"None\")",
+      "source_line_sha256": "0e867036e0f23fc837935cb6a37083a167ed7fe2d9e0173f49d53d59d52679a7"
+    },
+    {
+      "file": "tradingagents/graph/trading_graph.py",
+      "line": 210,
+      "column": 16,
+      "code": "attr-defined",
+      "message": "\"None\" has no attribute \"__enter__\"",
+      "source_line_sha256": "a0d205c14316a7e546fd173dcc819c2b6ff2f7b1ac2428899aa7d1e1e0bf20cf"
+    },
+    {
+      "file": "tradingagents/graph/trading_graph.py",
+      "line": 359,
+      "column": 29,
+      "code": "arg-type",
+      "message": "Argument 1 to \"RequestBudget\" has incompatible type \"Any | None\"; expected \"str\"",
+      "source_line_sha256": "0539bde9a15a772c0d34f34d8fda0c3b3335f14403c87b978133b446937a6c72"
+    },
+    {
+      "file": "cli/selections.py",
+      "line": 297,
+      "column": 36,
+      "code": "arg-type",
+      "message": "Argument 1 to \"confirm_ollama_endpoint\" has incompatible type \"str | None\"; expected \"str\"",
+      "source_line_sha256": "334f39bea3c8777a984042d6b1b9770064737403c1f63f26b81289aeaf7f652b"
+    },
+    {
+      "file": "tradingagents/backtest.py",
+      "line": 130,
+      "column": 0,
+      "code": "return",
+      "message": "Missing return statement",
+      "source_line_sha256": "2126aa29f4b79b8ec04d868915fd43e206fbe28b389c79f2e13e42986c4ed873"
+    },
+    {
+      "file": "tradingagents/backtest.py",
+      "line": 226,
+      "column": 26,
+      "code": "operator",
+      "message": "Unsupported operand types for * (\"None\" and \"int\")",
+      "source_line_sha256": "9d9a8f931b1f0fe7e6f4e5ba602949ce1d981e62f063b1b4c106c6a364c88aac"
+    },
+    {
+      "file": "tradingagents/backtest.py",
+      "line": 227,
+      "column": 27,
+      "code": "arg-type",
+      "message": "Argument 1 to \"sum\" has incompatible type \"list[float | None]\"; expected \"Iterable[bool]\"",
+      "source_line_sha256": "b77d622307655e3714ece07abca627aae273cb2d46f938ba1d693bf2a6a44be4"
+    },
+    {
+      "file": "cli/run.py",
+      "line": 161,
+      "column": 56,
+      "code": "attr-defined",
+      "message": "\"tuple[Any, ...]\" has no attribute \"items\"",
+      "source_line_sha256": "c2dfb035440002a055c21813130b97467f5a16501d4ed923cbcaff1cfca373a0"
+    },
+    {
+      "file": "cli/run.py",
+      "line": 181,
+      "column": 4,
+      "code": "method-assign",
+      "message": "Cannot assign to a method",
+      "source_line_sha256": "a9f0785d18238878373b6f86ac95b2f141bebcae4d44b13dae78f1f63218dded"
+    },
+    {
+      "file": "cli/run.py",
+      "line": 182,
+      "column": 4,
+      "code": "method-assign",
+      "message": "Cannot assign to a method",
+      "source_line_sha256": "31e1967861d19a8a80b76249a19110977c6cd5585ff01542c8ce4f70b3705ce5"
+    },
+    {
+      "file": "cli/run.py",
+      "line": 183,
+      "column": 4,
+      "code": "method-assign",
+      "message": "Cannot assign to a method",
+      "source_line_sha256": "bab4b39316c19675a7760e08dcb98b84fa9e2bdd070840f30f9fa0dd2a111994"
+    },
+    {
+      "file": "cli/main.py",
+      "line": 150,
+      "column": 62,
+      "code": "arg-type",
+      "message": "Argument 4 to \"run_backtest\" has incompatible type \"**dict[str, list[str] | Callable[[Any, Any, Any, Any], Any] | str | PortfolioContext | None]\"; expected \"str\"",
+      "source_line_sha256": "a939f514c1c485dc3fe1ca974a3b43b33a35839d7af09653a4ec8a64b424ab36"
+    },
+    {
+      "file": "cli/main.py",
+      "line": 150,
+      "column": 62,
+      "code": "arg-type",
+      "message": "Argument 4 to \"run_backtest\" has incompatible type \"**dict[str, list[str] | Callable[[Any, Any, Any, Any], Any] | str | PortfolioContext | None]\"; expected \"str | None\"",
+      "source_line_sha256": "a939f514c1c485dc3fe1ca974a3b43b33a35839d7af09653a4ec8a64b424ab36"
+    },
+    {
+      "file": "cli/main.py",
+      "line": 150,
+      "column": 62,
+      "code": "arg-type",
+      "message": "Argument 4 to \"run_backtest\" has incompatible type \"**dict[str, list[str] | Callable[[Any, Any, Any, Any], Any] | str | PortfolioContext | None]\"; expected \"Callable[[int, int, str, str], None] | None\"",
+      "source_line_sha256": "a939f514c1c485dc3fe1ca974a3b43b33a35839d7af09653a4ec8a64b424ab36"
+    },
+    {
+      "file": "cli/main.py",
+      "line": 164,
+      "column": 7,
+      "code": "misc",
+      "message": "Second argument of StrEnum() must be string, tuple, list or dict literal for mypy to determine Enum members",
+      "source_line_sha256": "f827501c49801a0eb2dd11246e7f2703896ac2deee6018d240e4f8b00c82c7a1"
+    }
+  ],
+  "security_findings": [
+    {
+      "filename": ".github/scripts/d7_policy.py",
+      "test_id": "B404",
+      "line_number": 13,
+      "issue_text": "Consider possible security implications associated with the subprocess module.",
+      "issue_severity": "LOW",
+      "issue_confidence": "HIGH",
+      "code_sha256": "d3999ef4df845d88817409ea8ec4636bd88d256efb089abf83d2c47d48cdf82d"
+    },
+    {
+      "filename": ".github/scripts/d7_policy.py",
+      "test_id": "B607",
+      "line_number": 37,
+      "issue_text": "Starting a process with a partial executable path",
+      "issue_severity": "LOW",
+      "issue_confidence": "HIGH",
+      "code_sha256": "3269c7fc8e9bfd181adac21a81f394b2edd118704f4745f251615a1b0bce3d0a"
+    },
+    {
+      "filename": ".github/scripts/d7_policy.py",
+      "test_id": "B603",
+      "line_number": 37,
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "issue_severity": "LOW",
+      "issue_confidence": "HIGH",
+      "code_sha256": "3269c7fc8e9bfd181adac21a81f394b2edd118704f4745f251615a1b0bce3d0a"
+    },
+    {
+      "filename": ".github/scripts/d7_policy.py",
+      "test_id": "B310",
+      "line_number": 126,
+      "issue_text": "Audit url open for permitted schemes. Allowing use of file:/ or custom schemes is often unexpected.",
+      "issue_severity": "MEDIUM",
+      "issue_confidence": "HIGH",
+      "code_sha256": "d8f4cbe6d05922bc97722cf6d5eb7d5f2b557b629e450a36287e7cc8d34657f6"
+    },
+    {
+      "filename": ".github/scripts/d7_semantic.py",
+      "test_id": "B404",
+      "line_number": 12,
+      "issue_text": "Consider possible security implications associated with the subprocess module.",
+      "issue_severity": "LOW",
+      "issue_confidence": "HIGH",
+      "code_sha256": "7c01904b003e5fe7027eadae8ac8882e85b638bb28eeec34f105aad6b2dc9077"
+    },
+    {
+      "filename": ".github/scripts/d7_semantic.py",
+      "test_id": "B603",
+      "line_number": 107,
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "issue_severity": "LOW",
+      "issue_confidence": "HIGH",
+      "code_sha256": "7f3836477ecef014cebaf11a1bf8a8e49b889a60f2b48feaa47b6e246d9f448e"
+    },
+    {
+      "filename": ".github/scripts/d7_static.py",
+      "test_id": "B404",
+      "line_number": 8,
+      "issue_text": "Consider possible security implications associated with the subprocess module.",
+      "issue_severity": "LOW",
+      "issue_confidence": "HIGH",
+      "code_sha256": "7b0404b9adeebb5066addd1a3e6e09b4670b78ea8dafd42ef49fe4330a44e49a"
+    },
+    {
+      "filename": ".github/scripts/d7_static.py",
+      "test_id": "B603",
+      "line_number": 33,
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "issue_severity": "LOW",
+      "issue_confidence": "HIGH",
+      "code_sha256": "f93274407e026ba79600db89ee7364a8305d05a331232e1249205d384656f1be"
+    },
+    {
+      "filename": ".github/scripts/d7_static.py",
+      "test_id": "B603",
+      "line_number": 51,
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "issue_severity": "LOW",
+      "issue_confidence": "HIGH",
+      "code_sha256": "a13326220d123c686085f7894da545170305fe460771c4c8f6c9fcdbb31fed7f"
+    },
+    {
+      "filename": ".github/scripts/verify_course_artifacts.py",
+      "test_id": "B404",
+      "line_number": 5,
+      "issue_text": "Consider possible security implications associated with the subprocess module.",
+      "issue_severity": "LOW",
+      "issue_confidence": "HIGH",
+      "code_sha256": "4df1894166523b6f879713ce1cd6131538a02fee8f1486d226a48e66abc8bc2b"
+    },
+    {
+      "filename": ".github/scripts/verify_course_artifacts.py",
+      "test_id": "B607",
+      "line_number": 14,
+      "issue_text": "Starting a process with a partial executable path",
+      "issue_severity": "LOW",
+      "issue_confidence": "HIGH",
+      "code_sha256": "fd4ffdeaeb2b71afe8d6551d8adb7b7d0cbcf4e3042d34572c868297058cac8a"
+    },
+    {
+      "filename": ".github/scripts/verify_course_artifacts.py",
+      "test_id": "B603",
+      "line_number": 14,
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "issue_severity": "LOW",
+      "issue_confidence": "HIGH",
+      "code_sha256": "fd4ffdeaeb2b71afe8d6551d8adb7b7d0cbcf4e3042d34572c868297058cac8a"
+    },
+    {
+      "filename": "cli/prompts.py",
+      "test_id": "B404",
+      "line_number": 3,
+      "issue_text": "Consider possible security implications associated with the subprocess module.",
+      "issue_severity": "LOW",
+      "issue_confidence": "HIGH",
+      "code_sha256": "71d9e4547e838e66ffb5410dd41ace27e8f0697270234c94a89658d14e8f480c"
+    },
+    {
+      "filename": "cli/prompts.py",
+      "test_id": "B603",
+      "line_number": 687,
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "issue_severity": "LOW",
+      "issue_confidence": "HIGH",
+      "code_sha256": "d2d79cdf052b800678c0ca233ab17a0657b9704b0354ac7207d9f03d61ca60b5"
+    },
+    {
+      "filename": "cli/updates.py",
+      "test_id": "B110",
+      "line_number": 102,
+      "issue_text": "Try, Except, Pass detected.",
+      "issue_severity": "LOW",
+      "issue_confidence": "HIGH",
+      "code_sha256": "93c383c279a80690567a26c48644d102c0b2d56de696171179bce33ddbcc9e26"
+    },
+    {
+      "filename": "cli/updates.py",
+      "test_id": "B110",
+      "line_number": 108,
+      "issue_text": "Try, Except, Pass detected.",
+      "issue_severity": "LOW",
+      "issue_confidence": "HIGH",
+      "code_sha256": "1018fe5720903704c8aacbda8c1958cb4d222eecbb3763d758e0b0d822d469cc"
+    },
+    {
+      "filename": "cli/updates.py",
+      "test_id": "B110",
+      "line_number": 113,
+      "issue_text": "Try, Except, Pass detected.",
+      "issue_severity": "LOW",
+      "issue_confidence": "HIGH",
+      "code_sha256": "c0d85dd95921d57d7f4d0eb7b135295d0f21188417b16f60789769f96c045ed7"
+    },
+    {
+      "filename": "tradingagents/agents/analysts/market_analyst.py",
+      "test_id": "B608",
+      "line_number": 22,
+      "issue_text": "Possible SQL injection vector through string-based query construction.",
+      "issue_severity": "MEDIUM",
+      "issue_confidence": "LOW",
+      "code_sha256": "888d0082408554d3374871406a3382a763983b08d81a4e815ab91456cd3e1512"
+    },
+    {
+      "filename": "tradingagents/agents/post_screen.py",
+      "test_id": "B311",
+      "line_number": 84,
+      "issue_text": "Standard pseudo-random generators are not suitable for security/cryptographic purposes.",
+      "issue_severity": "LOW",
+      "issue_confidence": "HIGH",
+      "code_sha256": "68e10c627920e89e646acd33b4e5c969fe464da89007f323061176e6154d4fb7"
+    },
+    {
+      "filename": "tradingagents/dataflows/vendors/alpha_vantage/news.py",
+      "test_id": "B324",
+      "line_number": 70,
+      "issue_text": "Use of weak SHA1 hash for security. Consider usedforsecurity=False",
+      "issue_severity": "HIGH",
+      "issue_confidence": "HIGH",
+      "code_sha256": "ca8847639ecdda3b8b314b46de4d9ab6bb7970c8a263d407e6bf4f2e64c4f2c3"
+    },
+    {
+      "filename": "tradingagents/dataflows/vendors/reddit.py",
+      "test_id": "B405",
+      "line_number": 26,
+      "issue_text": "Using xml.etree.ElementTree to parse untrusted XML data is known to be vulnerable to XML attacks. Replace xml.etree.ElementTree with the equivalent defusedxml package, or make sure defusedxml.defuse_stdlib() is called.",
+      "issue_severity": "LOW",
+      "issue_confidence": "HIGH",
+      "code_sha256": "539af858bff96542aa1f26dbe682135728d0410a10cbd6e2c86e8b3512694474"
+    },
+    {
+      "filename": "tradingagents/dataflows/vendors/reddit.py",
+      "test_id": "B311",
+      "line_number": 150,
+      "issue_text": "Standard pseudo-random generators are not suitable for security/cryptographic purposes.",
+      "issue_severity": "LOW",
+      "issue_confidence": "HIGH",
+      "code_sha256": "483db81819a86440afed001dc58255b2a9095c19bb20883ad3dd9c4a594f069c"
+    },
+    {
+      "filename": "tradingagents/dataflows/vendors/reddit.py",
+      "test_id": "B310",
+      "line_number": 208,
+      "issue_text": "Audit url open for permitted schemes. Allowing use of file:/ or custom schemes is often unexpected.",
+      "issue_severity": "MEDIUM",
+      "issue_confidence": "HIGH",
+      "code_sha256": "b69e622c82f85b189a3a8a57a22e1424eba3c05059c165f68b0172caa40f1bc0"
+    },
+    {
+      "filename": "tradingagents/dataflows/vendors/reddit.py",
+      "test_id": "B314",
+      "line_number": 209,
+      "issue_text": "Using xml.etree.ElementTree.fromstring to parse untrusted XML data is known to be vulnerable to XML attacks. Replace xml.etree.ElementTree.fromstring with its defusedxml equivalent function or make sure defusedxml.defuse_stdlib() is called",
+      "issue_severity": "MEDIUM",
+      "issue_confidence": "HIGH",
+      "code_sha256": "203781b0e8ca21ddd4fd585d04c87a9d76185b843f8eba9ffaf220395dff1038"
+    },
+    {
+      "filename": "tradingagents/dataflows/vendors/reddit.py",
+      "test_id": "B324",
+      "line_number": 270,
+      "issue_text": "Use of weak SHA1 hash for security. Consider usedforsecurity=False",
+      "issue_severity": "HIGH",
+      "issue_confidence": "HIGH",
+      "code_sha256": "50312c35ef78dd662f06330bc4852daaa9cc736495c07859dd962bf882e7e164"
+    },
+    {
+      "filename": "tradingagents/dataflows/vendors/stocktwits.py",
+      "test_id": "B324",
+      "line_number": 106,
+      "issue_text": "Use of weak SHA1 hash for security. Consider usedforsecurity=False",
+      "issue_severity": "HIGH",
+      "issue_confidence": "HIGH",
+      "code_sha256": "68748c88b3f706bd89f4712013546aaa59d815a9888304143256b5158e4cf65a"
+    },
+    {
+      "filename": "tradingagents/dataflows/vendors/stocktwits.py",
+      "test_id": "B310",
+      "line_number": 167,
+      "issue_text": "Audit url open for permitted schemes. Allowing use of file:/ or custom schemes is often unexpected.",
+      "issue_severity": "MEDIUM",
+      "issue_confidence": "HIGH",
+      "code_sha256": "0cd53aef9aec9b4c234a793226e240e0bc51e6a132e66316ced17f5381fb162e"
+    },
+    {
+      "filename": "tradingagents/dataflows/vendors/yahoo/news.py",
+      "test_id": "B324",
+      "line_number": 30,
+      "issue_text": "Use of weak SHA1 hash for security. Consider usedforsecurity=False",
+      "issue_severity": "HIGH",
+      "issue_confidence": "HIGH",
+      "code_sha256": "87ee120232af88fc40b36c0c0a54840bc21447934e11f35c64e07eddfcf15dbb"
+    },
+    {
+      "filename": "tradingagents/graph/checkpointer.py",
+      "test_id": "B608",
+      "line_number": 94,
+      "issue_text": "Possible SQL injection vector through string-based query construction.",
+      "issue_severity": "MEDIUM",
+      "issue_confidence": "MEDIUM",
+      "code_sha256": "f20fd0ee625c9331bf1ae30238ea1ba18128e1f5390e5afdbd0669a5e37081c1"
+    },
+    {
+      "filename": "tradingagents/graph/setup.py",
+      "test_id": "B112",
+      "line_number": 243,
+      "issue_text": "Try, Except, Continue detected.",
+      "issue_severity": "LOW",
+      "issue_confidence": "HIGH",
+      "code_sha256": "ebc86f406d4a1f0dab27a4aa933c261fc1fca5ceec6a3f2a6e8ad62a15d4e809"
+    },
+    {
+      "filename": "tradingagents/graph/setup.py",
+      "test_id": "B112",
+      "line_number": 889,
+      "issue_text": "Try, Except, Continue detected.",
+      "issue_severity": "LOW",
+      "issue_confidence": "HIGH",
+      "code_sha256": "74f141f4b4b5f7c93bc8278f87933628193a30b32de892f7d46ae534da785432"
+    },
+    {
+      "filename": "tradingagents/llm_clients/chatgpt_auth.py",
+      "test_id": "B105",
+      "line_number": 316,
+      "issue_text": "Possible hardcoded password: 'refresh_token'",
+      "issue_severity": "LOW",
+      "issue_confidence": "MEDIUM",
+      "code_sha256": "59e5ccd17174913a8ddac83422e8ac359919757a5b904f31931b252ca2c046de"
+    }
+  ],
+  "scope": "Exact reviewed initial finding budget. Existing debt is not erased; new fingerprints fail."
+}

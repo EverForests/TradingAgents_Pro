@@ -4,9 +4,12 @@ on:
   push:
     branches: [main, 'integration/course-project', 'v[0-9]+.[0-9]+.[0-9]+']
   pull_request:
+  pull_request_review:
+    types: [submitted, dismissed]
 
 permissions:
   contents: read
+  pull-requests: read
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -101,3 +104,89 @@ jobs:
         # The repo is fully clean under the strict select, so we lint everything
         # (generated results/ is excluded via pyproject extend-exclude).
         run: ruff check .
+
+  d7-governance:
+    name: D7 policy, types, security and semantic controls
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
+      - name: Install development checks
+        run: python -m pip install -e '.[dev]'
+      - name: Select trusted-policy from comparison base
+        env:
+          COMPARE_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          python - <<'PY'
+          import os, pathlib, re, subprocess
+          base = os.environ.get('COMPARE_BASE', '')
+          if not re.fullmatch('[0-9a-f]{40}', base) or base == '0' * 40:
+              raise SystemExit('A real comparison base is required')
+          dest = pathlib.Path('.d7-trusted')
+          (dest / 'scripts').mkdir(parents=True, exist_ok=True)
+          (dest / 'policy').mkdir(parents=True, exist_ok=True)
+          names = subprocess.check_output(['git', 'ls-tree', '-r', '--name-only', base], text=True).splitlines()
+          policies = [p for p in names if p.startswith('.github/governance/') and p.endswith('.json')]
+          scripts = [p for p in names if p.startswith('.github/scripts/d7_') and p.endswith('.py')]
+          if not scripts:
+              if base != '7da6ecc9ff665d096b3def5be9ee9601628ae05e':
+                  raise SystemExit('Unrecognized governance bootstrap base')
+              changed = subprocess.check_output(['git', 'diff', '--name-only', base, 'HEAD'], text=True).splitlines()
+              if any(p.startswith(('tradingagents/', 'cli/', 'src/', 'prompts/', 'tests/', 'test/offline/', 'test/live/')) or p == 'main.py' for p in changed):
+                  raise SystemExit('Bootstrap cannot change application or existing tests')
+              import shutil
+              for p in pathlib.Path('.github/scripts').glob('d7_*.py'):
+                  shutil.copyfile(p, dest / 'scripts' / p.name)
+              for p in pathlib.Path('.github/governance').glob('*.json'):
+                  shutil.copyfile(p, dest / 'policy' / p.name)
+          else:
+              for p in scripts + policies:
+                  body = subprocess.check_output(['git', 'show', base + ':' + p])
+                  target = dest / ('scripts' if p in scripts else 'policy') / pathlib.Path(p).name
+                  target.write_bytes(body)
+          with open(os.environ['GITHUB_ENV'], 'a') as output:
+              output.write('D7_BASE=' + base + '\n')
+          PY
+      - name: Verify policy, contracts, API, permissions and prior approval
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python .d7-trusted/scripts/d7_policy.py --base "$D7_BASE" --policy-root .d7-trusted/policy
+      - name: Type and security analysis against reviewed exact baselines
+        run: python .d7-trusted/scripts/d7_static.py --policy-root .d7-trusted/policy
+      - name: Run governance counterexamples
+        run: python -m pytest -q test/governance --junitxml=.d7-receipts/governance.xml
+      - name: Replay fixed semantic and five-control behavior checks
+        env:
+          LANGSMITH_TRACING: 'false'
+        run: python .d7-trusted/scripts/d7_semantic.py --base "$D7_BASE" --policy-root .d7-trusted/policy
+      - name: Retain sanitized gate receipts
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: d7-governance-${{ github.run_id }}
+          path: .d7-receipts/
+          if-no-files-found: error
+
+  d7-required:
+    name: d7-required
+    if: always()
+    needs: [test, course-artifacts, smoke-install, lint, d7-governance]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fail closed unless every required gate succeeded
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
+        run: |
+          python - <<'PY'
+          import json, os
+          jobs = json.loads(os.environ['NEEDS_JSON'])
+          required = {'test', 'course-artifacts', 'smoke-install', 'lint', 'd7-governance'}
+          if set(jobs) != required or any(v['result'] != 'success' for v in jobs.values()):
+              raise SystemExit('D7 blocks: failed, missing, skipped or cancelled required job')
+          print('D7 required checks passed; hosted human approval remains independently required.')
+          PY
