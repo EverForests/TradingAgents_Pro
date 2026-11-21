@@ -524,3 +524,9 @@ entries:
   human_direction: Coordinator superseded the earlier privacy split, authorized full records, excluded PPT and related delivery materials, and requested the course repository structure.
   evidence: Five named complete transcripts and original exports copied without changing source text; report/student roster synchronized; source copies byte-matched. No project tests, new model/data calls, commit, push or merge.
   review_status: Superseded for public publication by the coordinator's later choice of GitHub identities and redacted existing session derivatives. Full originals remain private; D7 limits remain documented.
+
+- id: AI-D7-ENFORCEMENT-20261121
+  date: '2026-11-21'
+  tool: automation tools
+  scope: Deliberately duplicated ID for the controlled negative PR; never merge
+  evidence: This intentionally invalid record must fail the existing unique-ID check.
