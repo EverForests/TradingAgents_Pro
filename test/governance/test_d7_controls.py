@@ -230,6 +230,10 @@ def test_schema_gate_accepts_the_current_registry(monkeypatch):
     artifacts.check_registry()
 
 
+def test_current_real_api_permissions_and_source_asset_manifest_pass():
+    policy.check_contracts(ROOT, [], ROOT / ".github/governance")
+
+
 def test_review_cannot_predate_the_exact_test_commit():
     review = {"state": "APPROVED", "author_association": "COLLABORATOR", "commit_id": "a" * 40,
               "user": {"login": "asling3", "type": "User"},

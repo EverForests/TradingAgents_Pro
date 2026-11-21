@@ -123,6 +123,7 @@
   "security_fingerprints": [
     "01849741757c4eeba7d529bbd8287e3304c804f8a35ce8e1c2acac1b138e3ecc",
     "103c3e51bdaf4192f099a82d5660eff8f4045ed947f2817a072103b9fe553c84",
+    "164cdb6e58f3d217eb3cfa9311efe8c83cb50d03c93ce9b2ba50685273a79d2c",
     "34c9722d6d4bbb5e5cee448a81f716af6bf219fa4b4d148a07207fdadeee997c",
     "3fc561b788ce1a0067e43d4c8b6972a4effea1c7cc36a7b186659eb6394d2462",
     "41dee7b7807f5a0da4e2c27d45b2c52bcf7a7b407ec14b3f89160094c03fd04f",
@@ -136,7 +137,6 @@
     "737c47dd7a8214348ac79751eb9f72f48eca60b513135f4f19c24ccf98ac7afc",
     "760daad1c7d6052c1905f8421d252e6a134f954d21380dc334591fe4fd9cd9d7",
     "7c082b837a466dc8e4104d7a7fdbb8b82d170a412a1e1ba97780136b889cadd5",
-    "8150a29ec8fdd0795ccfc390c19c3797af04901b4d880085932707ead0de5d1e",
     "81ec5b413a3aea530a6a3b6e5e5776201cf0134d1989e964e5c124cce660a6a6",
     "888afa0d0d0702a73b3328fa6d9ddf7e0e2cf0cd033adfdf062e6b8b81ebead8",
     "8d6c313b81b3fe11b3bb2d76cc721886581c0b2a1eb54fd765e6364fead18f6b",
@@ -1107,11 +1107,11 @@
     {
       "filename": ".github/scripts/d7_policy.py",
       "test_id": "B310",
-      "line_number": 167,
+      "line_number": 168,
       "issue_text": "Audit url open for permitted schemes. Allowing use of file:/ or custom schemes is often unexpected.",
       "issue_severity": "MEDIUM",
       "issue_confidence": "HIGH",
-      "code_sha256": "7d51d6efc0b2d06b6eab693db0f6f81adaf00087acecd791db62f625ce8f27c6"
+      "code_sha256": "5689894891a22ce1992b959a1ad8031880c33fe35a99583a8ad3624e4321bf39"
     },
     {
       "filename": ".github/scripts/d7_semantic.py",

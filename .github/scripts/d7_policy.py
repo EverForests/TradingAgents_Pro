@@ -117,7 +117,8 @@ def check_contracts(root: Path, paths: list[str], policy_root: Path) -> None:
               for p in (root / package).rglob("*.py")}
     if (root / "main.py").exists():
         actual.add("main.py")
-    require(actual == {entry["runnable_path"] for entry in entries}, "Source manifest omits or invents modules")
+    require(actual == {entry["runnable_path"] for entry in entries
+                       if entry["runnable_path"].endswith(".py")}, "Source manifest omits or invents modules")
     for entry in entries:
         # Manifest field names are intentionally taken from the frozen source format.
         original = root / entry["runnable_path"]
