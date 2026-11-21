@@ -1,5 +1,12 @@
 format_version: 1
 entries:
+- id: AI-D7-REFUSAL-PROOF-20261121
+  date: '2026-11-21'
+  tool: automation tools
+  scope: Retain actual protected-main negative-control evidence; no business edits
+  human_direction: Complete the authorized D7 repair while preserving the coordinator's main-only protection decision.
+  evidence: PR12 run44885810283 deliberately failed duplicate audit-ID validation and d7-required; GitHub required the aggregate and disabled merging. Normal delivery controls remain separate.
+  review_status: Experiment closed without merging; independent real approval not fabricated.
 - id: AI-D7-BOUNDARY-20261121
   date: '2026-11-21'
   tool: automation tools
