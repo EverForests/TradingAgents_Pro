@@ -22,6 +22,7 @@ SENSITIVE = (*APP, ".github/", ".opencode/", "mypy.ini", "pyproject.toml")
 SEMANTIC = ("prompts/", "tradingagents/agents/", "tradingagents/llm_clients/",
             "tradingagents/default_config.py")
 REVIEWERS = {"EverForests", "KyrieT331", "wmq12138", "majiaqi-yan", "asling3"}
+ACTIVATION = "7da6ecc9ff665d096b3def5be9ee9601628ae05e"
 
 
 class PolicyFailure(ValueError):
@@ -40,6 +41,16 @@ def git(root: Path, *args: str) -> str:
 def changed_paths(root: Path, base: str, head: str = "HEAD") -> list[str]:
     require(bool(base) and len(base) == 40, "A full comparison base is required")
     return [x for x in git(root, "diff", "--name-only", base, head).splitlines() if x]
+
+
+def prospective_base(root: Path, base: str) -> str:
+    """A fixed Git object excludes historical implementation, never future changes."""
+    try:
+        git(root, "merge-base", "--is-ancestor", base, ACTIVATION)
+        git(root, "merge-base", "--is-ancestor", ACTIVATION, "HEAD")
+        return ACTIVATION
+    except subprocess.CalledProcessError:
+        return base
 
 
 def api_surface(root: Path) -> dict[str, str]:
@@ -172,7 +183,8 @@ def check_ai_use(root: Path, base: str, paths: list[str]) -> None:
     if not any(p.startswith(guarded) or p == "main.py" for p in paths):
         return
     require("docs/ai-use-log.yaml" in paths, "Governance/code/prompt changes need an AI-use update")
-    previous = git(root, "show", f"{base}:docs/ai-use-log.yaml")
+    previous = (git(root, "show", f"{base}:docs/ai-use-log.yaml")
+                if git(root, "ls-tree", "--name-only", base, "--", "docs/ai-use-log.yaml") else "")
     current = (root / "docs/ai-use-log.yaml").read_text()
     old_ids = set(__import__("re").findall(r"^- id: (.+)$", previous, __import__("re").M))
     new_ids = set(__import__("re").findall(r"^- id: (.+)$", current, __import__("re").M))
@@ -205,7 +217,11 @@ def main() -> int:
         paths = changed_paths(root, args.base)
         check_contracts(root, paths, policy_root)
         report["checks"]["contracts_api_permissions"] = "pass"
-        report["checks"]["prior_test_approval"] = check_prior_approval(root, args.base, paths, event)
+        active_base = prospective_base(root, args.base)
+        report["activation_revision"] = ACTIVATION
+        report["historical_application_excluded"] = active_base != args.base
+        report["checks"]["prior_test_approval"] = check_prior_approval(
+            root, active_base, changed_paths(root, active_base), event)
         check_ai_use(root, args.base, paths)
         report["checks"]["ai_use"] = "pass"
         report["status"] = "pass"

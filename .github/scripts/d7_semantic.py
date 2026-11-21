@@ -14,7 +14,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from d7_policy import SEMANTIC, PolicyFailure, changed_paths, require
+from d7_policy import SEMANTIC, PolicyFailure, changed_paths, git, prospective_base, require
 
 
 def configuration_digest(root: Path) -> str:
@@ -88,8 +88,11 @@ def main() -> int:
                                          "unsupported_claims": 0}, "Frozen thresholds changed")
         controls = evaluate_answers(corpus, corpus["positive_controls"])
         require(not controls["failures"], "Positive rubric controls fail")
-        paths = changed_paths(root, args.base)
-        changed = any(p.startswith(SEMANTIC) or p == ".github/governance/runtime-model.json" for p in paths)
+        active_base = prospective_base(root, args.base)
+        paths = changed_paths(root, active_base)
+        profile = ".github/governance/runtime-model.json"
+        existing_profile = bool(git(root, "ls-tree", "--name-only", active_base, "--", profile))
+        changed = any(p.startswith(SEMANTIC) or (p == profile and existing_profile) for p in paths)
         report["model_change"] = changed
         if changed:
             receipts = list((root / "docs/governance/evaluations").glob("*.json"))

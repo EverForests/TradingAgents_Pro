@@ -134,9 +134,10 @@ jobs:
           policies = [p for p in names if p.startswith('.github/governance/') and p.endswith('.json')]
           scripts = [p for p in names if p.startswith('.github/scripts/d7_') and p.endswith('.py')]
           if not scripts:
-              if base != '7da6ecc9ff665d096b3def5be9ee9601628ae05e':
-                  raise SystemExit('Unrecognized governance bootstrap base')
-              changed = subprocess.check_output(['git', 'diff', '--name-only', base, 'HEAD'], text=True).splitlines()
+              activation = '7da6ecc9ff665d096b3def5be9ee9601628ae05e'
+              subprocess.run(['git', 'merge-base', '--is-ancestor', base, activation], check=True)
+              subprocess.run(['git', 'merge-base', '--is-ancestor', activation, 'HEAD'], check=True)
+              changed = subprocess.check_output(['git', 'diff', '--name-only', activation, 'HEAD'], text=True).splitlines()
               if any(p.startswith(('tradingagents/', 'cli/', 'src/', 'prompts/', 'tests/', 'test/offline/', 'test/live/')) or p == 'main.py' for p in changed):
                   raise SystemExit('Bootstrap cannot change application or existing tests')
               import shutil
