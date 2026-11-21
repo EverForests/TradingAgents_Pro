@@ -30,3 +30,7 @@ New application implementation requires an independently approved exact test rev
 ## Rollback
 
 Revert only the governance maintenance commits and restore recorded branch settings through the administrator. Do not erase historical records or force-push shared history. Preserve private evidence and the frozen runtime hashes. An unavailable remote review or setting is recorded as an enforcement limitation, not silently accepted.
+
+## Actual execution receipt
+
+The coordinator explicitly authorized exactly one complete offline rerun. It recorded1799passes and33setup errors from a baseline export without Git provenance; only the affected comparison module was rerun with a real pinned worktree, yielding33passes. The new governance suite recorded64passes and fixed behavior14passes. Hosted receipt retention required a workflow-only follow-up; its initially failed aggregate is preserved. No new product model/market run or fabricated retrospective approval is added. See [verification](d7-verification.md) for the current hosted and protection evidence.

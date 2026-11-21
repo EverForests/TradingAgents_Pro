@@ -1,3 +1,24 @@
+# Delivery audit — updated 21 November 2026
+
+## D7 gate audit
+
+The 20 November gaps below are retained as historical findings. The coordinator subsequently authorized a governance-only repair. The new controls are implemented, with 64 passing governance cases, nine fixed semantic controls, fourteen actual behavioral replays, exact type/security finding budgets and trusted-base policy execution. All 331 frozen runtime/prompt/original-test files remain byte-identical. [Measured verification, exclusions and hosted status](governance/d7-verification.md) is the authoritative current evidence account.
+
+| Gate | Current implemented enforcement |
+| --- | --- |
+| Prior test approval | Genuine independent GitHub approval of exact tests-only ancestor, correct chronology and unchanged tests; prospective scope only. |
+| Static and safety paths | Ruff, mypy/Bandit exact budgets, API/record signatures, runtime dependencies, source parity, permissions, substantive ADR and CODEOWNERS checks. |
+| Schema | Schema, unique IDs and resolved references, with real invalid-input controls. |
+| Semantic | Versioned complete nine-case rubric, model/config-linked raw-output evidence when applicable, and fourteen collected non-skipped behavior cases. |
+| Regression | Existing upstream/course selection, Python matrix and timezone job retained. Single local full run and targeted provenance recovery reported separately. |
+| AI-use | New attributable entry required for covered changes; no entry is treated as human approval. |
+| Required aggregate | Failed, missing, skipped or cancelled dependency prevents `d7-required` success. Actual initial hosted upload failure produced a failed aggregate. |
+| Hosted human review | Actual branch-rule read-back and final peer approval are independent of the preceding local/CI results; see verification record. |
+
+This closes the missing-check implementation findings within the stated scope. A final merge still depends on observed corrected CI and actual hosted protection/review. Historical approval gaps and retained scanner debt are not retroactively erased. Presentation assets remain outside the repository and course ZIP.
+
+---
+
 # Delivery audit — 20 November 2026
 
 ## Version and evidence scope
@@ -6,7 +27,7 @@ Application/test revision: `df8a9d6419dfa0aab2f4d8986d0a44060354cdb9`. Consolida
 
 Five member D5 and D6 collections have been received. The public repository contains GitHub collaborator identities and redacted existing D5 evidence. The restricted submission retains student numbers, full annotated transcripts and original source exports. External submission assembly adds its packaging manifest and presentation derivatives. Each member's agreed weight is 1.00, or 20%; no work-hour estimates are used.
 
-## D7 gate audit
+## Historical D7 gate audit — 20 November
 
 | Course gate | Evidence in the current workflow | Delivery assessment |
 | --- | --- | --- |

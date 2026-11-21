@@ -81,3 +81,7 @@ This table supersedes the current-state interpretation of older feature-stage ro
 | Token architecture | Open design validation | The separate token cap/compaction design is documented and not enabled by the 64 KiB byte gate. |
 
 Review owners follow the ring in [the document index](README.md#ownership-and-review). Closing evidence is scoped to the tested profile and revision.
+
+## Governance maintenance disposition — 21 November 2026
+
+This later disposition supersedes earlier statements that the D7 checks were not implemented; it does not delete their historical audit. ADR-002, policy scripts and 64 governance cases address prospective approval, safety/static/schema/semantic and aggregate enforcement. Hosted configuration and actual reviewer approval retain separate evidence. The source budget explicitly retains 115 type findings and 34 security/tool observations; newly introduced fingerprints fail. Third-party type internals, historical approval gaps, source-support faithfulness and live provider-boundary byte measurement remain scoped debt. The coordinator owns budget review; any source diagnostic change, dependency/model change or new evidence claim triggers reassessment. [Current verification](governance/d7-verification.md).

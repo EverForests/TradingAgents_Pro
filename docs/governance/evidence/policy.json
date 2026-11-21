@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0",
+  "gate": "policy",
+  "base": "7da6ecc9ff665d096b3def5be9ee9601628ae05e",
+  "evidence_class": "static-policy",
+  "checks": {
+    "contracts_api_permissions": "pass",
+    "prior_test_approval": "governance-only first activation; no new application implementation",
+    "ai_use": "pass"
+  },
+  "activation_revision": "7da6ecc9ff665d096b3def5be9ee9601628ae05e",
+  "historical_application_excluded": false,
+  "status": "pass"
+}

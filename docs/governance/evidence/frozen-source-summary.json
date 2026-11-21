@@ -1,0 +1,19 @@
+{
+  "observed_on": "2026-11-21",
+  "file_count": 331,
+  "changed": 0,
+  "before_manifest_sha256": "43da853971c3b8de14f0b8b705bd00ad5f19480dc01db2f4e4c0534c5583d0c7",
+  "after_manifest_sha256": "43da853971c3b8de14f0b8b705bd00ad5f19480dc01db2f4e4c0534c5583d0c7",
+  "scope": [
+    "tradingagents/",
+    "cli/",
+    "src/",
+    "main.py",
+    "prompts/",
+    "tests/",
+    "test/offline/",
+    "test/live/"
+  ],
+  "runtime_dependencies_changed": false,
+  "agent_edit_permissions_changed": false
+}

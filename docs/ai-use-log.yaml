@@ -1,5 +1,12 @@
 format_version: 1
 entries:
+- id: AI-D7-DELIVERY-20261121
+  date: '2026-11-21'
+  tool: OpenCode read-only course-verify; automation tools
+  scope: D7 audit, ADR, report and public/private delivery synchronization; presentation remains external
+  human_direction: Complete authorized D7 repair without business changes; align the ten-minute video and twenty-minute presentation to the teacher guidance.
+  evidence: 64 governance cases, 9 rubric controls, 14 fixed behavior cases; full local invocation and 33-case provenance recovery kept separate; hosted PR run44883596229 passed.
+  review_status: Actual hosted owner approval remains a separate event; no historical approval fabricated.
 - id: AI-D7-RECEIPTS-20261121
   date: '2026-11-21'
   tool: automation tools; OpenCode read-only verification

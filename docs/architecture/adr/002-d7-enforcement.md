@@ -21,3 +21,9 @@ Preserving runtime bytes leaves explicit legacy typing/security debt. The gate p
 ## Verification and rollback
 
 New tests live only under `test/governance/`. The pre-implementation workflow contract recorded five meaningful failures and one existing positive control. Positive and deliberately invalid inputs, source-analyzer mutations, fixed behavioral selections and the full prior suite provide separate receipts. Reverting this governance change does not alter business behavior; restoring hosted protection is an explicit administrator operation and is never done merely to obtain a green check.
+
+## Execution follow-up — 21 November 2026
+
+Decision: retain only sanitized receipts and explicitly include the hidden receipt directory in Actions artifact upload. The first hosted run44883183291 passed the check executions but failed upload, and the aggregate refused success. Corrected PR run44883596229 passed. The push event independently required the changed safety ADR; this dated decision accompanies the workflow maintenance rather than weakening that requirement.
+
+The single authorized full local invocation returned1799 passes and33 baseline-Git-provenance setup errors. Only the affected FR03 module was recovered against a genuine9fa1196 Git worktree, with33passes; no second manual full run occurred. New governance64cases and the14behavioral selections remain separate counts. Retain115type and34security/tool findings as explicit exact budgets. Model receipt consistency does not authenticate its origin, and substantive human design/source-support review remains necessary. [Full measured account](../../governance/d7-verification.md).

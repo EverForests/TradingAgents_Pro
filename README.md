@@ -1,6 +1,6 @@
 # TradingAgents Pro — CS5351 Group Project
 
-TradingAgents Pro is a CS5351 course project that extends TradingAgents, a multi-agent stock analysis framework. The course extension targets traceable publication, verified metrics, explicit sentiment coverage, request budgeting and scoped message control. The five selected requirements have integrated acceptance evidence; repository-enforcement limits are recorded separately in the delivery audit.
+TradingAgents Pro is a CS5351 course project that extends TradingAgents, a multi-agent stock analysis framework. The course extension targets traceable publication, verified metrics, explicit sentiment coverage, request budgeting and scoped message control. The five selected requirements have integrated acceptance evidence; prospective D7 repository controls and their evidence boundaries are recorded separately in the delivery audit.
 
 - **Team repository:** [EverForests/TradingAgents_Pro](https://github.com/EverForests/TradingAgents_Pro)
 - **Course artifacts:** [D1–D9 index](docs/README.md) · [Project report](Report.md) · [Annotated sessions](transcripts/README.md) · [Delivery audit](docs/delivery-readiness.md)
@@ -116,7 +116,7 @@ requirements schema and reference validation, the PR AI-use record check, and th
 fixed FR-03 comparison against the pinned upstream. The [review memo](docs/review-memo.md)
 records which course gates have execution and enforcement evidence.
 
-**D7 remains partially complete.** The outstanding items are automatic verification of test approval before implementation, general type checking and the complete safety-path checks, a project-wide prompt/model semantic-quality gate, and independently verified hosted branch protection/review enforcement. Existing successful CI does not establish those missing controls. The coordinator chose to document these gaps without changing application code, CI scripts, workflows or repository protection settings in this documentation update. [Detailed D7 audit](docs/delivery-readiness.md#d7-gate-audit)
+**D7 prospective checks are implemented.** Prior exact-test approval, source type/security budgets, safety API/permission contracts, fixed prompt/model evaluation and the required aggregate now have executable controls. Historical gaps remain documented; current hosted execution and protected-merge evidence are separate from past feature acceptance. [Detailed D7 audit](docs/delivery-readiness.md#d7-gate-audit) · [Measured verification](docs/governance/d7-verification.md)
 
 ## Course report and session evidence
 
@@ -557,3 +557,9 @@ Please reference our work if you find *TradingAgents* provides you with some hel
 ## FR-03 review package
 
 The implemented FR-03 module has a [handoff, report-ready section and exact offline/paired/optional-live commands](docs/fr03.md), plus [sanitized result evidence](docs/fr03-evidence.json). FR-03 is included in the recorded integrated application. Its original PR remains a feature-stage handoff record; current package and review status are in the [delivery audit](docs/delivery-readiness.md).
+
+## Prospective D7 quality gates
+
+The [D7 verification record](docs/governance/d7-verification.md) links the exact implementation, measured positive/refusal controls, source-analysis debt and hosted state. CI retains the original suites and adds prior-test approval, API/permission/security contracts, type/security budgets, fixed model/prompt evaluation and the `d7-required` aggregate. Historical approvals are not reconstructed. A protected merge additionally requires a genuine independent review.
+
+Governance-only reproduction: `python -m pytest -q test/governance`. Full provenance checks require a Git clone, not a bare ZIP. The paired FR-03 comparison requires `FR03_BASELINE_ROOT` pointing to a genuine checkout at `9fa1196fffbcfd9de5146d2dd2869df84ab99838`. The source package's retained Git provenance is documented separately. No new market/model request is needed for deterministic offline checks.

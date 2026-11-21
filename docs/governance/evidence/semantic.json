@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0",
+  "gate": "semantic",
+  "evidence_class": "deterministic-behavior-and-rubric-controls",
+  "corpus_sha256": "08090801afb614db1e264d9b9e414c25e05c30e844f7ff5db901515e93559925",
+  "model_change": false,
+  "behavioral_cases": 14,
+  "status": "pass",
+  "rubric_controls": {
+    "cases": 9,
+    "failures": [],
+    "required_field_agreement": 1.0
+  },
+  "natural_model_claim": "No new natural-model measurement for unchanged model/prompt code"
+}

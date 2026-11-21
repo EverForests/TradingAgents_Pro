@@ -1,6 +1,6 @@
 # Requirement trace matrix
 
-Proposed owner paths and evidence. Case IDs are defined in [verification constraints](../code-governance/verification-constraints.md) and D1; none imply executable tests or pass results. Shared contracts: [C0–C5](interface-contracts.md).
+The first table preserves the original design mapping; later dated sections supply measured evidence. Proposed owner paths and evidence. Case IDs are defined in [verification constraints](../code-governance/verification-constraints.md) and D1; none imply executable tests or pass results. Shared contracts: [C0–C5](interface-contracts.md).
 
 | Requirement | Enforcer / integration | Planned case IDs | Runtime monitor and failure |
 | --- | --- | --- | --- |
@@ -75,3 +75,15 @@ The invocation-local E/A selection adapter is covered by `test/offline/test_fr01
 | NFR-02 | `llm_clients/context_limit.py`, analyst wrap-up and neutral debater | `test/offline/test_nfr02_context_limit.py`, `test_nfr02_tool_pairing.py`, `test_nfr02_analyst_wrapup.py`, `test_nfr02_neutral_debator_context.py`, `test_integration_dispatch.py` | Final scoped bytes, preparation outcome and zero send/debit on refusal. Live boundary-byte instrumentation is incomplete. |
 
 Paths after the first filename in a cell share its directory. Source paths are relative to `tradingagents/`. Historical feature totals above retain their original revisions. The integrated application recorded 1,832 passing tests and 100 passing subtests after the alias repair; overlapping groups are not additive. [Live acceptance](../live-acceptance.md) distinguishes controlled model checks, real cached-data API replay and the five-company CLI batch.
+
+## D7 prospective enforcement — 21 November 2026
+
+| Obligation | Decision and implementation | Executable evidence |
+| --- | --- | --- |
+| Exact-test approval | ADR-002; d7_policy prior-approval/history checks | Governance chronology, ancestry, exact scope and changed-test refusal cases |
+| Safety boundaries | contracts.json; API/runtime dependency/permission/source checks; CODEOWNERS | Actual contract/schema/copy mismatch controls and zero runtime-byte changes |
+| Static/security | d7_static; exact reviewed finding fingerprints | Real type-error and unsafe-shell controls; no-new-finding receipt |
+| Semantic quality scope | semantic-suite.json; d7_semantic | Nine annotated rubric controls; fourteen real behavior cases; recorded-output/hash and case-count negatives |
+| Required delivery checks | ci.yml d7-required | Missing/skipped/cancelled cases; actual failed hosted receipt upload refused by aggregate |
+
+[D7 measured evidence](../governance/d7-verification.md) retains local full-run setup errors, targeted recovery and actual hosted results separately. This addition does not rewrite historical feature approvals.
