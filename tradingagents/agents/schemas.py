@@ -21,7 +21,7 @@ from __future__ import annotations
 from enum import StrEnum
 from typing import Literal
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 # LLMs sometimes write a placeholder string ("None", "N/A", ...) into an optional
 # numeric field instead of omitting it. Coerce those to None so the structured
@@ -85,6 +85,31 @@ class TraderAction(StrEnum):
     BUY = "Buy"
     HOLD = "Hold"
     SELL = "Sell"
+
+
+class DebateArgument(BaseModel):
+    """A Bull or Bear argument with structured evidence references.
+
+    FR-01: the researcher may only cite evidence IDs that exist in this run's
+    program-built index. The program validates these IDs and mints an argument
+    ID only for an accepted argument; unverified prose is not a release path.
+    """
+
+    argument: str = Field(
+        description=(
+            "The case, in the analyst's own words, engaging the opponent and the "
+            "analyst reports."
+        ),
+    )
+    evidence_ids: list[str] = Field(
+        default_factory=list,
+        description=(
+            "Select evidence using the short aliases (for example E1) offered "
+            "in this invocation's Available evidence menu, or copy its exact "
+            "full IDs. Never truncate an ID or invent a reference. The program "
+            "resolves aliases and validates every reference before acceptance."
+        ),
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -237,6 +262,15 @@ class PortfolioDecision(BaseModel):
             "support a call."
         ),
     )
+    argument_ids: list[str] = Field(
+        default_factory=list,
+        description=(
+            "Select at least one accepted argument using the short aliases "
+            "(for example A1) in this invocation's Accepted arguments menu, "
+            "or copy its exact full IDs. Never truncate an ID or invent a "
+            "reference. The program resolves aliases before publication checks."
+        ),
+    )
     executive_summary: str = Field(
         description=(
             "A concise action plan covering entry strategy, position sizing, "
@@ -298,6 +332,9 @@ class SentimentBand(StrEnum):
 
     Six tiers keep the signal granular enough to be actionable while remaining
     small enough for every provider to map reliably from its JSON output.
+    ``UNKNOWN`` is not a seventh direction: it marks an assessment that could
+    not be measured (no valid sources, or an invalid/missing model answer), and
+    it always pairs with a null score.
     """
 
     BULLISH = "Bullish"
@@ -306,6 +343,7 @@ class SentimentBand(StrEnum):
     MIXED = "Mixed"
     MILDLY_BEARISH = "Mildly Bearish"
     BEARISH = "Bearish"
+    UNKNOWN = "UNKNOWN"
 
 
 class SentimentReport(BaseModel):
@@ -324,19 +362,24 @@ class SentimentReport(BaseModel):
             "Overall sentiment direction. Exactly one of: "
             "Bullish / Mildly Bullish / Neutral / Mixed / Mildly Bearish / Bearish. "
             "Use Mixed when sources point in clearly different directions. "
-            "Use Neutral only when all sources are genuinely silent or non-committal."
+            "Use Neutral only for a measured, non-committal read of the validated "
+            "sources, never because the sources were silent or unavailable -- "
+            "silence is a coverage statement, not Neutral."
         ),
     )
-    overall_score: float = Field(
+    overall_score: float | None = Field(
+        default=None,
         ge=0.0,
         le=10.0,
+        allow_inf_nan=False,
         description=(
             "Numeric sentiment intensity on a 0–10 scale. "
             "0 = maximally bearish, 5 = neutral, 10 = maximally bullish. "
             "Guideline for consistency with overall_band: "
             "Bullish ~6.5–10, Mildly Bullish ~5.5–6.4, Neutral/Mixed ~4.5–5.5, "
             "Mildly Bearish ~3.5–4.4, Bearish ~0–3.4. "
-            "Only the 0–10 bounds are enforced."
+            "Only the 0–10 bounds are enforced. Omit it (null) when the data "
+            "supports no measurement; never substitute 0 or 5."
         ),
     )
     confidence: Literal["low", "medium", "high"] = Field(
@@ -362,18 +405,102 @@ class SentimentReport(BaseModel):
         ),
     )
 
+    @field_validator("overall_score", mode="before")
+    @classmethod
+    def _bool_score_is_not_a_measurement(cls, v):
+        """A boolean is a claim flag, not a 0-10 score; refuse to coerce it."""
+        if isinstance(v, bool):
+            raise ValueError("overall_score must be a number between 0 and 10, not a boolean")
+        if isinstance(v, str) and v.strip().lower() in {"true", "false"}:
+            raise ValueError("overall_score must be a number between 0 and 10, not a boolean")
+        return v
+
+    @model_validator(mode="after")
+    def _unknown_is_consistent(self):
+        """An unmeasured report reads UNKNOWN, null and low, whatever the model wrote.
+
+        A model that marks the band UNKNOWN (or gives no score) has not measured
+        anything: carrying a neutral score and a confident level alongside it
+        would contradict the record. A measured band with a score is untouched.
+        """
+        if self.overall_band is SentimentBand.UNKNOWN or self.overall_score is None:
+            self.overall_band = SentimentBand.UNKNOWN
+            self.overall_score = None
+            self.confidence = "low"
+        return self
+
 
 def render_sentiment_report(report: SentimentReport) -> str:
     """Render a SentimentReport to the markdown shape the rest of the system expects.
 
     The structured header (band + score + confidence) is prepended to the
     narrative so the saved report is both human-readable and machine-parseable
-    without regex.
+    without regex. A measured band keeps the exact baseline header; UNKNOWN has
+    no score to print, so the score clause is omitted rather than shown as
+    ``None`` or imputed.
     """
-    return "\n".join([
-        f"**Overall Sentiment:** **{report.overall_band.value}** "
-        f"(Score: {report.overall_score:.1f}/10)",
-        f"**Confidence:** {report.confidence.capitalize()}",
-        "",
-        report.narrative,
-    ])
+    parts = _sentiment_header(
+        band=report.overall_band.value,
+        score=report.overall_score,
+        confidence=report.confidence,
+    )
+    parts.extend(["", report.narrative])
+    return "\n".join(parts)
+
+
+def _sentiment_header(band: str, score: float | None, confidence: str) -> list[str]:
+    """The compatibility header shared by every sentiment report view.
+
+    A null score or an UNKNOWN band is an unmeasured result, so it reads UNKNOWN
+    with low confidence and no score clause -- the same shape the assessment
+    record uses. A measured band keeps the exact baseline header.
+    """
+    unmeasured = band.upper() == "UNKNOWN" or score is None
+    label = "UNKNOWN" if unmeasured else band
+    level = "low" if unmeasured else confidence
+    first = (
+        f"**Overall Sentiment:** **{label}**"
+        if unmeasured
+        else f"**Overall Sentiment:** **{label}** (Score: {score:.1f}/10)"
+    )
+    return [first, f"**Confidence:** {str(level).capitalize()}"]
+
+
+def render_sentiment_assessment(assessment: dict) -> str:
+    """Render a C3 SentimentAssessment record to the report text readers see.
+
+    The header keeps the baseline ``**Overall Sentiment:**`` /
+    ``**Confidence:**`` shape so existing consumers keep working, and adds the
+    coverage line, the per-source counts and reasons, so a reader can tell a
+    measured reading from a data-coverage statement before reading any prose.
+    """
+    band = str(assessment.get("overall_band") or "UNKNOWN")
+    score = assessment.get("overall_score")
+    if isinstance(score, bool) or score is None:
+        score = None
+    unmeasured = band.upper() == "UNKNOWN" or score is None
+    valid = assessment.get("valid_sources", 0)
+    total = assessment.get("total_sources", 3)
+    coverage_status = str(assessment.get("coverage_status") or "NO_DATA")
+    parts = _sentiment_header(
+        band="UNKNOWN" if unmeasured else band,
+        score=score,
+        confidence=str(assessment.get("confidence") or "low"),
+    )
+    parts.append(f"**Assessment status:** {assessment.get('assessment_status') or 'UNKNOWN'}")
+    parts.append(f"**Source coverage:** {valid}/{total} ({coverage_status})")
+    reasons = assessment.get("assessment_reason_codes") or []
+    if reasons:
+        parts.append(f"**Assessment reasons:** {', '.join(map(str, reasons))}")
+
+    sources = assessment.get("sources") or {}
+    for source_id, entry in sources.items():
+        if not isinstance(entry, dict):
+            continue
+        state = "available" if entry.get("available") else "unavailable"
+        source_reasons = ", ".join(map(str, entry.get("reason_codes") or [])) or "none"
+        count = entry.get("valid_record_count", 0)
+        parts.append(f"- {source_id}: {state}, {count} valid item(s); reasons: {source_reasons}")
+
+    parts.extend(["", str(assessment.get("narrative") or "")])
+    return "\n".join(parts)

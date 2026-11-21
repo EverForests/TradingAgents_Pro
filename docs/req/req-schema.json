@@ -1,0 +1,233 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CS5351 requirement registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "baseline",
+    "requirements",
+    "revision"
+  ],
+  "properties": {
+    "baseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tag",
+        "commit"
+      ],
+      "properties": {
+        "tag": {
+          "$ref": "#/$defs/text"
+        },
+        "commit": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        }
+      }
+    },
+    "requirements": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/requirement"
+      },
+      "$comment": "Cross-entry requirement-ID uniqueness and resolution of test/contract references need the semantic validation gate; uniqueItems alone cannot enforce unique IDs."
+    },
+    "revision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "status",
+        "approval",
+        "contracts",
+        "preparation_base"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/text"
+        },
+        "status": {
+          "enum": [
+            "proposed",
+            "approved",
+            "superseded"
+          ]
+        },
+        "approval": {
+          "$ref": "#/$defs/text"
+        },
+        "contracts": {
+          "$ref": "#/$defs/text"
+        },
+        "preparation_base": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "text": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "requirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "type",
+        "priority",
+        "statement",
+        "source",
+        "tradeoff",
+        "fit",
+        "status",
+        "contracts",
+        "test_cases"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^(FR|NFR|INV)-[0-9]{2,}$"
+        },
+        "type": {
+          "enum": [
+            "functional",
+            "invariant",
+            "quality",
+            "performance",
+            "cost",
+            "governance",
+            "security"
+          ]
+        },
+        "priority": {
+          "enum": [
+            "Must",
+            "Should",
+            "Could",
+            "Won't"
+          ]
+        },
+        "statement": {
+          "$ref": "#/$defs/text"
+        },
+        "source": {
+          "$ref": "#/$defs/text"
+        },
+        "tradeoff": {
+          "$ref": "#/$defs/text"
+        },
+        "fit": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "metric",
+            "threshold",
+            "verification"
+          ],
+          "properties": {
+            "metric": {
+              "$ref": "#/$defs/text"
+            },
+            "threshold": {
+              "$ref": "#/$defs/text"
+            },
+            "verification": {
+              "$ref": "#/$defs/text"
+            }
+          }
+        },
+        "status": {
+          "enum": [
+            "proposed",
+            "approved",
+            "implemented",
+            "verified",
+            "deferred"
+          ]
+        },
+        "contracts": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^C[0-5]$"
+          }
+        },
+        "test_cases": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^T-(FR|NFR|INV)[0-9]{2}-[A-Z0-9]+$"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "pattern": "^FR-"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "type": {
+                "const": "functional"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "pattern": "^INV-"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "type": {
+                "const": "invariant"
+              },
+              "priority": {
+                "const": "Must"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "pattern": "^NFR-"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "quality",
+                  "performance",
+                  "cost",
+                  "governance",
+                  "security"
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

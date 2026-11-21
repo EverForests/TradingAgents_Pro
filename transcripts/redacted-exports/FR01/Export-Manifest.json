@@ -1,0 +1,82 @@
+[
+  {
+    "file": "01-original-plan-build.json",
+    "session_id": "ses_e26cdf943ffeBLR5X4TKh5mRSX",
+    "messages": 301,
+    "original_sha256": "0a2b8c3c7ee81864022db944625c0049a3cdf40fff6a1714f0d299edbd545089",
+    "shared_sha256": "0a2b8c3c7ee81864022db944625c0049a3cdf40fff6a1714f0d299edbd545089",
+    "credential_redactions": 0
+  },
+  {
+    "file": "02-prechange-offline-tests.json",
+    "session_id": "ses_e1c414725ffepR52TtGJgNl6AH",
+    "messages": 1168,
+    "original_sha256": "ff5f6a0134672467d0abe9c30a29c2f8944e2f97c20ea2739c6d53051a5fb426",
+    "shared_sha256": "ff5f6a0134672467d0abe9c30a29c2f8944e2f97c20ea2739c6d53051a5fb426",
+    "credential_redactions": 0
+  },
+  {
+    "file": "03-boundary-verification.json",
+    "session_id": "ses_e1c4d26afffeuWhia4yHJGY0nN",
+    "messages": 24,
+    "original_sha256": "488fdcc4ddc90c3ece0929159e4785a4c08b27dcaa731c07119724a6153f60bb",
+    "shared_sha256": "488fdcc4ddc90c3ece0929159e4785a4c08b27dcaa731c07119724a6153f60bb",
+    "credential_redactions": 0
+  },
+  {
+    "file": "04-contract-repair-plan.json",
+    "session_id": "ses_e1c8b51fbffedS3sBe5ayQGD17",
+    "messages": 99,
+    "original_sha256": "494e572a4cee8583996aea7a500af190b5c4273892c25f6a2ff9ac486f00f5c9",
+    "shared_sha256": "494e572a4cee8583996aea7a500af190b5c4273892c25f6a2ff9ac486f00f5c9",
+    "credential_redactions": 0
+  },
+  {
+    "file": "05-review-712617e.json",
+    "session_id": "ses_e1cb14b79ffenilGM3okyVerjw",
+    "messages": 30,
+    "original_sha256": "bf0d29eab0e79b46cb35a8b7ec42943cc3dc5e6d324e2d9d7a0b545c4514cde1",
+    "shared_sha256": "bf0d29eab0e79b46cb35a8b7ec42943cc3dc5e6d324e2d9d7a0b545c4514cde1",
+    "credential_redactions": 0
+  },
+  {
+    "file": "06-ci-follow-up.json",
+    "session_id": "ses_e17d074b7ffeMNGID4mTy7Ul1p",
+    "messages": 13,
+    "original_sha256": "abaed88c5519b890ce2be04610f343f298a2d78f9fd49843eb5372b55c0121e5",
+    "shared_sha256": "abaed88c5519b890ce2be04610f343f298a2d78f9fd49843eb5372b55c0121e5",
+    "credential_redactions": 0
+  },
+  {
+    "file": "07-reference-alias-plan.json",
+    "session_id": "ses_e0ddee99bfferbBnNlbImAOkpM",
+    "messages": 22,
+    "original_sha256": "c24bbc6f34ff2dde488d9ab9074833085c1192f682e1dd852eacb2964399ea34",
+    "shared_sha256": "c24bbc6f34ff2dde488d9ab9074833085c1192f682e1dd852eacb2964399ea34",
+    "credential_redactions": 0
+  },
+  {
+    "file": "08-reference-alias-tests.json",
+    "session_id": "ses_e0dd87f8fffejh9bXrN4lwsUka",
+    "messages": 34,
+    "original_sha256": "64a4d9c0da0328124db03e8ffd231b81b5a6f711e94ca13edb58d7a79feecf32",
+    "shared_sha256": "64a4d9c0da0328124db03e8ffd231b81b5a6f711e94ca13edb58d7a79feecf32",
+    "credential_redactions": 0
+  },
+  {
+    "file": "09-reference-alias-draft.json",
+    "session_id": "ses_e0dd1c89fffeYgVllaKKADZsq3",
+    "messages": 34,
+    "original_sha256": "a58734eb0e63378e73a0ef94ddd838f79987d6507c097197fb45be86712a087a",
+    "shared_sha256": "a58734eb0e63378e73a0ef94ddd838f79987d6507c097197fb45be86712a087a",
+    "credential_redactions": 0
+  },
+  {
+    "file": "10-reference-alias-review.json",
+    "session_id": "ses_e0dbdf93cffeyCw1U7DBXBGU2I",
+    "messages": 14,
+    "original_sha256": "1a9943564ec53004e51302fe6e61df43a9f40b654a3cff3e344ee750f439b60c",
+    "shared_sha256": "1a9943564ec53004e51302fe6e61df43a9f40b654a3cff3e344ee750f439b60c",
+    "credential_redactions": 0
+  }
+]

@@ -1,0 +1,9 @@
+# Fixed semantic rubric v1.0.0
+
+The authoritative corpus is `.github/governance/semantic-suite.json`. It contains nine complete synthetic cases and source facts: valid/missing evidence, verified growth/missing provenance, absent sentiment/valid neutrality, exhausted budget, reducible context and irreducible context. Expected output fields are exactly `id`, `result`, `supported_facts`, and `unsupported_claims`. Required-field agreement is 100%; unsupported claims and safety escapes must be zero. Boolean values do not stand in for numeric values. Unexpected fields, cases or facts are refused.
+
+Fourteen existing executable behavioral cases are selected separately; JUnit must confirm at least fourteen collected cases with no failure, error or skip. The nine built-in answers validate the rubric itself and are not measurements of a live model. Deliberately contradicted results and unsupported facts must fail.
+
+For applicable model, prompt, provider/profile or coding-agent instruction/model changes, store an actual evaluation record under `docs/governance/evaluations/`. It must identify the exact configuration and corpus SHA-256, declared profile and capture metadata, retain the raw model JSON response, and reproduce its hash and answers. `evidence_class` must be `recorded-model-output`. Fixture answers and metadata-only assertions do not substitute for this record. Reviewers check source support and capture provenance; the checker cannot authenticate provider origin from a self-authored record. Do not adjust thresholds after observing output. Pure narrow read-permission additions do not change the model rubric's applicability.
+
+This rubric verifies the declared controlled facts and refusal rules. It does not establish arbitrary narrative faithfulness, investment performance or factual truth of external financial providers.

@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0",
+  "gate": "static",
+  "evidence_class": "source-analysis",
+  "status": "pass",
+  "observed_type_findings": 115,
+  "observed_security_findings": 34,
+  "new_type_findings": [],
+  "new_security_findings": [],
+  "legacy_debt": "Existing findings remain disclosed; no blanket suppression is used."
+}

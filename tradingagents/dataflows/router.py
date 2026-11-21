@@ -198,7 +198,13 @@ def no_data_available(error: NoMarketDataError) -> str:
 
 
 def route_to_vendor(method: str, *args, **kwargs):
-    """Route method calls to appropriate vendor implementation with fallback support."""
+    """Route method calls to appropriate vendor implementation with fallback support.
+
+    The ``_with_receipt`` flag is not a vendor argument: it is consumed here and
+    forwarded to each news vendor only, so callers can ask for a collection
+    receipt without changing what every other method receives.
+    """
+    with_receipt = bool(kwargs.pop("_with_receipt", False))
     category = get_category_for_method(method)
     vendor_config = get_vendor(category, method)
     primary_vendors = [v.strip() for v in vendor_config.split(',')]
@@ -231,9 +237,12 @@ def route_to_vendor(method: str, *args, **kwargs):
     for vendor in vendor_chain:
         vendor_impl = VENDOR_METHODS[method][vendor]
         impl_func = vendor_impl[0] if isinstance(vendor_impl, list) else vendor_impl
+        vendor_kwargs = (
+            dict(kwargs, _with_receipt=with_receipt) if with_receipt and method == "get_news" else kwargs
+        )
 
         try:
-            return impl_func(*args, **kwargs)
+            return impl_func(*args, **vendor_kwargs)
         except VendorUnavailableError as e:
             logger.warning("Vendor %r unavailable for %s: %s; trying next vendor.", vendor, method, e)
             # Kept so an all-unavailable chain can say the vendor was the

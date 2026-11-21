@@ -174,6 +174,7 @@ def get_news(
     start_date: Annotated[str, "Start date in yyyy-mm-dd format"],
     end_date: Annotated[str, "End date in yyyy-mm-dd format"],
     trade_date: Annotated[str, InjectedState("trade_date")] = "",
+    _with_receipt: bool = False,
 ) -> str:
     """
     Retrieve news data for the instrument under analysis.
@@ -188,7 +189,9 @@ def get_news(
         start_date, end_date = as_of_window(start_date, end_date, trade_date)
     except ValueError as e:
         return str(e)
-    return route_to_vendor("get_news", ticker, start_date, end_date)
+    return route_to_vendor(
+        "get_news", ticker, start_date, end_date, _with_receipt=_with_receipt
+    )
 
 
 @tool

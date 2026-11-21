@@ -24,6 +24,8 @@ from typing import Any, TypeVar
 
 from pydantic import BaseModel
 
+from tradingagents.llm_clients.budget_transport import terminal_request_status
+
 logger = logging.getLogger(__name__)
 
 T = TypeVar("T", bound=BaseModel)
@@ -62,6 +64,12 @@ def invoke_structured(structured_llm: Any | None, prompt: Any, agent_name: str) 
     ``prompt`` is whatever the underlying LLM accepts (a string for chat
     invocations, a list of message dicts for chat models that take that
     shape), so a caller can forward the same value to its free-text fallback.
+
+    A terminal C0 failure (``BUDGET_EXHAUSTED``, ``CONTEXT_TOO_LARGE`` or
+    ``FAILED``) is re-raised instead of falling back: the fallback is a second
+    model turn, and on a metered run it must not become an unbudgeted send
+    (NFR-01 / INV-02). Only ordinary structured-output misses fall through to
+    ``None`` for the caller's free-text fallback.
     """
     if structured_llm is None:
         return None
@@ -74,6 +82,18 @@ def invoke_structured(structured_llm: Any | None, prompt: Any, agent_name: str) 
             raise ValueError("structured output returned no parsed result")
         return result
     except Exception as exc:
+        # The transport owner module is the single authority on which
+        # exceptions are terminal and on unwrapping wrapped causes. Fail closed:
+        # if the classifier itself cannot run, treat the failure as terminal
+        # rather than risk an unbudgeted free-text retry.
+        try:
+            terminal = terminal_request_status(exc) is not None
+        except Exception:  # noqa: BLE001 — fail closed on an unusable classifier
+            terminal = True
+        if terminal:
+            # Re-raise the original failure (not a wrapper) so the graph keeps
+            # its terminal status and the run ends without retrying.
+            raise
         logger.warning(
             "%s: structured-output invocation failed (%s); retrying once as free text",
             agent_name, exc,

@@ -412,6 +412,41 @@ def _make_sentiment_state():
     }
 
 
+def _sentiment_source(source_id, vendor, text, ticker="NVDA"):
+    """A prefetched source for NVDA as of 2026-01-15: a receipt-bound SourceText.
+
+    The sentiment node counts only ``SourceText`` receipts whose ticker, window
+    and item timestamps all match the run, so a prefetch stub must produce one or
+    the source is correctly reported as unavailable. The fixture still returns
+    a ``SourceText`` rather than a bare string, so no legacy path is special-cased.
+    """
+    from datetime import UTC, datetime
+
+    from tradingagents.dataflows.source_receipt import ItemMeta, SourceReceipt, SourceText
+
+    receipt = SourceReceipt(
+        source_id=source_id,
+        vendor=vendor,
+        ticker=ticker,
+        window_start="2026-01-08",
+        window_end="2026-01-15",
+        items=(ItemMeta(item_id=f"{source_id}-1",
+                        published_at=datetime(2026, 1, 12, 12, tzinfo=UTC),
+                        ticker=ticker),),
+        reason_codes=(),
+    )
+    return SourceText(text, receipt)
+
+
+def _prefetched_sentiment_sources():
+    """The three in-window sources the sentiment tests prompt with."""
+    return {
+        "news": _sentiment_source("news", "yfinance", "news"),
+        "stocktwits": _sentiment_source("stocktwits", "stocktwits", "st"),
+        "reddit": _sentiment_source("reddit", "reddit", "rd"),
+    }
+
+
 def _structured_sentiment_llm(captured: dict, report: SentimentReport | None = None):
     """MagicMock LLM whose structured binding captures the prompt and returns
     a real SentimentReport so render_sentiment_report works."""
@@ -439,13 +474,19 @@ class TestSentimentAnalystAgent:
         create_sentiment_analyst fetches news, StockTwits and Reddit itself, so
         without this these tests hit the live network. A real Reddit 429 then
         backs the fetcher off for a minute per subreddit, which is what turned
-        this file into a multi-minute hang.
+        this file into a multi-minute hang. Each stub returns a receipt-bound
+        ``SourceText`` in the run's window so all three sources count.
         """
         from tradingagents.agents.analysts import sentiment_analyst as sentiment
 
-        monkeypatch.setattr(sentiment, "fetch_stocktwits_messages", lambda *a, **k: "st")
-        monkeypatch.setattr(sentiment, "fetch_reddit_posts", lambda *a, **k: "rd")
-        monkeypatch.setattr(sentiment.get_news, "func", lambda *a, **k: "news", raising=False)
+        sources = _prefetched_sentiment_sources()
+        monkeypatch.setattr(
+            sentiment, "fetch_stocktwits_messages", lambda *a, **k: sources["stocktwits"]
+        )
+        monkeypatch.setattr(sentiment, "fetch_reddit_posts", lambda *a, **k: sources["reddit"])
+        monkeypatch.setattr(
+            sentiment.get_news, "func", lambda *a, **k: sources["news"], raising=False
+        )
 
     def test_structured_path_produces_rendered_markdown(self):
         captured = {}
@@ -476,7 +517,17 @@ class TestSentimentAnalystAgent:
         llm = MagicMock()
         llm.with_structured_output.side_effect = NotImplementedError("provider unsupported")
         llm.invoke.return_value = MagicMock(content=plain)
-        assert create_sentiment_analyst(llm)(_make_sentiment_state())["sentiment_report"] == plain
+        result = create_sentiment_analyst(llm)(_make_sentiment_state())
+        assert llm.invoke.call_count == 1
+        # The header the model wrote is the measured record: Bearish 3.0, low
+        # confidence, rendered onto the coverage's own header.
+        assessment = result["sentiment_assessment"]
+        assert assessment["assessment_status"] == "MEASURED"
+        assert assessment["overall_band"] == "Bearish"
+        assert assessment["overall_score"] == 3.0
+        assert assessment["confidence"] == "low"
+        assert "**Overall Sentiment:** **Bearish** (Score: 3.0/10)" in result["sentiment_report"]
+        assert result["sentiment_report"] == result["messages"][0].content
 
     def test_falls_back_to_freetext_when_structured_call_fails(self):
         plain = "Fallback free-text sentiment."
@@ -485,7 +536,20 @@ class TestSentimentAnalystAgent:
         llm = MagicMock()
         llm.with_structured_output.return_value = structured
         llm.invoke.return_value = MagicMock(content=plain)
-        assert create_sentiment_analyst(llm)(_make_sentiment_state())["sentiment_report"] == plain
+        result = create_sentiment_analyst(llm)(_make_sentiment_state())
+        assert llm.invoke.call_count == 1
+        assessment = result["sentiment_assessment"]
+        # Opaque prose is not an assessment: the coverage still counts three
+        # sources, but no band or score is imputed and no prose is reused.
+        assert assessment["valid_sources"] == 3
+        assert assessment["coverage_status"] == "AVAILABLE"
+        assert assessment["assessment_status"] == "UNKNOWN"
+        assert assessment["overall_band"] == "UNKNOWN"
+        assert assessment["overall_score"] is None
+        assert assessment["assessment_reason_codes"] == ["ASSESSMENT_FAILED"]
+        assert plain not in result["sentiment_report"]
+        assert "**Overall Sentiment:** **UNKNOWN**" in result["sentiment_report"]
+        assert result["sentiment_report"] == result["messages"][0].content
 
 
 @pytest.mark.unit

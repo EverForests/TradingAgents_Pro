@@ -43,6 +43,44 @@ def _prompt_text(prompt) -> str:
     return "\n".join(str(p) for p in parts)
 
 
+def _sentiment_source(source_id, vendor, text, ticker):
+    """A receipt-bound source for one sentiment run (window 2026-01-08..01-15).
+
+    The node counts only ``SourceText`` receipts whose ticker, window and item
+    timestamps match the run, so a stub must return one or the prompt correctly
+    renders an empty block. The fixture stays a ``SourceText``, so production
+    keeps no special case for a bare string.
+    """
+    from datetime import UTC, datetime
+
+    from tradingagents.dataflows.source_receipt import ItemMeta, SourceReceipt, SourceText
+
+    receipt = SourceReceipt(
+        source_id=source_id,
+        vendor=vendor,
+        ticker=ticker,
+        window_start="2026-01-08",
+        window_end="2026-01-15",
+        items=(ItemMeta(item_id=f"{source_id}-1",
+                        published_at=datetime(2026, 1, 12, 12, tzinfo=UTC),
+                        ticker=ticker),),
+        reason_codes=(),
+    )
+    return SourceText(text, receipt)
+
+
+def _stub_sentiment_sources(monkeypatch, ticker):
+    """Stub all three prefetched sentiment sources for ``ticker``."""
+    sources = {
+        "news": _sentiment_source("news", "yfinance", "news", ticker),
+        "stocktwits": _sentiment_source("stocktwits", "stocktwits", "st", ticker),
+        "reddit": _sentiment_source("reddit", "reddit", "rd", ticker),
+    }
+    monkeypatch.setattr(sentiment, "fetch_stocktwits_messages", lambda *a, **k: sources["stocktwits"])
+    monkeypatch.setattr(sentiment, "fetch_reddit_posts", lambda *a, **k: sources["reddit"])
+    monkeypatch.setattr(sentiment.get_news, "func", lambda *a, **k: sources["news"], raising=False)
+
+
 @pytest.mark.unit
 def test_trader_prompt_states_constraint():
     from tradingagents.agents.schemas import TraderAction, TraderProposal
@@ -111,9 +149,7 @@ def test_sentiment_prompt_states_constraint(monkeypatch):
     from tradingagents.agents.schemas import SentimentBand, SentimentReport
 
     # Pre-fetched sources are stubbed so the prompt builds without network I/O.
-    monkeypatch.setattr(sentiment, "fetch_stocktwits_messages", lambda *a, **k: "st")
-    monkeypatch.setattr(sentiment, "fetch_reddit_posts", lambda *a, **k: "rd")
-    monkeypatch.setattr(sentiment.get_news, "func", lambda *a, **k: "news", raising=False)
+    _stub_sentiment_sources(monkeypatch, "NVDA")
 
     captured = {}
     llm = _capturing_llm(captured, SentimentReport(
@@ -152,9 +188,10 @@ def test_constraint_text_is_unambiguous():
 def test_the_sentiment_prompt_names_the_subreddits_searched(monkeypatch):
     from tradingagents.agents.schemas import SentimentBand, SentimentReport
 
-    monkeypatch.setattr(sentiment, "fetch_stocktwits_messages", lambda *a, **k: "st")
-    monkeypatch.setattr(sentiment, "fetch_reddit_posts", lambda *a, **k: "rd")
-    monkeypatch.setattr(sentiment.get_news, "func", lambda *a, **k: "news", raising=False)
+    # Pre-fetched sources are stubbed so the prompt builds without network I/O.
+    # A crypto pair keeps the requested BTC-USD ticker on every receipt.
+    _stub_sentiment_sources(monkeypatch, "BTC-USD")
+
     captured = {}
     llm = _capturing_llm(captured, SentimentReport(
         overall_band=SentimentBand.NEUTRAL, overall_score=5.0, confidence="low", narrative="n",

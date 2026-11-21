@@ -1,0 +1,134 @@
+{
+  "date": "2026-11-20",
+  "public_identifiers": "GitHub collaborators",
+  "policy": "Redacted derivatives of existing evidence; no new sessions. Full source identities and original bytes remain private.",
+  "redactions": {
+    "student_number": 22,
+    "member_identity": 1811,
+    "credential": 0,
+    "email": 1397,
+    "local_path": 13915
+  },
+  "files": [
+    {
+      "public_file": "transcripts/redacted-exports/FR01/Export-Manifest.json",
+      "sha256": "df88c472fa9cf48d912b46670aea664dd8057ec39be5b3d6a79ce572d381ad37",
+      "kind": "redacted existing export"
+    },
+    {
+      "public_file": "transcripts/redacted-exports/FR01/Raw-Exports/01-original-plan-build.json",
+      "sha256": "11d8ddf126cbd0a62b1a289c03b96dfd635945e5ddf076707fdbbc2614eeab8a",
+      "kind": "redacted existing export"
+    },
+    {
+      "public_file": "transcripts/redacted-exports/FR01/Raw-Exports/02-prechange-offline-tests.json",
+      "sha256": "31dc5ddf51367ca558ddb591e74f2058efdb9923dea6e32f6f4bd84a095cb6c3",
+      "kind": "redacted existing export"
+    },
+    {
+      "public_file": "transcripts/redacted-exports/FR01/Raw-Exports/03-boundary-verification.json",
+      "sha256": "cc8e2ec2d906b7af9607a6436e38c10de830eaa1e224855feaa0e43a66861105",
+      "kind": "redacted existing export"
+    },
+    {
+      "public_file": "transcripts/redacted-exports/FR01/Raw-Exports/04-contract-repair-plan.json",
+      "sha256": "a4a17432fd1820535f2f3f98036507a466d5909c3454f6034017c8e8ce45f07d",
+      "kind": "redacted existing export"
+    },
+    {
+      "public_file": "transcripts/redacted-exports/FR01/Raw-Exports/05-review-712617e.json",
+      "sha256": "6559419675ddfc5894c944923c53849a4873280ed3741ec0a36e7ed6cefb9110",
+      "kind": "redacted existing export"
+    },
+    {
+      "public_file": "transcripts/redacted-exports/FR01/Raw-Exports/06-ci-follow-up.json",
+      "sha256": "97d3b4717924b14a90ed1acbf6d2b45e5ea97d757e2c499fef2fed00496c3962",
+      "kind": "redacted existing export"
+    },
+    {
+      "public_file": "transcripts/redacted-exports/FR01/Raw-Exports/07-reference-alias-plan.json",
+      "sha256": "03e00ca980ba3f165d874d4598d2445a573649e33c28c322cfc9cef0d3ac7c8e",
+      "kind": "redacted existing export"
+    },
+    {
+      "public_file": "transcripts/redacted-exports/FR01/Raw-Exports/08-reference-alias-tests.json",
+      "sha256": "c581d2c16873c5874230cd46e1a6eeab55039c5d3b6873ca8a5db4f19f422806",
+      "kind": "redacted existing export"
+    },
+    {
+      "public_file": "transcripts/redacted-exports/FR01/Raw-Exports/09-reference-alias-draft.json",
+      "sha256": "921e9001bb51b10bde04a42d51378392ce7e442e39ad0d00f62bc8a8442a2e86",
+      "kind": "redacted existing export"
+    },
+    {
+      "public_file": "transcripts/redacted-exports/FR01/Raw-Exports/10-reference-alias-review.json",
+      "sha256": "2317e560e626c87d049e351f66a61eb57440b83e18b3f007eb4b105943e709ff",
+      "kind": "redacted existing export"
+    },
+    {
+      "public_file": "transcripts/redacted-exports/FR02/FR02-OpenCode-Plan-Build-Verify.json",
+      "sha256": "321c64c6aecd85b823200e7fc0a05a351401d1ebcdbeb251ea04692d3df6bc55",
+      "kind": "redacted existing export"
+    },
+    {
+      "public_file": "transcripts/redacted-exports/FR03/FR03-OpenCode-Raw-Sessions.md",
+      "sha256": "e8408b7601689bb875d256861c925ba5cf13ed7efa0af2d319d4c2e8d4daa61c",
+      "kind": "redacted existing export"
+    },
+    {
+      "public_file": "transcripts/redacted-exports/NFR01/NFR01-ALL-raw-sessions-merged.md",
+      "sha256": "9d02821fa9c71c6963fde959e874ed12d8fdae5451d64efd1de21577a2332cd4",
+      "kind": "redacted existing export"
+    },
+    {
+      "public_file": "transcripts/redacted-exports/NFR02/NFR02_Demo.json",
+      "sha256": "9e8a4dbed61dc2f123e07e7e415c0864a8180437627d78ebfc29f4848138623d",
+      "kind": "redacted existing export"
+    },
+    {
+      "public_file": "transcripts/redacted-exports/NFR02/NFR02_Planning.json",
+      "sha256": "48e27ef558c3f8f5143042416579ea5c03759c77e5638b726600ccff45a7f2ce",
+      "kind": "redacted existing export"
+    },
+    {
+      "public_file": "transcripts/redacted-exports/NFR02/NFR02_Regression.json",
+      "sha256": "93eb9e4574244f71812dc6e3b4bf2576cbd8044997b77fb78e1d32fb0a315cf5",
+      "kind": "redacted existing export"
+    },
+    {
+      "public_file": "transcripts/EverForests.md",
+      "sha256": "dcb77546c0511c66573faaa5d99764a774347377df5b004180112dd30383af6b",
+      "collaborator": "EverForests",
+      "requirement": "FR01",
+      "kind": "redacted existing annotated transcript"
+    },
+    {
+      "public_file": "transcripts/KyrieT331.md",
+      "sha256": "26786ea950e871988265964e826e9ce1e9e4980907e3d2810c067ba56bb0875d",
+      "collaborator": "KyrieT331",
+      "requirement": "FR02",
+      "kind": "redacted existing annotated transcript"
+    },
+    {
+      "public_file": "transcripts/wmq12138.md",
+      "sha256": "5da4c9070ac20eae9faf40421436a1228862f9c47db14592b84e9311ca604484",
+      "collaborator": "wmq12138",
+      "requirement": "FR03",
+      "kind": "redacted existing annotated transcript"
+    },
+    {
+      "public_file": "transcripts/majiaqi-yan.md",
+      "sha256": "deab879a089809b289981bcf9ac30133d578449aa35c67e081cf70013d8952b8",
+      "collaborator": "majiaqi-yan",
+      "requirement": "NFR01",
+      "kind": "redacted existing annotated transcript"
+    },
+    {
+      "public_file": "transcripts/asling3.md",
+      "sha256": "d2f8feb4e3e539e7574c1b3d1b65d1637d98d3e75a0266ee27c1ca0a36d02c09",
+      "collaborator": "asling3",
+      "requirement": "NFR02",
+      "kind": "redacted existing annotated transcript"
+    }
+  ]
+}

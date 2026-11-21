@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "observed_on": "2026-11-21",
+  "evidence_class": "maintainer-browser-readback",
+  "repository": "EverForests/TradingAgents_Pro",
+  "branch": "main",
+  "settings_url": "https://github.com/EverForests/TradingAgents_Pro/settings/branch_protection_rules/86326827",
+  "require_pull_request": true,
+  "required_approvals": 1,
+  "dismiss_stale_reviews": true,
+  "require_code_owner_review": true,
+  "require_last_push_approval": true,
+  "require_up_to_date": true,
+  "required_checks": [
+    {
+      "name": "d7-required",
+      "source": "GitHub Actions"
+    },
+    {
+      "name": "tests (py3.12, America/New_York)",
+      "source": "GitHub Actions"
+    }
+  ],
+  "require_conversation_resolution": true,
+  "enforce_admins": true,
+  "allow_force_pushes": false,
+  "allow_deletions": false,
+  "boundary": "Observed saved settings; not a submitted peer review or proof of historical enforcement."
+}

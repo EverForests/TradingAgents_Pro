@@ -1,6 +1,7 @@
 """yfinance-based news data fetching functions."""
 
 import contextlib
+import hashlib
 from datetime import UTC, datetime
 
 import yfinance as yf
@@ -9,8 +10,43 @@ from dateutil.relativedelta import relativedelta
 from tradingagents.dataflows.config import get_config
 from tradingagents.dataflows.date_window import coverage_gap, in_window
 from tradingagents.dataflows.errors import VendorUnavailableError
+from tradingagents.dataflows.source_receipt import ItemMeta, SourceReceipt, SourceText
 from tradingagents.dataflows.symbols import normalize_symbol
 from tradingagents.dataflows.vendors.yahoo.common import yf_retry
+
+
+def _news_item_meta(article: dict) -> ItemMeta:
+    """Metadata for one rendered article: no title or summary text in the ID."""
+    title = (article.get("title") or "").strip()
+    summary = (article.get("summary") or "").strip()
+    # "No title" is the parser's placeholder, not a headline: without a summary
+    # the article says nothing and cannot be substantive evidence.
+    has_body = bool(summary) or (bool(title) and title != "No title")
+    locator = (article.get("link") or "").strip()
+    if not locator:
+        # A deterministic locator from the item's own fields, never its body.
+        stamp = article.get("pub_date")
+        stamp = stamp.isoformat() if isinstance(stamp, datetime) else ""
+        locator = hashlib.sha1(f"{title}|{stamp}".encode()).hexdigest()[:16]
+    published = article.get("pub_date")
+    if isinstance(published, datetime):
+        published = published.astimezone(UTC) if published.tzinfo else published.replace(tzinfo=UTC)
+    return ItemMeta(item_id=locator, published_at=published, ticker=None, substantive=has_body)
+
+
+def _news_source_text(text: str, articles: list[dict], ticker: str,
+                      start_date: str, end_date: str, reasons: tuple[str, ...] = ()) -> SourceText:
+    """The rendered news text carrying a receipt for the items it was built from."""
+    receipt = SourceReceipt(
+        source_id="news",
+        vendor="yfinance",
+        ticker=ticker,
+        window_start=start_date,
+        window_end=end_date,
+        items=tuple(_news_item_meta(a) for a in articles),
+        reason_codes=tuple(reasons),
+    )
+    return SourceText(text, receipt)
 
 
 def _extract_article_data(article: dict) -> dict:
@@ -88,6 +124,8 @@ def get_news_yfinance(
     ticker: str,
     start_date: str,
     end_date: str,
+    *,
+    _with_receipt: bool = False,
 ) -> str:
     """News about ``ticker`` published in the window, from Yahoo Finance.
 
@@ -96,7 +134,16 @@ def get_news_yfinance(
     Yahoo news is unavailable, which is not an absence of news, and a configured
     next vendor is tried. Search results are a sample, so finding none in the
     window never reads as "no news".
+
+    ``_with_receipt=True`` returns the same rendered text as a ``SourceText``
+    that also carries a receipt for exactly the articles it was built from (no
+    second fetch). The default returns the plain string unchanged.
     """
+    def _text(text: str, articles: list[dict], reasons: tuple[str, ...] = ()) -> str:
+        if not _with_receipt:
+            return text
+        return _news_source_text(text, articles, ticker, start_date, end_date, reasons)
+
     article_limit = get_config()["news_article_limit"]
     # Query Yahoo with the canonical symbol, like every other yfinance path —
     # a raw broker/forex/crypto alias (XAUUSD, BTCUSD) otherwise silently
@@ -120,18 +167,36 @@ def get_news_yfinance(
     end_dt = datetime.strptime(end_date, "%Y-%m-%d")
     # Keep only articles within the requested window (look-ahead safe).
     in_range = [a for a in articles if in_window(a["pub_date"], start_dt, end_dt)]
+    if _with_receipt:
+        # The receipt must describe exactly the rendered content: an undated or
+        # title-less article is not evidence, so it never reaches the block.
+        in_range = [a for a in in_range
+                    if a["pub_date"] is not None and _news_item_meta(a).substantive]
     if in_range:
-        return f"## {ticker}{resolved} News, from {start_date} to {end_date}:\n\n{_format_articles(in_range)}"
+        return _text(
+            f"## {ticker}{resolved} News, from {start_date} to {end_date}:\n\n{_format_articles(in_range)}",
+            in_range,
+        )
 
     if not feed:
-        return (f"<Yahoo Finance news unavailable for {start_date}..{end_date}: Yahoo search "
-                f"returns only a sample of recent articles about {canonical}, so this is not "
-                f"an absence of {subject}>")
+        return _text(
+            f"<Yahoo Finance news unavailable for {start_date}..{end_date}: Yahoo search "
+            f"returns only a sample of recent articles about {canonical}, so this is not "
+            f"an absence of {subject}>",
+            [],
+            ("FETCH_ERROR",),
+        )
     gap = coverage_gap(
         (a["pub_date"] for a in articles),
         start_date, end_date, "Yahoo Finance news", subject,
     )
-    return gap or f"No news found for {ticker}{resolved} between {start_date} and {end_date}"
+    # Articles outside the window are the only news there was: OUT_OF_WINDOW.
+    reasons = ("OUT_OF_WINDOW",) if articles else ("EMPTY",)
+    return _text(
+        gap or f"No news found for {ticker}{resolved} between {start_date} and {end_date}",
+        [],
+        reasons,
+    )
 
 
 def get_global_news_yfinance(

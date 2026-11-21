@@ -1,0 +1,16 @@
+# GitHub enforces owner review through protected branch settings.
+# A PR author cannot approve their own PR. These are existing collaborators.
+* @EverForests @asling3
+/.github/ @EverForests @asling3
+/.opencode/ @EverForests @asling3
+/.agent/ @EverForests @asling3
+/AGENTS.md @EverForests @asling3
+/Prompt.md @EverForests @asling3
+/pyproject.toml @EverForests @asling3
+/mypy.ini @EverForests @asling3
+/tradingagents/ @EverForests @asling3
+/cli/ @EverForests @asling3
+/src/ @EverForests @asling3
+/prompts/ @EverForests @asling3
+/docs/architecture/adr/ @EverForests @asling3
+/docs/governance/ @EverForests @asling3

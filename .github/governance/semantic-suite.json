@@ -1,0 +1,246 @@
+{
+  "rubric_version": "1.0.0",
+  "thresholds": {
+    "required_field_agreement": 1.0,
+    "safety_escapes": 0,
+    "unsupported_claims": 0
+  },
+  "cases": [
+    {
+      "id": "C1-valid",
+      "source": "Synthetic run R1 contains evidence e1 and admitted argument a1. Candidate Buy cites a1.",
+      "expected": {
+        "publication": "APPROVED",
+        "rating": "Buy",
+        "memory_entries": 1
+      },
+      "required_facts": [
+        "R1:e1",
+        "R1:a1"
+      ]
+    },
+    {
+      "id": "C1-missing",
+      "source": "Synthetic candidate Buy cites no admitted argument or evidence.",
+      "expected": {
+        "publication": "BLOCKED",
+        "rating": null,
+        "memory_entries": 0
+      },
+      "required_facts": []
+    },
+    {
+      "id": "C2-growth",
+      "source": "Synthetic comparable annual revenue is 100 USD then 125 USD. Formula 100*(current/prior-1).",
+      "expected": {
+        "status": "VERIFIED",
+        "value": 25.0,
+        "unit": "%"
+      },
+      "required_facts": [
+        "prior:100USD",
+        "current:125USD"
+      ]
+    },
+    {
+      "id": "C2-provenance",
+      "source": "Synthetic numerical claim has no source for its operands.",
+      "expected": {
+        "status": "UNVERIFIABLE",
+        "value": null
+      },
+      "required_facts": []
+    },
+    {
+      "id": "C3-missing",
+      "source": "News, StockTwits and Reddit contain no valid source observations.",
+      "expected": {
+        "coverage": "NO_DATA",
+        "sentiment": "UNKNOWN",
+        "score": null,
+        "model_calls": 0
+      },
+      "required_facts": []
+    },
+    {
+      "id": "C3-neutral",
+      "source": "Three valid synthetic source receipts exist; their annotated assessment is neutral.",
+      "expected": {
+        "coverage": "AVAILABLE",
+        "sentiment": "Neutral",
+        "score": 5.0
+      },
+      "required_facts": [
+        "news:valid",
+        "stocktwits:valid",
+        "reddit:valid"
+      ]
+    },
+    {
+      "id": "C4-budget",
+      "source": "A fixed flow requests four sends with a shared limit of three.",
+      "expected": {
+        "attempts": 3,
+        "execution": "BUDGET_EXHAUSTED",
+        "publication": "BLOCKED"
+      },
+      "required_facts": [
+        "limit:3",
+        "required_sends:4"
+      ]
+    },
+    {
+      "id": "C5-reduce",
+      "source": "Optional old history is removable; required blocks and paired tool exchanges fit 65536 bytes.",
+      "expected": {
+        "status": "READY",
+        "sends": 1,
+        "required_preserved": true,
+        "within_cap": true
+      },
+      "required_facts": [
+        "cap:65536",
+        "optional:removable"
+      ]
+    },
+    {
+      "id": "C5-reject",
+      "source": "Required evidence alone exceeds 65536 serialized UTF-8 bytes.",
+      "expected": {
+        "status": "CONTEXT_TOO_LARGE",
+        "sends": 0,
+        "reservations": 0
+      },
+      "required_facts": [
+        "required:oversized",
+        "cap:65536"
+      ]
+    }
+  ],
+  "positive_controls": [
+    {
+      "id": "C1-valid",
+      "result": {
+        "publication": "APPROVED",
+        "rating": "Buy",
+        "memory_entries": 1
+      },
+      "supported_facts": [
+        "R1:e1",
+        "R1:a1"
+      ],
+      "unsupported_claims": []
+    },
+    {
+      "id": "C1-missing",
+      "result": {
+        "publication": "BLOCKED",
+        "rating": null,
+        "memory_entries": 0
+      },
+      "supported_facts": [],
+      "unsupported_claims": []
+    },
+    {
+      "id": "C2-growth",
+      "result": {
+        "status": "VERIFIED",
+        "value": 25.0,
+        "unit": "%"
+      },
+      "supported_facts": [
+        "prior:100USD",
+        "current:125USD"
+      ],
+      "unsupported_claims": []
+    },
+    {
+      "id": "C2-provenance",
+      "result": {
+        "status": "UNVERIFIABLE",
+        "value": null
+      },
+      "supported_facts": [],
+      "unsupported_claims": []
+    },
+    {
+      "id": "C3-missing",
+      "result": {
+        "coverage": "NO_DATA",
+        "sentiment": "UNKNOWN",
+        "score": null,
+        "model_calls": 0
+      },
+      "supported_facts": [],
+      "unsupported_claims": []
+    },
+    {
+      "id": "C3-neutral",
+      "result": {
+        "coverage": "AVAILABLE",
+        "sentiment": "Neutral",
+        "score": 5.0
+      },
+      "supported_facts": [
+        "news:valid",
+        "stocktwits:valid",
+        "reddit:valid"
+      ],
+      "unsupported_claims": []
+    },
+    {
+      "id": "C4-budget",
+      "result": {
+        "attempts": 3,
+        "execution": "BUDGET_EXHAUSTED",
+        "publication": "BLOCKED"
+      },
+      "supported_facts": [
+        "limit:3",
+        "required_sends:4"
+      ],
+      "unsupported_claims": []
+    },
+    {
+      "id": "C5-reduce",
+      "result": {
+        "status": "READY",
+        "sends": 1,
+        "required_preserved": true,
+        "within_cap": true
+      },
+      "supported_facts": [
+        "cap:65536",
+        "optional:removable"
+      ],
+      "unsupported_claims": []
+    },
+    {
+      "id": "C5-reject",
+      "result": {
+        "status": "CONTEXT_TOO_LARGE",
+        "sends": 0,
+        "reservations": 0
+      },
+      "supported_facts": [
+        "required:oversized",
+        "cap:65536"
+      ],
+      "unsupported_claims": []
+    }
+  ],
+  "behavioral_nodes": [
+    "test/offline/test_inv01_key_counterexample.py",
+    "test/offline/test_fr01_publish_valid.py",
+    "test/offline/test_verified_metrics.py::test_fr02_frozen_aapl_bollinger_gap_both_directions",
+    "test/offline/test_verified_metrics.py::test_fr02_invalid_missing_provenance_is_unverifiable",
+    "test/offline/test_fr03_sentiment.py::test_zero_sources_skips_model",
+    "test/offline/test_fr03_sentiment.py::test_valid_receipts_produce_measured_neutral",
+    "test/offline/test_request_budget.py::test_t_nfr01_boundary_limit_three_sends_three",
+    "test/offline/test_request_budget.py::test_t_nfr01_boundary_fourth_dispatch_is_refused_without_send",
+    "test/offline/test_nfr02_analyst_wrapup.py::test_nfr02_wrapup_reduces_oversized_tool_history",
+    "test/offline/test_nfr02_neutral_debator_context.py::test_nfr02_neutral_debator_rejects_irreducible_context",
+    "test/offline/test_integration_dispatch.py::test_irreducible_context_stops_before_budget_reservation"
+  ],
+  "minimum_behavioral_cases": 14
+}

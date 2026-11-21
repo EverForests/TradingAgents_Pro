@@ -1,0 +1,7 @@
+{
+  "profile": "course-acceptance",
+  "provider": "school-hosted OpenAI-compatible DeepSeek",
+  "quick_model": "CS5351/DeepSeek-V4-Flash",
+  "deep_model": "CS5351/DeepSeek-V4-Flash",
+  "scope": "Versioned evaluation profile; does not override runtime environment configuration"
+}

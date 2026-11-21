@@ -10,6 +10,8 @@ claim. Deterministic, no LLM involved.
 
 from __future__ import annotations
 
+import json
+import math
 from collections.abc import Iterable
 
 import pandas as pd
@@ -26,6 +28,24 @@ DEFAULT_SNAPSHOT_INDICATORS: tuple[str, ...] = (
     "rsi", "boll", "boll_ub", "boll_lb",
     "macd", "macds", "macdh", "atr",
 )
+
+# A stated currency is accepted exactly as the vendor wrote it: a three-letter
+# code in capitals (USD, HKD) or a case-significant quote unit (GBp, ZAc).
+# Missing markers, digits and other prose are not a currency and never become
+# one by default.
+_MISSING_CURRENCY = {"", "nan", "none", "null", "n/a", "na", "unknown", "-"}
+_QUOTE_UNITS = {"GBp", "ZAc", "ILA", "ILs"}
+
+
+def _is_quote_currency(value) -> bool:
+    """Whether ``value`` names a currency the way the price vendor stated it."""
+    if not isinstance(value, str):
+        return False
+    if value.strip().lower() in _MISSING_CURRENCY:
+        return False
+    if value in _QUOTE_UNITS:
+        return True
+    return len(value) == 3 and value.isascii() and value.isalpha() and value.isupper()
 
 
 def _verified_rows(symbol: str, as_of_date: str) -> pd.DataFrame:
@@ -125,4 +145,65 @@ def build_verified_market_snapshot(
         "percentage moves unless directly supported by tool output with concrete "
         "dates and prices.",
     ]
+    # The quote source follows the snapshot as one comment line: the stock and
+    # the trading day this row is for, the currency it is priced in, and the two
+    # raw figures the text above only renders. It is added only when the frame's
+    # own source agrees with this row and both figures are real numbers; a
+    # missing, stale, conflicting or non-numeric input returns the snapshot
+    # exactly as it was, rather than a source borrowed from elsewhere.
+    if _quote_source_is_usable(df, stock_df, symbol, as_of_date, latest, latest_date,
+                               selected, indicator_values):
+        source = df.attrs.get("fr02_quote_source")
+        quote = {
+            "symbol": normalize_symbol(symbol),
+            "trading_date": latest_date,
+            "as_of_date": as_of_date,
+            "currency": source["currency"],
+            "close": float(latest["Close"]),
+            "boll_ub": float(stock_df["boll_ub"].iloc[-1]),
+        }
+        lines.append("# FR02_QUOTE_SOURCE " + json.dumps(quote, separators=(",", ":")))
     return "\n".join(lines)
+
+
+def _quote_source_is_usable(df: pd.DataFrame, stock_df: pd.DataFrame, symbol: str,
+                            as_of_date: str, latest, latest_date: str,
+                            selected: tuple[str, ...], indicator_values: dict) -> bool:
+    """Whether this snapshot row carries a source that can be published as is.
+
+    The stock must be the one asked for, the trading day the one this row
+    reports, and the currency stated the way the price vendor states one. The
+    upper band is read only when it was actually requested and its calculation
+    reported no error — the loop records a failure as "N/A" or "N/A (...)", so a
+    key on its own proves nothing — and a column stockstats happened to produce
+    while computing another band is never cited. Both figures must then be
+    finite non-boolean numbers; anything else leaves the snapshot unchanged.
+    """
+    source = getattr(df, "attrs", {}).get("fr02_quote_source")
+    if not isinstance(source, dict) or df.empty or stock_df.empty:
+        return False
+    if "boll_ub" not in selected:
+        return False
+    shown = indicator_values.get("boll_ub")
+    if not isinstance(shown, str) or not shown.strip() or shown.strip().startswith("N/A"):
+        return False
+    if "boll_ub" not in stock_df.columns or "Close" not in df.columns:
+        return False
+    stated = source.get("symbol")
+    if not isinstance(stated, str) or stated.strip().upper() != normalize_symbol(symbol).strip().upper():
+        return False
+    if not isinstance(latest_date, str):
+        return False
+    if source.get("latest_trading_date") != latest_date:
+        return False
+    if not _is_quote_currency(source.get("currency")):
+        return False
+    for value in (latest.get("Close"), stock_df["boll_ub"].iloc[-1]):
+        if value is None or pd.api.types.is_bool(value):
+            return False
+        try:
+            if not math.isfinite(float(value)):
+                return False
+        except (TypeError, ValueError):
+            return False
+    return True
