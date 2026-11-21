@@ -1,5 +1,12 @@
 format_version: 1
 entries:
+- id: AI-D7-RECEIPTS-20261121
+  date: '2026-11-21'
+  tool: automation tools; OpenCode read-only verification
+  scope: CI receipt retention and delivery evidence reconciliation; no application edits
+  human_direction: Complete the authorized D7 enforcement and synchronize course materials.
+  evidence: Hosted run 44883183291 passed the analyzers, governance cases, semantic replay and regressions but failed because hidden receipt files were excluded by the artifact uploader; retain hidden sanitized receipts explicitly.
+  review_status: Correcting the measured delivery failure; no fabricated peer approval.
 - id: AI-D7-ENFORCEMENT-20261121
   date: '2026-11-21'
   tool: OpenCode course-plan and course-verify with the school DeepSeek model; automation tools

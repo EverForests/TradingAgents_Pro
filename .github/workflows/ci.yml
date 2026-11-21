@@ -186,6 +186,7 @@ jobs:
         with:
           name: d7-governance-${{ github.run_id }}
           path: .d7-receipts/
+          include-hidden-files: true
           if-no-files-found: error
 
   d7-required:
