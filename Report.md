@@ -2,13 +2,15 @@
 
 | Field | Value |
 | --- | --- |
-| Course | CS5351 Agentic Software Engineering |
+| Course | CS5351 Software Engineering |
+| Project | Agentic Software Engineering Project |
 | Deliverable | D6 project report |
-| Status | Approved in confirmed offline team review |
+| Status | Approved — internal team review |
 | Repository | [EverForests/TradingAgents_Pro](https://github.com/EverForests/TradingAgents_Pro) |
 | Upstream reference | `upstream-baseline` at `9fa1196fffbcfd9de5146d2dd2869df84ab99838` |
-| Verified application and tests | `df8a9d6419dfa0aab2f4d8986d0a44060354cdb9` on `integration/course-project` |
-| Consolidated evidence baseline | `b8a7564ed9c2ac82d0bab92f548bbe6daea763f3`; [integration PR #11](https://github.com/EverForests/TradingAgents_Pro/pull/11) |
+| Application acceptance baseline | `df8a9d6419dfa0aab2f4d8986d0a44060354cdb9` on `integration/course-project` |
+| Historical consolidated evidence baseline | `b8a7564ed9c2ac82d0bab92f548bbe6daea763f3`; [integration PR #11](https://github.com/EverForests/TradingAgents_Pro/pull/11) |
+| Latest verified CI baseline | `5ffab925ca97a5eec0ecc1f1037bcde76719e475`; 18/18 hosted checks passed ([PR](https://github.com/EverForests/TradingAgents_Pro/actions/runs/44892131021), [push](https://github.com/EverForests/TradingAgents_Pro/actions/runs/44892127732)) |
 | Report compilation | Updated 21 November 2026, Asia/Shanghai |
 | Recorded evidence period | 15–21 November 2026 |
 

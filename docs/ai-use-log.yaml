@@ -1,5 +1,12 @@
 format_version: 1
 entries:
+- id: AI-REPORT-COVER-METADATA-20261121
+  date: '2026-11-21'
+  tool: automation tools
+  scope: Correct the report cover course title and distinguish application, historical evidence and verified CI baselines; synchronize public/private reports and delivery packaging
+  human_direction: The coordinator requested the reviewed Field/Value corrections and a check of the latest hosted CI results.
+  evidence: Week 1 introduction names CS5351 Software Engineering; the project specification names Agentic Software Engineering Project. Revision 5ffab92 passed 18 hosted checks in PR run44892131021 and push run44892127732. Private report retains the five-member student roster; public report omits student numbers.
+  review_status: Documentation maintenance authorized by the coordinator; no application, prompt, test or CI implementation changes, and no additional local tests.
 - id: AI-D7-BLUEPRINT-SCOPE-20261121
   date: '2026-11-21'
   tool: automation tools
