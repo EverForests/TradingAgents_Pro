@@ -148,7 +148,8 @@ jobs:
               subprocess.run(['git', 'merge-base', '--is-ancestor', policy_revision, 'HEAD'], check=True)
               changed = subprocess.check_output(['git', 'diff', '--name-only', activation, 'HEAD'], text=True).splitlines()
               allowed_roots = ('.github/', '.opencode/', 'docs/', 'test/governance/')
-              allowed_files = {'README.md', 'Report.md', '.gitignore', 'mypy.ini', 'pyproject.toml'}
+              allowed_files = {'README.md', 'Report.md', 'architecture-blueprint.md',
+                               '.gitignore', 'mypy.ini', 'pyproject.toml'}
               if any(not (p.startswith(allowed_roots) or p in allowed_files) for p in changed):
                   raise SystemExit('Bootstrap is restricted to the approved governance and document scope')
               names = subprocess.check_output(['git', 'ls-tree', '-r', '--name-only', policy_revision], text=True).splitlines()

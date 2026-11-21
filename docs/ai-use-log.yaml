@@ -1,5 +1,12 @@
 format_version: 1
 entries:
+- id: AI-D7-BLUEPRINT-SCOPE-20261121
+  date: '2026-11-21'
+  tool: automation tools
+  scope: Add the exact root architecture-blueprint.md path to the D7 bootstrap document allowlist and synchronize delivery provenance
+  human_direction: The coordinator explicitly requested repair and synchronization after the latest documentation commit produced 14 successful and 4 failing hosted checks.
+  evidence: PR run44890380337 rejected the document scope; push run44890376310 recorded the two pinned-bootstrap failures. ADR-002 records the exact-path correction; tests and runtime files are unchanged.
+  review_status: Maintainer-authorized narrow CI maintenance. No additional local test invocation; hosted Actions results remain attributable to their exact revision. No historical or submitted GitHub approval fabricated.
 - id: AI-OFFLINE-APPROVAL-20261121
   date: '2026-11-21'
   tool: automation tools

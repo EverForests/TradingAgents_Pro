@@ -33,3 +33,9 @@ The single authorized full local invocation returned1799 passes and33 baseline-G
 ## Coordinator scope decision — 21 November 2026
 
 Status: main protection saved and read back; integration protection declined. The coordinator explicitly directed leaving integration's settings unchanged. Decision: retain main as the protected release boundary and keep integration as an unprotected development branch. Passing or failing integration CI is informative, not an enforced merge condition there. This overrides the initial two-branch protection target and is disclosed rather than claiming full protection on all working branches.
+
+## Exact blueprint allowlist correction — 21 November 2026
+
+Decision: add only the root `architecture-blueprint.md` document to the first-activation file allowlist. The coordinator approved this CI repair and delivery synchronization after the documentation-only revision `d7051fb` exposed the omission. The blueprint is already an approved course architecture artifact; its current review-status update changes no application behavior. No root wildcard, new runtime path, agent permission, policy-snapshot exception or hosted protection change is introduced. The immutable reviewed policy snapshot, ancestry checks, tamper rejection and fail-closed aggregate remain intact.
+
+The PR workflow rejected the blueprint during bounded bootstrap. On push, the ordinary checks and policy/static stages passed, but the two pinned-bootstrap governance cases reached the same premature scope rejection. The aggregate consequently failed for both events. This follow-up changes no tests, application source or prompts and runs no additional local tests. Exact-revision hosted results are retained in GitHub Actions; earlier measured receipts retain their original revision identities.
