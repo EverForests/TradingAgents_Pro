@@ -124,11 +124,12 @@
     "01849741757c4eeba7d529bbd8287e3304c804f8a35ce8e1c2acac1b138e3ecc",
     "103c3e51bdaf4192f099a82d5660eff8f4045ed947f2817a072103b9fe553c84",
     "164cdb6e58f3d217eb3cfa9311efe8c83cb50d03c93ce9b2ba50685273a79d2c",
+    "1e019b0ebf9bea669fb4cce78470f5cab9fdffb3940a9debdc840f2e676be43e",
     "34c9722d6d4bbb5e5cee448a81f716af6bf219fa4b4d148a07207fdadeee997c",
+    "3ef315a9f9d331dded9ddf8362e43e3c6635741ecf45218c8209d53bd828b1de",
     "3fc561b788ce1a0067e43d4c8b6972a4effea1c7cc36a7b186659eb6394d2462",
     "41dee7b7807f5a0da4e2c27d45b2c52bcf7a7b407ec14b3f89160094c03fd04f",
     "478761b8edf6d0ec3d00992139d08224c5176ce4866555e4e24bd9c2e6828db3",
-    "4f0d4bd2bb2a938be019a608b674d24edb14ea0cfd8478ab0a3e2180812efbb6",
     "5a95d024126e780e141de3afb6057de8f649538b3472b43e5c5280aada46e781",
     "5b1cb7568ca61ac2640329dc3b44302ca7de8dbc2dfb5d90269477b6613eaaa8",
     "5dd737edd89f1df0a236ba047b3baf95508c3e72b424ac8e1ec1881443b47567",
@@ -152,7 +153,8 @@
     "d05ff2b33f0fe294709f9037a5593b0e2b1a79a474ccf8086b5da1057eba0f05",
     "e224c051195b0f07c8c689b268f6a410a4b056bbe476ea2d679115670ca0bafd",
     "e59e0c376e54d40f5c1c39452bf857ae37b5e3d69f4689e7fea461220e71bc4b",
-    "ed39b66e21fe0f88f1844ec164e1e97877dff27508fd2155704b0b3cd86278c4"
+    "ed39b66e21fe0f88f1844ec164e1e97877dff27508fd2155704b0b3cd86278c4",
+    "fc4c0c01373b72b835ca159c3ab2ada99845841bcbe2dcae26744c80cab0663b"
   ],
   "type_findings": [
     {
@@ -1124,12 +1126,30 @@
     },
     {
       "filename": ".github/scripts/d7_semantic.py",
+      "test_id": "B405",
+      "line_number": 14,
+      "issue_text": "Using xml.etree.ElementTree to parse untrusted XML data is known to be vulnerable to XML attacks. Replace xml.etree.ElementTree with the equivalent defusedxml package, or make sure defusedxml.defuse_stdlib() is called.",
+      "issue_severity": "LOW",
+      "issue_confidence": "HIGH",
+      "code_sha256": "3654b5c132d28361b439217306fef2dbcd1ee54e282724b150564e0df2efd8b2"
+    },
+    {
+      "filename": ".github/scripts/d7_semantic.py",
+      "test_id": "B314",
+      "line_number": 116,
+      "issue_text": "Using xml.etree.ElementTree.fromstring to parse untrusted XML data is known to be vulnerable to XML attacks. Replace xml.etree.ElementTree.fromstring with its defusedxml equivalent function or make sure defusedxml.defuse_stdlib() is called",
+      "issue_severity": "MEDIUM",
+      "issue_confidence": "HIGH",
+      "code_sha256": "890c106ebbe98e8f1f370cbe38e86ed45f96085bfed07b37435197a6494d43bd"
+    },
+    {
+      "filename": ".github/scripts/d7_semantic.py",
       "test_id": "B603",
-      "line_number": 144,
+      "line_number": 173,
       "issue_text": "subprocess call - check for execution of untrusted input.",
       "issue_severity": "LOW",
       "issue_confidence": "HIGH",
-      "code_sha256": "841a55ba975e6edeebcc5349a791cdb47660d12a971cf4145396faf9112160b4"
+      "code_sha256": "6343919a82e6ad4f8aa1930546145fb5dd31b4b6e398235510599bd3d9f08795"
     },
     {
       "filename": ".github/scripts/d7_static.py",

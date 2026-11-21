@@ -1,7 +1,11 @@
 """D7 workflow acceptance, established before governance implementation."""
 
+import os
+import subprocess
+import sys
 from pathlib import Path
 
+import pytest
 import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -49,3 +53,33 @@ def test_d7_has_trusted_base_execution_and_receipts():
     run = str(workflow()["jobs"].get("d7-governance", {}))
     assert "trusted-policy" in run, "PR policy must be evaluated from its trusted base"
     assert "upload-artifact" in run, "Retain gate execution receipts"
+
+
+@pytest.mark.parametrize("tamper", [False, True])
+def test_bootstrap_executes_only_the_pinned_policy_snapshot(tmp_path, tamper):
+    run = next(step["run"] for step in workflow()["jobs"]["d7-governance"]["steps"]
+               if step.get("name") == "Select trusted-policy from comparison base")
+    code = run.split("python - <<'PY'\n", 1)[1].rsplit("\nPY", 1)[0]
+    for rel in [".github/scripts", ".github/governance"]:
+        target = tmp_path / rel
+        target.mkdir(parents=True, exist_ok=True)
+        for source in (ROOT / rel).iterdir():
+            if source.is_file():
+                (target / source.name).write_bytes(source.read_bytes())
+    if tamper:
+        with (tmp_path / ".github/scripts/d7_policy.py").open("a") as output:
+            output.write("\n# Unreviewed change in the candidate snapshot\n")
+    git_dir = subprocess.check_output(["git", "-C", str(ROOT), "rev-parse", "--absolute-git-dir"],
+                                      text=True).strip()
+    env = dict(os.environ, GIT_DIR=git_dir, GIT_WORK_TREE=str(tmp_path),
+               COMPARE_BASE="7da6ecc9ff665d096b3def5be9ee9601628ae05e",
+               GITHUB_ENV=str(tmp_path / "environment.txt"))
+    result = subprocess.run([sys.executable, "-c", code], cwd=tmp_path, env=env,
+                            capture_output=True, text=True, check=False)
+    if tamper:
+        assert result.returncode != 0
+        assert "pinned reviewed governance snapshot" in result.stderr
+    else:
+        assert result.returncode == 0, result.stderr
+        assert (tmp_path / ".d7-trusted/scripts/d7_policy.py").read_bytes() == (
+            ROOT / ".github/scripts/d7_policy.py").read_bytes()

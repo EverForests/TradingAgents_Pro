@@ -360,3 +360,21 @@ def test_model_response_hash_must_be_recomputable():
                "raw_response": "[]", "answers": corpus()["positive_controls"]}
     with pytest.raises(policy.PolicyFailure, match="hash does not match"):
         semantic.validate_model_receipt(ROOT, corpus(), "corpus-digest", receipt)
+
+
+@pytest.mark.parametrize("body", ["<testsuites/>",
+    '<testsuites><testsuite><testcase name="required"><skipped/></testcase></testsuite></testsuites>'])
+def test_semantic_replay_refuses_missing_or_skipped_required_cases(tmp_path, body):
+    path = tmp_path / "receipt.xml"
+    path.write_text(body)
+    with pytest.raises(policy.PolicyFailure):
+        semantic.check_behavior_receipt(path, 1)
+
+
+def test_coding_agent_model_and_instruction_changes_are_semantic_changes():
+    original = {"agents": {"course-plan": {"description": "read-only", "permissions": []}}}
+    changed = copy.deepcopy(original)
+    changed["agents"]["course-plan"]["permissions"] = ["one additional exact read"]
+    assert semantic.agent_projection(original) == semantic.agent_projection(changed)
+    changed["agents"]["course-plan"]["description"] = "write without approval"
+    assert semantic.agent_projection(original) != semantic.agent_projection(changed)

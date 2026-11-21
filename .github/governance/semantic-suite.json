@@ -241,5 +241,6 @@
     "test/offline/test_nfr02_analyst_wrapup.py::test_nfr02_wrapup_reduces_oversized_tool_history",
     "test/offline/test_nfr02_neutral_debator_context.py::test_nfr02_neutral_debator_rejects_irreducible_context",
     "test/offline/test_integration_dispatch.py::test_irreducible_context_stops_before_budget_reservation"
-  ]
+  ],
+  "minimum_behavioral_cases": 14
 }

@@ -11,10 +11,18 @@ import hashlib
 import json
 import subprocess
 import sys
+import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Any
 
 from d7_policy import SEMANTIC, PolicyFailure, changed_paths, git, prospective_base, require
+
+
+def agent_projection(config: dict[str, Any]) -> dict[str, Any]:
+    return {"model": config.get("model"), "provider": config.get("provider"),
+            "instructions": config.get("instructions"),
+            "agents": {name: {k: v for k, v in value.items() if k != "permissions"}
+                       for name, value in config.get("agents", {}).items()}}
 
 
 def configuration_digest(root: Path) -> str:
@@ -30,6 +38,10 @@ def configuration_digest(root: Path) -> str:
         files.append(profile)
     records = [(p.relative_to(root).as_posix(), hashlib.sha256(p.read_bytes()).hexdigest())
                for p in sorted(set(files))]
+    agent_config = root / ".opencode/opencode.jsonc"
+    if agent_config.is_file():
+        projected = json.dumps(agent_projection(json.loads(agent_config.read_text())), sort_keys=True)
+        records.append(("coding-agent-model-and-instructions", hashlib.sha256(projected.encode()).hexdigest()))
     return hashlib.sha256(json.dumps(records).encode()).hexdigest()
 
 
@@ -97,6 +109,18 @@ def profile_change_requires_receipt(changed: bool, existed: bool,
     return False
 
 
+def check_behavior_receipt(path: Path, minimum: int) -> int:
+    raw = path.read_bytes()
+    require(len(raw) <= 10_000_000 and b"<!DOCTYPE" not in raw.upper()
+            and b"<!ENTITY" not in raw.upper(), "Unsafe or oversized behavior receipt")
+    cases = ET.fromstring(raw).findall(".//testcase")
+    require(len(cases) >= minimum, "Required behavioral cases were not collected")
+    require(all(case.find("skipped") is None and case.find("failure") is None
+                and case.find("error") is None for case in cases),
+            "Required semantic behavior cannot be skipped or failed")
+    return len(cases)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=Path.cwd())
@@ -127,6 +151,11 @@ def main() -> int:
             profile in paths, existing_profile, json.loads((root / profile).read_text()),
             json.loads((policy / "runtime-model.json").read_text()))
         changed = any(p.startswith(SEMANTIC) for p in paths) or profile_changed
+        agent_config = ".opencode/opencode.jsonc"
+        if agent_config in paths:
+            previous = json.loads(git(root, "show", f"{active_base}:{agent_config}"))
+            current = json.loads((root / agent_config).read_text())
+            changed = changed or agent_projection(previous) != agent_projection(current)
         report["model_change"] = changed
         if changed:
             receipts = list((root / "docs/governance/evaluations").glob("*.json"))
@@ -143,6 +172,8 @@ def main() -> int:
                    "--junitxml=.d7-receipts/semantic-behavior.xml", *corpus["behavioral_nodes"]]
         replay = subprocess.run(command, cwd=root, check=False)
         require(replay.returncode == 0, "A five-control behavioral replay failed")
+        report["behavioral_cases"] = check_behavior_receipt(
+            root / ".d7-receipts/semantic-behavior.xml", corpus["minimum_behavioral_cases"])
         report.update(status="pass", rubric_controls=controls,
                       natural_model_claim="No new natural-model measurement for unchanged model/prompt code")
         code = 0
