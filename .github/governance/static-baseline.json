@@ -124,10 +124,10 @@
     "01849741757c4eeba7d529bbd8287e3304c804f8a35ce8e1c2acac1b138e3ecc",
     "103c3e51bdaf4192f099a82d5660eff8f4045ed947f2817a072103b9fe553c84",
     "34c9722d6d4bbb5e5cee448a81f716af6bf219fa4b4d148a07207fdadeee997c",
-    "37d569670f5e90e14a5e122fa3ea8839034c80f7c0bb3727489e59fe5b323195",
     "3fc561b788ce1a0067e43d4c8b6972a4effea1c7cc36a7b186659eb6394d2462",
+    "41dee7b7807f5a0da4e2c27d45b2c52bcf7a7b407ec14b3f89160094c03fd04f",
     "478761b8edf6d0ec3d00992139d08224c5176ce4866555e4e24bd9c2e6828db3",
-    "525ee9363b40edad03dd81852e7c6d6f211186fb19e706689bf766b0009b4738",
+    "4f0d4bd2bb2a938be019a608b674d24edb14ea0cfd8478ab0a3e2180812efbb6",
     "5a95d024126e780e141de3afb6057de8f649538b3472b43e5c5280aada46e781",
     "5b1cb7568ca61ac2640329dc3b44302ca7de8dbc2dfb5d90269477b6613eaaa8",
     "5dd737edd89f1df0a236ba047b3baf95508c3e72b424ac8e1ec1881443b47567",
@@ -136,6 +136,7 @@
     "737c47dd7a8214348ac79751eb9f72f48eca60b513135f4f19c24ccf98ac7afc",
     "760daad1c7d6052c1905f8421d252e6a134f954d21380dc334591fe4fd9cd9d7",
     "7c082b837a466dc8e4104d7a7fdbb8b82d170a412a1e1ba97780136b889cadd5",
+    "8150a29ec8fdd0795ccfc390c19c3797af04901b4d880085932707ead0de5d1e",
     "81ec5b413a3aea530a6a3b6e5e5776201cf0134d1989e964e5c124cce660a6a6",
     "888afa0d0d0702a73b3328fa6d9ddf7e0e2cf0cd033adfdf062e6b8b81ebead8",
     "8d6c313b81b3fe11b3bb2d76cc721886581c0b2a1eb54fd765e6364fead18f6b",
@@ -143,11 +144,10 @@
     "aaa2a9923859aa7362b9a03a31087f7f5047a520ffc166c8e5f84534b63b4438",
     "aacc19a596938c3809d0ab0ed888b8ec64a67fca41669b21d8a055c02a2c8361",
     "b21bc9d03c0855e9d72ca0b9e70a7aff30e18671292a488f49a8f2b78775a1fe",
-    "b51aa74c2716d3cea8c0ce04226aa75e91e3a7296de00fe21fa0479e1500e12d",
-    "b53a8702ee8806886d003317b028446a96972da660141d0e15e1f0a3735ed351",
     "b5cd68854f71b6e3599f4e7b5f1590a5fc6c101b5ad0fa5fccb8eceff94964fe",
     "b615aee108563c4fdb5fd71e75523f2a60b7b6ffb0a1cefb0a42240377aaa01c",
-    "bf021fa1c8e3ef96c81390cd2e4dadbccee06c23e7edcf3d9810e4ef2d855335",
+    "b78b4a0ffea21d1aefc69594ebe73c9042ae7536613fa59d9c90ce20f05e465e",
+    "b8f5219ea19ac12e25af0856ce6ab63284e8d86156b6d38543081c89fc04b3c2",
     "c57adbe9328bf00f6bd97e018ca621fce80c2d314ad8ced4c9c6ecc4463ae07d",
     "d05ff2b33f0fe294709f9037a5593b0e2b1a79a474ccf8086b5da1057eba0f05",
     "e224c051195b0f07c8c689b268f6a410a4b056bbe476ea2d679115670ca0bafd",
@@ -1080,38 +1080,38 @@
     {
       "filename": ".github/scripts/d7_policy.py",
       "test_id": "B404",
-      "line_number": 13,
+      "line_number": 14,
       "issue_text": "Consider possible security implications associated with the subprocess module.",
       "issue_severity": "LOW",
       "issue_confidence": "HIGH",
-      "code_sha256": "d3999ef4df845d88817409ea8ec4636bd88d256efb089abf83d2c47d48cdf82d"
+      "code_sha256": "3ab30c8194adb5d9b12e6325de7b7ae40b7ff1243394ed04814f0273b83ce92a"
     },
     {
       "filename": ".github/scripts/d7_policy.py",
       "test_id": "B607",
-      "line_number": 38,
+      "line_number": 41,
       "issue_text": "Starting a process with a partial executable path",
       "issue_severity": "LOW",
       "issue_confidence": "HIGH",
-      "code_sha256": "3c377dcbb01cbbb1090379f01e3022727a8a4734f12b54947f2264e249acd506"
+      "code_sha256": "7ce7b09e8842e288e5c14bf71353d43848e0172de176dbfaf604e804e31aff26"
     },
     {
       "filename": ".github/scripts/d7_policy.py",
       "test_id": "B603",
-      "line_number": 38,
+      "line_number": 41,
       "issue_text": "subprocess call - check for execution of untrusted input.",
       "issue_severity": "LOW",
       "issue_confidence": "HIGH",
-      "code_sha256": "3c377dcbb01cbbb1090379f01e3022727a8a4734f12b54947f2264e249acd506"
+      "code_sha256": "7ce7b09e8842e288e5c14bf71353d43848e0172de176dbfaf604e804e31aff26"
     },
     {
       "filename": ".github/scripts/d7_policy.py",
       "test_id": "B310",
-      "line_number": 137,
+      "line_number": 167,
       "issue_text": "Audit url open for permitted schemes. Allowing use of file:/ or custom schemes is often unexpected.",
       "issue_severity": "MEDIUM",
       "issue_confidence": "HIGH",
-      "code_sha256": "8998b72495c58e71fd20cbbb8f2e703368b4a3c74e8fcdb77860c135421ac992"
+      "code_sha256": "7d51d6efc0b2d06b6eab693db0f6f81adaf00087acecd791db62f625ce8f27c6"
     },
     {
       "filename": ".github/scripts/d7_semantic.py",
@@ -1125,11 +1125,11 @@
     {
       "filename": ".github/scripts/d7_semantic.py",
       "test_id": "B603",
-      "line_number": 110,
+      "line_number": 144,
       "issue_text": "subprocess call - check for execution of untrusted input.",
       "issue_severity": "LOW",
       "issue_confidence": "HIGH",
-      "code_sha256": "81d13050009d2ebe77defadbe39c81f25379188a23d3a1e70c2dee9909f41f3d"
+      "code_sha256": "841a55ba975e6edeebcc5349a791cdb47660d12a971cf4145396faf9112160b4"
     },
     {
       "filename": ".github/scripts/d7_static.py",
