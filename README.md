@@ -14,7 +14,19 @@ TradingAgents Pro is a CS5351 course project that extends TradingAgents, a multi
 - **Scope (D1):** [Requirements and acceptance criteria](docs/req/requirements.yaml) define FR-01–FR-03, NFR-01–NFR-02 and two safety invariants.
 - **Architecture (D2):** [Blueprint](architecture-blueprint.md) and [shared contracts](docs/architecture/interface-contracts.md) define component ownership, dispatch control and publication authority.
 
-**Current review status: Approved in offline team review**, confirmed by the coordinator and recorded on 21 November 2026. [Current review record](docs/governance/offline-review-20261121.md). The complete course delivery is on [`integration/course-project`](https://github.com/EverForests/TradingAgents_Pro/tree/integration/course-project); the final main merge remains subject to actual GitHub review and required checks.
+**Current review status: Approved in offline team review**, confirmed by the coordinator and recorded on 21 November 2026. [Current review record](docs/governance/offline-review-20261121.md). The complete course project is now on [`main`](https://github.com/EverForests/TradingAgents_Pro/tree/main). [Integration PR #11](https://github.com/EverForests/TradingAgents_Pro/pull/11) merged on 25 November 2026 at [`71ebeda`](https://github.com/EverForests/TradingAgents_Pro/commit/71ebeda3951a26c637f92867bd550e6c19e603cb). The integration branch retains the development history; use `main` as the final source entry point.
+
+## Final delivery status
+
+| Item | Status and location |
+| --- | --- |
+| Integrated source and course artifacts | Merged into `main` through PR #11 on 25 November 2026 |
+| Project report | [Report.md](Report.md); the private course submission retains the registered roster and student numbers |
+| Annotated agent sessions | [Public redacted records](transcripts/README.md); complete originals remain in the private course submission |
+| Project demonstration video | Submitted separately, as confirmed by the coordinator on 25 November 2026; the video is not stored in this repository |
+| Presentation and speaker script | Maintained separately from the source repository and course submission ZIP |
+
+The final documentation update does not change application behavior, prompts, tests or CI configuration. The recorded 18/18 checks at `70e1690` describe that pre-merge delivery revision, not a newly executed check of this README update. Future updates to protected `main` still require the configured reviews and required checks. [PR CI receipt](https://github.com/EverForests/TradingAgents_Pro/actions/runs/44892957536) · [Push CI receipt](https://github.com/EverForests/TradingAgents_Pro/actions/runs/44892951524)
 
 ## Requirements and review ownership
 

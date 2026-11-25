@@ -1,5 +1,12 @@
 format_version: 1
 entries:
+- id: AI-FINAL-MAIN-README-20261125
+  date: '2026-11-25'
+  tool: automation tools
+  scope: Update README final-delivery status after integration PR11 merged into main; synchronize private README and delivery packaging
+  human_direction: The coordinator confirmed submission of the project video and completion of the integration-to-main merge, and requested the README update without new tests.
+  evidence: Remote main is 71ebeda3951a26c637f92867bd550e6c19e603cb, a merge of PR11 containing delivery revision 70e1690. Video submission is coordinator-confirmed; no video upload, public URL or receipt is fabricated.
+  review_status: Documentation-only maintenance; no application, prompt, test, permission or CI configuration changes, and no additional local tests. The protected-main update is proposed through a documentation PR.
 - id: AI-REPORT-COVER-METADATA-20261121
   date: '2026-11-21'
   tool: automation tools
