@@ -15,6 +15,8 @@ from tradingagents.dataflows.date_window import get_current_date, is_historical
 from tradingagents.dataflows.symbols import safe_ticker_component
 from tradingagents.default_config import DEFAULT_CONFIG
 from tradingagents.llm_clients import create_tier_client, tier_provider
+from tradingagents.llm_clients.budget_transport import request_budget_scope, terminal_request_status
+from tradingagents.llm_clients.request_budget import RequestBudget
 from tradingagents.memory import TradingMemoryLog, settlement
 from tradingagents.memory.reflection import Reflector
 from tradingagents.reporting import write_report_tree
@@ -280,10 +282,32 @@ class TradingAgentsGraph:
         Programmatic callers get the same on-disk reports the CLI produces. Pass
         an explicit ``save_path`` or let it default under ``results_dir``; the
         report is also written as one HTML page unless ``html`` is False.
+
+        FR-01 / INV-01: an official report is written only from the publication
+        gate's own ``publication_result``. A state that never passed the gate — no
+        result, or only a flat ``publication_status`` someone set — raises
+        ``PublicationRequiredError`` and writes nothing, so a candidate can never
+        be saved as an official decision. A real BLOCKED result still writes a
+        diagnostic report: the same tree without an official rating, without the
+        candidate body and without ``5_portfolio/decision.md``.
         """
+        from tradingagents.graph.publication_gate import (
+            PublicationRequiredError,
+            publication_result_from_state,
+        )
+
+        result = publication_result_from_state(final_state)
+        if result is None:
+            raise PublicationRequiredError(
+                "save_reports() needs the publication gate's publication_result; this "
+                "state has none (a flat publication_status is not a gate result), so no "
+                "official report was written"
+            )
         if save_path is None:
             save_path = self.default_report_path(ticker)
-        return write_report_tree(final_state, ticker, save_path, settings=self.run_settings(), html=html)
+        return write_report_tree(
+            final_state, ticker, save_path, settings=self.run_settings(), html=html,
+        )
 
     def default_report_path(self, ticker) -> Path:
         """Where a run's reports go unless told otherwise: under results_dir, stamped now."""
@@ -298,13 +322,67 @@ class TradingAgentsGraph:
         and loads them alongside the analysts (see ``_memory_step``).
         """
         trade_date = _validate_trade_date(trade_date)
-        return self.propagator.create_initial_state(
-            company_name,
-            trade_date,
-            asset_type=asset_type,
-            instrument_context=self.resolve_instrument_context(company_name, asset_type, trade_date),
-            portfolio_context=portfolio.render(company_name) if portfolio is not None else "",
-        )
+        # The initial state mints this run's one ``course_run`` identity, so the
+        # propagator call must read this graph's config on every entry path
+        # (propagate(), the CLI stream, a bare create_run_state()): inside its own
+        # ``run_config`` block the identity no longer depends on whatever happened
+        # to be serving config at call time. Nested blocks restore the outer one on
+        # exit, so propagating callers see the config they set.
+        with run_config(self.config):
+            return self.propagator.create_initial_state(
+                company_name,
+                trade_date,
+                asset_type=asset_type,
+                instrument_context=self.resolve_instrument_context(company_name, asset_type, trade_date),
+                portfolio_context=portfolio.render(company_name) if portfolio is not None else "",
+            )
+
+    def _run_budget(self, init_agent_state) -> RequestBudget | None:
+        """The metered budget for this run, or ``None`` when metering is off.
+
+        One ``RequestBudget`` per main analysis flow (NFR-01 / INV-02, C4), keyed
+        by the run identity the initial state already minted, with the limit
+        recorded on its ``course_run``. ``None`` outside ``request_budget_enabled``
+        (no budget is fabricated). Under it, a run with no usable identity refuses
+        rather than running unlimited: a missing or malformed ``course_run`` raises
+        ``ValueError``, and :class:`RequestBudget` refuses a missing or non-positive
+        limit.
+        """
+        if not self.config.get("request_budget_enabled"):
+            return None
+        course_run = init_agent_state.get("course_run") if isinstance(init_agent_state, dict) else None
+        if not isinstance(course_run, dict):
+            raise ValueError(
+                "request metering is enabled but the initial state carries no course_run; "
+                "refusing to run unmetered"
+            )
+        return RequestBudget(course_run.get("run_id"), course_run.get("request_limit"))
+
+    def _terminal_state(self, graph_input, init_agent_state, exc: BaseException, latest=None) -> dict | None:
+        """The one final state of a run that ended on a recognized C4/C5 failure.
+
+        Built from ``init_agent_state`` — so a resumed run that streamed ``None``
+        still has the identity the gate needs — then overlaid with whatever the run
+        had produced (``latest``) and the terminal C0 code in the flat
+        ``execution_status`` and on its ``course_run``. ``None`` when the failure is
+        not a recognized budget/context/provider refusal: the caller re-raises.
+        """
+        if latest is None:
+            latest = graph_input if graph_input is not None else init_agent_state
+        terminal = terminal_request_status(exc)
+        if terminal is None:
+            return None
+        # Actual latest values win over the initial state; a partial state never
+        # removes an identity field it did not see.
+        final_state = {}
+        for source in (init_agent_state, latest):
+            if isinstance(source, dict):
+                final_state.update(source)
+        final_state["execution_status"] = terminal
+        course_run = final_state.get("course_run")
+        if isinstance(course_run, dict):
+            final_state["course_run"] = {**course_run, "execution_status": terminal}
+        return final_state
 
     def _memory_step(self, state):
         """The graph's Memory Log step, alongside the analysts (#1428): settle every
@@ -318,8 +396,13 @@ class TradingAgentsGraph:
         """
         note = ""
         try:
-            # Another run settling the same log does the work; this one goes on.
-            done = self.settle_all_pending(wait=False)
+            # Settlement and reflection are historical work, not part of the run's
+            # model flow (NFR-01 / INV-02, C4): their requests are made outside the
+            # run's budget scope, so they never consume a slot from it. An explicit
+            # ``None`` scope keeps that true even when a caller has one published.
+            with request_budget_scope(None):
+                # Another run settling the same log does the work; this one goes on.
+                done = self.settle_all_pending(wait=False)
             if done.failed:
                 note = (f"{len(done.failed)} past decision(s) could not be settled this run "
                         "and stay pending.")
@@ -358,8 +441,23 @@ class TradingAgentsGraph:
 
     def record_decision(self, company_name, trade_date, final_state):
         """Record a finished run: its state log, and its decision in the memory log
-        for reflection on the next same-ticker run. propagate() and the CLI both end here."""
+        for reflection on the next same-ticker run. propagate() and the CLI both end here.
+
+        FR-01 / INV-01: a run the publication gate blocked writes nothing to
+        decision memory — not a rating, not even a REVIEW entry — and its state log
+        omits the candidate body.
+        """
         self._log_state(trade_date, final_state)
+        from tradingagents.graph.publication_gate import publication_result_from_state
+
+        result = publication_result_from_state(final_state)
+        if result is None or not result.approved:
+            logger.warning(
+                "Publication blocked for %s on %s (%s); nothing added to the memory log",
+                company_name, trade_date,
+                result.reason if result is not None else "no gate result",
+            )
+            return
         decision = final_state.get("final_trade_decision")
         if not decision:
             logger.warning("No final decision for %s on %s; nothing added to the memory log",
@@ -395,14 +493,115 @@ class TradingAgentsGraph:
                 if state is not None:
                     final_state.update(state)
         else:
-            final_state = self.graph.invoke(graph_input, **args)
+            # NFR-01 / INV-02 (C4): one budget for this run, published for the
+            # whole invoke so every outbound request of the flow is metered. A
+            # recognized refusal ends the run with a terminal state instead of
+            # propagating a half-finished graph — recording the terminal code on a
+            # final state whose normal tail still runs (the gate then blocks it),
+            # so the API and CLI end the same way; any other error re-raises.
+            budget = self._run_budget(init_agent_state)
+            try:
+                with request_budget_scope(budget):
+                    final_state = self.graph.invoke(graph_input, **args)
+            except Exception as exc:
+                terminal_state = self._terminal_state(graph_input, init_agent_state, exc)
+                if terminal_state is None:
+                    raise
+                run_id = (init_agent_state.get("course_run") or {}).get("run_id")
+                logger.warning(
+                    "Run %s for %s on %s ended as %s",
+                    run_id, company_name, trade_date, terminal_state["execution_status"],
+                )
+                final_state = terminal_state
+
+        # The graph returned normally, so the run finished: only now does its
+        # execution state become COMPLETED. A run that raised above never reaches
+        # this line and stays RUNNING, which the gate refuses as RUN_NOT_COMPLETE.
+        # complete_run() keeps a terminal code already recorded (C0).
+        self.complete_run(final_state)
+
+        self.publish(final_state)
 
         self.record_decision(company_name, trade_date, final_state)
 
-        # Clear checkpoint on successful completion to avoid stale state.
-        self.clear_checkpoint_on_success(company_name, trade_date, asset_type, portfolio)
+        # Clear checkpoint on successful completion to avoid stale state. A run
+        # that ended on a terminal failure keeps its checkpoint, as before.
+        if final_state.get("execution_status") == "COMPLETED":
+            self.clear_checkpoint_on_success(company_name, trade_date, asset_type, portfolio)
 
         return final_state, run_rating(final_state)
+
+    def complete_run(self, final_state: dict) -> dict:
+        """Mark a run that finished normally as ``COMPLETED`` (C0).
+
+        The only place a run becomes ``COMPLETED``: ``_run_graph`` and the CLI
+        call it after the graph returns normally, right before the gate judges the
+        candidate. A terminal C0 failure already recorded — ``BUDGET_EXHAUSTED``,
+        ``CONTEXT_TOO_LARGE`` or ``FAILED`` — keeps its own code and is never
+        overwritten, and a state with no ``course_run`` stays without one, so the
+        gate refuses it.
+        """
+        if not isinstance(final_state, dict):
+            return final_state
+        terminal = ("BUDGET_EXHAUSTED", "CONTEXT_TOO_LARGE", "FAILED")
+        current = final_state.get("execution_status")
+        if current in terminal:
+            return final_state
+        course_run = final_state.get("course_run")
+        # A RunContext that already records a terminal failure is not upgraded
+        # either, even when the flat field was not set.
+        if isinstance(course_run, dict) and course_run.get("execution_status") in terminal:
+            return final_state
+        final_state["execution_status"] = "COMPLETED"
+        if isinstance(course_run, dict):
+            final_state["course_run"] = {**course_run, "execution_status": "COMPLETED"}
+        return final_state
+
+    def publish(self, final_state: dict) -> str:
+        """FR-01 / INV-01: decide whether this run's candidate may publish.
+
+        Single deterministic gate, called once per run before any sink reads it
+        (CLI display, API return, report save, memory write). Verifies the chain
+        recommendation -> accepted argument -> this run's retained material using
+        the authoritative ID->record mappings (``argument_index`` /
+        ``evidence_index``) and the run's ``course_run``; it never re-builds the
+        index or accepts new arguments. A run the gate judges must have finished
+        normally (``complete_run``); one still running, or with no ``RunContext``,
+        is refused as ``RUN_NOT_COMPLETE``. Writes one ``publication_result`` onto
+        ``final_state`` and returns the publication status.
+
+        The Portfolio Manager writes only internal candidate fields; on refusal
+        the candidate body and rating are removed and no official rating is set,
+        so no official field carries them.
+        """
+        from tradingagents.graph.publication_gate import (
+            apply_publication,
+            evaluate_publication,
+            publication_run,
+        )
+
+        run = publication_run(final_state)
+        # A terminal C0 failure recorded on the state outranks the RunContext.
+        if final_state.get("execution_status") and final_state.get("execution_status") != run.get("execution_status"):
+            run = {**run, "execution_status": final_state["execution_status"]}
+        evidence_index = final_state.get("evidence_index") or {}
+        # The authoritative ID -> record mapping the researchers wrote. A state
+        # with none has no accepted argument, so nothing can resolve.
+        argument_index = final_state.get("argument_index") or {}
+        result = evaluate_publication(
+            {
+                "rating": final_state.get("candidate_rating"),
+                "argument_ids": final_state.get("candidate_argument_ids") or (),
+            },
+            argument_index,
+            evidence_index,
+            run,
+            # The gate re-reads each record's retained material from this run's
+            # retention root, so an expired or deleted reference cannot publish.
+            results_dir=self.config.get("results_dir"),
+        )
+        apply_publication(result, final_state)
+        return result.publication_status
 
     def stream_run(self, graph_input, **args):
         """Stream a run as ``(messages, state)`` pairs.
@@ -414,36 +613,81 @@ class TradingAgentsGraph:
         Each analyst works in a graph of its own, and the run's state takes the
         analysts' reports only when the slowest has finished, so their messages
         and reports come from their own finished steps ("tasks") as they happen.
+
+        NFR-01 / INV-02 (C4): one budget is built from the run's initial state and
+        published inside the run's own context, so it covers every step of this
+        flow and never leaks into the caller's context (restored across yields).
+        A run that ends on a recognized C4/C5 refusal yields exactly one more
+        state — the terminal state — instead of a traceback, so the debug path and
+        the CLI consume the same final state as ``propagate()``.
         """
+        # The initial state is this run's identity; ``None`` (a resume) carries no
+        # usable budget, so the resume path keeps its existing behavior.
+        init_agent_state = graph_input if isinstance(graph_input, dict) else {}
         args = {**args, "stream_mode": ["values", "tasks"]}
         # The graph's own config serves every tool call, as in propagate(), even
         # when the process-wide config has changed since. Each step runs in the
         # run's context, so the caller keeps its own between steps.
         context = run_config_context(self.config)
-        stream = context.run(self.graph.stream, graph_input, subgraphs=True, **args)
+        # Copying before the scope captures the run's config but not a budget, so
+        # this context starts with no active budget; only its own steps get one.
+        budget = self._run_budget(init_agent_state)
+        latest = init_agent_state or None
+
+        def _begin():
+            return request_budget_scope(budget)
+
+        scope = context.run(_begin)
+        context.run(scope.__enter__)
         try:
-            while (step := context.run(next, stream, None)) is not None:
-                namespace, mode, chunk = step
-                if namespace:
-                    result = chunk.get("result") if mode == "tasks" else None
-                    if isinstance(result, dict):
-                        report = {k: v for k, v in result.items() if k != "messages" and v}
-                        if result.get("messages") or report:
-                            yield result.get("messages", []), report or None
-                elif mode == "values":
-                    yield chunk.get("messages", []), chunk
+            stream = context.run(self.graph.stream, graph_input, subgraphs=True, **args)
+            try:
+                while (step := context.run(next, stream, None)) is not None:
+                    namespace, mode, chunk = step
+                    if namespace:
+                        result = chunk.get("result") if mode == "tasks" else None
+                        if isinstance(result, dict):
+                            report = {k: v for k, v in result.items() if k != "messages" and v}
+                            if result.get("messages") or report:
+                                yield result.get("messages", []), report or None
+                    elif mode == "values":
+                        if isinstance(chunk, dict):
+                            latest = chunk
+                        yield chunk.get("messages", []), chunk
+            except Exception as exc:
+                terminal_state = self._terminal_state(graph_input, init_agent_state, exc, latest)
+                if terminal_state is None:
+                    raise
+                logger.warning(
+                    "Streaming run %s ended as %s",
+                    (init_agent_state.get("course_run") or {}).get("run_id"),
+                    terminal_state["execution_status"],
+                )
+                yield [], terminal_state
+            finally:
+                context.run(stream.close)
         finally:
-            context.run(stream.close)
+            # Restore the caller's (or enclosing step's) budget outside every yield.
+            context.run(scope.__exit__, None, None, None)
 
     def _log_state(self, trade_date, final_state):
-        """Write a run's final state to JSON under the run's own ticker."""
+        """Write a run's final state to JSON under the run's own ticker.
+
+        FR-01 / INV-01: the log records the publication status and reason. A run the
+        gate blocked carries no official rating or decision, and no candidate body or
+        candidate rating — those fields are empty in the returned state already; the
+        log never re-adds them.
+        """
         entry = {
             "company_of_interest": final_state["company_of_interest"],
             "trade_date": final_state["trade_date"],
-            "market_report": final_state["market_report"],
-            "sentiment_report": final_state["sentiment_report"],
-            "news_report": final_state["news_report"],
-            "fundamentals_report": final_state["fundamentals_report"],
+            "publication_status": final_state.get("publication_status"),
+            "publication_reason": final_state.get("publication_reason"),
+            "execution_status": final_state.get("execution_status"),
+            "market_report": final_state.get("market_report", ""),
+            "sentiment_report": final_state.get("sentiment_report", ""),
+            "news_report": final_state.get("news_report", ""),
+            "fundamentals_report": final_state.get("fundamentals_report", ""),
             "investment_debate_state": {
                 "bull_history": final_state["investment_debate_state"]["bull_history"],
                 "bear_history": final_state["investment_debate_state"]["bear_history"],
@@ -452,16 +696,18 @@ class TradingAgentsGraph:
                     "current_response"
                 ],
             },
-            "trader_investment_plan": final_state["trader_investment_plan"],
+            # A run that ended before the Trader or Research Manager (a terminal
+            # budget/context refusal) never wrote these; log them empty.
+            "trader_investment_plan": final_state.get("trader_investment_plan", ""),
             "risk_debate_state": {
                 "aggressive_history": final_state["risk_debate_state"]["aggressive_history"],
                 "conservative_history": final_state["risk_debate_state"]["conservative_history"],
                 "neutral_history": final_state["risk_debate_state"]["neutral_history"],
                 "history": final_state["risk_debate_state"]["history"],
             },
-            "investment_plan": final_state["investment_plan"],
-            "final_trade_decision": final_state["final_trade_decision"],
-            "final_rating": run_rating(final_state),
+            "investment_plan": final_state.get("investment_plan", ""),
+            "final_trade_decision": final_state.get("final_trade_decision", ""),
+            "final_rating": final_state.get("final_rating") or "",
             "run_settings": self.run_settings(),
         }
 

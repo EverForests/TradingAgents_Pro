@@ -1,0 +1,29 @@
+{
+  "observed_on": "2026-11-21",
+  "evidence_class": "hosted-checks-and-browser-merge-readback",
+  "pull_request": 12,
+  "url": "https://github.com/EverForests/TradingAgents_Pro/pull/12",
+  "target": "main",
+  "revision": "fcce84e9860de16cbc0c60095d70c15c9797b2e8",
+  "run": 44885810283,
+  "successful_jobs": 7,
+  "failed_jobs": [
+    "course schema, references and AI-use evidence",
+    "d7-required"
+  ],
+  "intended_failure": "Deliberately duplicated AI-use ID",
+  "required_aggregate_marked_required": true,
+  "merge_status": "Merging is blocked",
+  "merge_button_enabled": false,
+  "independent_approval_also_required": true,
+  "business_or_original_test_changes_relative_to_integration": false,
+  "merged": false,
+  "first_missing_log_control": {
+    "revision": "6a17b7ea30904a592a14db4392fef69d7b476276",
+    "comparison": "integration/course-project",
+    "run": 44884482955,
+    "policy": "failure",
+    "aggregate": "failure"
+  },
+  "limits": "The negative branch is never merged. This shows actual configured refusal conditions, not historical approval or a guarantee against every workflow attack."
+}

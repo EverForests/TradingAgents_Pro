@@ -206,24 +206,93 @@ def load_ohlcv(symbol: str, as_of_date: str, fill_gaps: bool = True) -> pd.DataF
         ):
             data = cached
 
+    # The two source columns. A download writes them beside the prices; a cache
+    # written before them simply has none, which reads as no evidence rather
+    # than as a currency to be filled in later.
+    symbol_column = "ohlcv_source_symbol"
+    currency_column = "ohlcv_source_currency"
+
+    # A stated currency is taken as the vendor wrote it: a three-letter code in
+    # capitals (USD, HKD) or a case-significant quote unit (GBp, ZAc). Missing
+    # markers, digits and other prose are not a currency, and nothing is
+    # converted — GBp is not turned into GBP.
+    _MISSING_MARKERS = {"", "nan", "none", "null", "n/a", "na", "unknown", "-"}
+    _QUOTE_UNITS = {"GBp", "ZAc", "ILA", "ILs"}
+
+    def _is_quote_unit(value: str) -> bool:
+        if value.strip().lower() in _MISSING_MARKERS:
+            return False
+        if value in _QUOTE_UNITS:
+            return True
+        return len(value) == 3 and value.isascii() and value.isalpha() and value.isupper()
+
+    def _metadata(ticker) -> tuple[str, str]:
+        """(symbol, currency) from the ticker that served the rows, or ("", "").
+
+        ``get_history_metadata`` is called once; a missing method, a raised
+        error, a reply that is not a mapping, or keys that are not plain strings
+        each leave the currency unstated. The value is kept exactly as stated —
+        no default of USD and no case change, so GBp stays GBp.
+        """
+        getter = getattr(ticker, "get_history_metadata", None)
+        if not callable(getter):
+            return "", ""
+        try:
+            meta = getter()
+            if meta is None or not hasattr(meta, "get"):
+                return "", ""
+            symbol = meta.get("symbol")
+            currency = meta.get("currency")
+        except Exception:  # a vendor reply is untrusted; no metadata is not a failure
+            return "", ""
+        if not isinstance(symbol, str) or not isinstance(currency, str):
+            return "", ""
+        return symbol.strip(), currency
+
+    def _text(value) -> str:
+        """A raw cell as a usable string, or "" when it is missing or not text.
+
+        The check comes before any conversion: NaN and None are absences, not
+        the strings "nan" and "None".
+        """
+        if not isinstance(value, str):
+            return ""
+        return value.strip()
+
     if data is None:
         # yf.download catches every error, a rate limit included, and returns
         # an empty frame. Ticker.history raises the rate limit, so it is retried.
-        downloaded = yf_retry(lambda: yf.Ticker(canonical).history(
-            start=start_str,
-            end=end_str,
-            auto_adjust=True,
-            actions=False,
-        ))
+        # The ticker is built inside each attempt, so the instance that served
+        # the rows is the one carried out of the retry with them.
+        attempt: dict = {}
+
+        def fetch():
+            attempt["ticker"] = yf.Ticker(canonical)
+            return attempt["ticker"].history(
+                start=start_str,
+                end=end_str,
+                auto_adjust=True,
+                actions=False,
+            )
+
+        downloaded = yf_retry(fetch)
         if downloaded is None:
             raise_for_empty(symbol, canonical, "price rows")
         downloaded = _ensure_date_column(downloaded.reset_index())
         # Only cache real data — never persist an empty frame.
         if downloaded.empty or "Close" not in downloaded.columns:
             raise_for_empty(symbol, canonical, "price rows")
+        # The stock and currency belong to the ticker that served these rows, so
+        # they are read only once rows arrived, and stored beside them.
+        source_symbol, source_currency = _metadata(attempt.get("ticker"))
+        downloaded[symbol_column] = source_symbol
+        downloaded[currency_column] = source_currency
         replace_file(data_file, lambda temp: downloaded.to_csv(temp, index=False, encoding="utf-8"))
         data = downloaded
 
+    # The two source columns ride with the rows they described: through cleaning,
+    # the as_of_date filter and the valid-row selection, so every row that takes
+    # part in the result still carries its own stock and currency.
     data = _clean_dataframe(data)
 
     # Filter to as_of_date to prevent look-ahead bias in backtesting.
@@ -254,6 +323,32 @@ def load_ohlcv(symbol: str, as_of_date: str, fill_gaps: bool = True) -> pd.DataF
     # feeding year-old prices into indicators (#1021).
     _assert_ohlcv_not_stale(data, as_of_date, symbol, canonical)
 
+    # The source is decided from the rows that made it into the result, never
+    # from the first cache record or from an assumption: every such row must
+    # name the stock asked for and one and the same currency, and the trading
+    # day is the newest date actually served. Anything else returns the prices
+    # as they are with no verifiable source attached.
+    source = None
+    if not data.empty:
+        stocks = {_text(v) for v in data.get(symbol_column, pd.Series(dtype=object))}
+        monies = {_text(v) for v in data.get(currency_column, pd.Series(dtype=object))}
+        if (len(stocks) == 1 and len(monies) == 1
+                and stocks != {""} and monies != {""}
+                and next(iter(stocks)).upper() == canonical.strip().upper()
+                and _is_quote_unit(next(iter(monies)))):
+            source = {
+                "symbol": canonical,
+                "currency": next(iter(monies)),
+                "latest_trading_date": pd.to_datetime(data["Date"]).max().strftime("%Y-%m-%d"),
+            }
+    data = data.drop(columns=[c for c in (symbol_column, currency_column)
+                              if c in data.columns])
+
+    attrs = dict(getattr(data, "attrs", {}))
+    attrs.pop("fr02_quote_source", None)
+    if source is not None:
+        attrs["fr02_quote_source"] = source
+    data.attrs = attrs
     return data
 
 

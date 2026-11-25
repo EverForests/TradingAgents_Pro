@@ -96,7 +96,7 @@ class _Browser:
 
 
 @pytest.mark.unit
-def test_save_and_show_answer_the_questions_after_the_run(monkeypatch, tmp_path):
+def test_save_and_show_answer_the_questions_after_the_run(monkeypatch, tmp_path, report_state):
     def no_prompt(*a, **k):
         raise AssertionError("prompted although --save/--show answered")
 
@@ -109,9 +109,7 @@ def test_save_and_show_answer_the_questions_after_the_run(monkeypatch, tmp_path)
     graph = object.__new__(TradingAgentsGraph)
     graph.config = {"results_dir": str(tmp_path)}
     graph.run_settings = lambda: {}
-    state = {"market_report": "M", "final_trade_decision": "**Rating**: Hold"}
-
-    run._offer_reports(state, graph, "NVDA", save=True, show=False)
+    run._offer_reports(report_state, graph, "NVDA", save=True, show=False)
 
     assert list(tmp_path.glob("reports/NVDA_*/complete_report.md"))
     assert shown == []
@@ -224,15 +222,18 @@ def _report_graph(tmp_path):
     return graph
 
 
-STATE = {"market_report": "M", "final_trade_decision": "**Rating**: Hold"}
+@pytest.fixture
+def report_state(publication_state):
+    return {**publication_state("NVDA", "2026-09-23", "Hold", "**Rating**: Hold"),
+            "market_report": "M"}
 
 
 @pytest.mark.unit
-def test_a_saved_report_includes_the_html_page_unless_declined(monkeypatch, tmp_path):
+def test_a_saved_report_includes_the_html_page_unless_declined(monkeypatch, tmp_path, report_state):
     monkeypatch.setattr(run, "display_complete_report", lambda state: None)
 
-    run._offer_reports(STATE, _report_graph(tmp_path / "a"), "NVDA", save=True, show=False)
-    run._offer_reports(STATE, _report_graph(tmp_path / "b"), "NVDA", save=True, show=False, html=False)
+    run._offer_reports(report_state, _report_graph(tmp_path / "a"), "NVDA", save=True, show=False)
+    run._offer_reports(report_state, _report_graph(tmp_path / "b"), "NVDA", save=True, show=False, html=False)
 
     assert list((tmp_path / "a").glob("reports/NVDA_*/complete_report.html"))
     assert list((tmp_path / "b").glob("reports/NVDA_*/complete_report.md"))
@@ -255,14 +256,14 @@ def _answer(monkeypatch, answers):
 
 
 @pytest.mark.unit
-def test_an_interactive_run_asks_for_the_html_page_and_opens_it(monkeypatch, tmp_path):
+def test_an_interactive_run_asks_for_the_html_page_and_opens_it(monkeypatch, tmp_path, report_state):
     asked = _answer(monkeypatch, {"Save report": "Y", "Save path": "rel/out", "HTML": "Y",
                                   "browser": "Y", "Display full report": "N"})
     browser = _Browser()
     monkeypatch.setattr(run, "_graphical_browser", lambda: browser)
     monkeypatch.chdir(tmp_path)
 
-    run._offer_reports(STATE, _report_graph(tmp_path), "NVDA")
+    run._offer_reports(report_state, _report_graph(tmp_path), "NVDA")
 
     page = tmp_path / "rel" / "out" / "complete_report.html"
     assert page.exists() and browser.opened == [page.resolve().as_uri()]
@@ -270,24 +271,24 @@ def test_an_interactive_run_asks_for_the_html_page_and_opens_it(monkeypatch, tmp
 
 
 @pytest.mark.unit
-def test_without_a_browser_window_the_page_is_not_offered_for_opening(monkeypatch, tmp_path):
+def test_without_a_browser_window_the_page_is_not_offered_for_opening(monkeypatch, tmp_path, report_state):
     asked = _answer(monkeypatch, {"Save report": "Y", "Save path": None, "HTML": "Y",
                                   "Display full report": "N"})
     monkeypatch.setattr(run, "_graphical_browser", lambda: None)
 
-    run._offer_reports(STATE, _report_graph(tmp_path), "NVDA")
+    run._offer_reports(report_state, _report_graph(tmp_path), "NVDA")
 
     assert not [q for q in asked if "browser" in q]
     assert list(tmp_path.glob("reports/NVDA_*/complete_report.html"))
 
 
 @pytest.mark.unit
-def test_declining_the_html_page_saves_only_the_markdown(monkeypatch, tmp_path):
+def test_declining_the_html_page_saves_only_the_markdown(monkeypatch, tmp_path, report_state):
     asked = _answer(monkeypatch, {"Save report": "Y", "Save path": None, "HTML": "N",
                                   "Display full report": "N"})
     monkeypatch.setattr(run, "_graphical_browser", lambda: _Browser())
 
-    run._offer_reports(STATE, _report_graph(tmp_path), "NVDA")
+    run._offer_reports(report_state, _report_graph(tmp_path), "NVDA")
 
     assert not list(tmp_path.glob("reports/NVDA_*/complete_report.html"))
     assert not [q for q in asked if "browser" in q]
@@ -349,7 +350,7 @@ def test_only_the_providers_the_tiers_use_need_a_key(monkeypatch):
 
 
 @pytest.mark.unit
-def test_a_page_the_browser_cannot_open_is_pointed_to(monkeypatch, tmp_path, capsys):
+def test_a_page_the_browser_cannot_open_is_pointed_to(monkeypatch, tmp_path, capsys, report_state):
     class Failing(_Browser):
         def open(self, url):
             return False
@@ -359,6 +360,6 @@ def test_a_page_the_browser_cannot_open_is_pointed_to(monkeypatch, tmp_path, cap
     monkeypatch.setattr(run, "_graphical_browser", lambda: Failing())
     monkeypatch.setattr(run.console, "print", lambda *a, **k: print(*a))
 
-    run._offer_reports(STATE, _report_graph(tmp_path), "NVDA")
+    run._offer_reports(report_state, _report_graph(tmp_path), "NVDA")
 
     assert "complete_report.html" in capsys.readouterr().out.split("the page is at:")[-1]

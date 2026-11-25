@@ -20,6 +20,8 @@ _ENV_OVERRIDES = {
     "TRADINGAGENTS_MAX_DEBATE_ROUNDS":    "max_debate_rounds",
     "TRADINGAGENTS_MAX_RISK_ROUNDS":      "max_risk_discuss_rounds",
     "TRADINGAGENTS_MAX_TOOL_ROUNDS":      "max_tool_rounds",
+    "TRADINGAGENTS_REQUEST_LIMIT":        "request_limit",
+    "TRADINGAGENTS_REQUEST_BUDGET_ENABLED": "request_budget_enabled",
     "TRADINGAGENTS_CHECKPOINT_ENABLED":   "checkpoint_enabled",
     "TRADINGAGENTS_BENCHMARK_TICKER":     "benchmark_ticker",
     "TRADINGAGENTS_TEMPERATURE":          "temperature",
@@ -135,6 +137,16 @@ def build_default_config() -> dict:
         "max_recur_limit": 100,
         # Rounds of tool calls an analyst may make before it is asked for its report.
         "max_tool_rounds": 20,
+        # C0 ``request_limit``: the per-run request budget recorded on the
+        # RunContext. A positive integer; 40 is the approved default.
+        "request_limit": 40,
+        # NFR-01/INV-02 (C4): when True, every tier client is built over the
+        # metered HTTP transport (``llm_clients/budget_transport.py``) with SDK
+        # retries disabled, so the per-run budget counts actual outbound model
+        # requests exactly once. Off by default: it requires an
+        # OpenAI-compatible provider and refuses ``checkpoint_enabled``.
+        # Override with TRADINGAGENTS_REQUEST_BUDGET_ENABLED.
+        "request_budget_enabled": False,
         # News / data fetching parameters
         # Increase for longer lookback strategies or to broaden macro coverage;
         # decrease to reduce token usage in agent prompts.

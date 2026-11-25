@@ -1,0 +1,568 @@
+format_version: 1
+entries:
+- id: AI-REPORT-COVER-METADATA-20261121
+  date: '2026-11-21'
+  tool: automation tools
+  scope: Correct the report cover course title and distinguish application, historical evidence and verified CI baselines; synchronize public/private reports and delivery packaging
+  human_direction: The coordinator requested the reviewed Field/Value corrections and a check of the latest hosted CI results.
+  evidence: Week 1 introduction names CS5351 Software Engineering; the project specification names Agentic Software Engineering Project. Revision 5ffab92 passed 18 hosted checks in PR run44892131021 and push run44892127732. Private report retains the five-member student roster; public report omits student numbers.
+  review_status: Documentation maintenance authorized by the coordinator; no application, prompt, test or CI implementation changes, and no additional local tests.
+- id: AI-D7-BLUEPRINT-SCOPE-20261121
+  date: '2026-11-21'
+  tool: automation tools
+  scope: Add the exact root architecture-blueprint.md path to the D7 bootstrap document allowlist and synchronize delivery provenance
+  human_direction: The coordinator explicitly requested repair and synchronization after the latest documentation commit produced 14 successful and 4 failing hosted checks.
+  evidence: PR run44890380337 rejected the document scope; push run44890376310 recorded the two pinned-bootstrap failures. ADR-002 records the exact-path correction; tests and runtime files are unchanged.
+  review_status: Maintainer-authorized narrow CI maintenance. No additional local test invocation; hosted Actions results remain attributable to their exact revision. No historical or submitted GitHub approval fabricated.
+- id: AI-OFFLINE-APPROVAL-20261121
+  date: '2026-11-21'
+  tool: automation tools
+  scope: Record coordinator-confirmed offline approval, reconcile current document status and dates, synchronize public/private delivery copies
+  human_direction: The coordinator confirmed that the reviewed items passed offline review as Approved and requested all documentation updates and repository synchronization without another test run.
+  evidence: docs/governance/offline-review-20261121.md; current review-memo conclusion; updated report dates and existing versioned receipts. No application, prompt, test or CI implementation edits.
+  review_status: Current offline APPROVE; not reconstructed historical test approval or a submitted GitHub Review. No manual tests executed.
+- id: AI-D7-REFUSAL-PROOF-20261121
+  date: '2026-11-21'
+  tool: automation tools
+  scope: Retain actual protected-main negative-control evidence; no business edits
+  human_direction: Complete the authorized D7 repair while preserving the coordinator's main-only protection decision.
+  evidence: PR12 run44885810283 deliberately failed duplicate audit-ID validation and d7-required; GitHub required the aggregate and disabled merging. Normal delivery controls remain separate.
+  review_status: Experiment closed without merging; independent real approval not fabricated.
+- id: AI-D7-BOUNDARY-20261121
+  date: '2026-11-21'
+  tool: automation tools
+  scope: Actual hosted boundary disposition and final public/private evidence synchronization
+  human_direction: The coordinator declined saving integration protection; preserve its current settings while keeping already saved main protection.
+  evidence: Delivery e480c2a passed PR44884725839 and push44884720516; main rule read back; temporary integration rule removed after explicit coordinator direction and main-only list read back. Controlled PR12 remains a disposable negative experiment.
+  review_status: Release protection is claimed for main only; no historical or current peer approval fabricated.
+- id: AI-D7-DELIVERY-20261121
+  date: '2026-11-21'
+  tool: OpenCode read-only course-verify; automation tools
+  scope: D7 audit, ADR, report and public/private delivery synchronization; presentation remains external
+  human_direction: Complete authorized D7 repair without business changes; align the ten-minute video and twenty-minute presentation to the teacher guidance.
+  evidence: 64 governance cases, 9 rubric controls, 14 fixed behavior cases; full local invocation and 33-case provenance recovery kept separate; hosted PR run44883596229 passed.
+  review_status: Actual hosted owner approval remains a separate event; no historical approval fabricated.
+- id: AI-D7-RECEIPTS-20261121
+  date: '2026-11-21'
+  tool: automation tools; OpenCode read-only verification
+  scope: CI receipt retention and delivery evidence reconciliation; no application edits
+  human_direction: Complete the authorized D7 enforcement and synchronize course materials.
+  evidence: Hosted run 44883183291 passed the analyzers, governance cases, semantic replay and regressions but failed because hidden receipt files were excluded by the artifact uploader; retain hidden sanitized receipts explicitly.
+  review_status: Correcting the measured delivery failure; no fabricated peer approval.
+- id: AI-D7-ENFORCEMENT-20261121
+  date: '2026-11-21'
+  tool: OpenCode course-plan and course-verify with the school DeepSeek model; automation tools
+  scope: Governance-only D7 gates, independent governance counterexamples, public/private evidence reconciliation and teacher-aligned presentation materials; application, runtime prompts and existing tests frozen
+  base_commit: 7da6ecc9ff665d096b3def5be9ee9601628ae05e
+  human_direction: EverForests requested repair of the remaining D7 checks without business-code changes, coordination with OpenCode, and synchronization of delivery and presentation materials.
+  evidence: Read-only OpenCode plan ses_e031006c3ffeX6NzfdNuWB7B6d; workflow-contract tests recorded five intended failures and one positive control before implementation. New governance checks and their measured receipts are documented in docs/governance/d7-verification.md.
+  review_status: Prospective governance maintenance under coordinator authorization; historical peer approvals are not reconstructed and hosted owner review remains independent.
+- id: AI-DOC-PREDEV-001
+  date: '2026-11-15'
+  tool: automation tools
+  scope: D1-D4 and D9 predevelopment documentation/schema review; no application implementation
+  base_commit: ec1cb8b2177bafdf09c86cd8f072119c487fdce8
+  requirements:
+  - FR-01
+  - FR-02
+  - FR-03
+  - NFR-01
+  - NFR-02
+  - INV-01
+  - INV-02
+  human_direction: Requested material alignment and first-version contracts before parallel development. Human team
+    approval of contracts/feature tests is pending.
+  evidence: 'Static preparation validation executed: registry schema valid; seven unchanged requirement IDs; 28
+    planned case references resolve; checked relative links and protected-file preservation; no credential-like
+    key pattern in changed text. These are documentation checks, not feature tests, runtime permission probes or
+    CI enforcement.'
+  session_reference: automation tools preparation chat; full private transcript retained separately; not an OpenCode transcript
+  review_status: pending human review
+  limitations:
+  - New B3.1 package inspected selectively; SA new runtime-policy slide not confirmed in current PDF
+  - Live full-stock baseline and real-model FR-03 reproduction pending; independent fake-model probe passed 11 checks
+    with zero network
+  - No CI or runtime permission enforcement installed by this documentation revision
+- id: AI-DOC-INTERFACE-002
+  date: '2026-11-15'
+  tool: automation tools
+  base_commit: cf626517b8e71158af7ad69f823258491484950d
+  scope: Select concrete interface v1.0, working defaults and stage-specific readiness; documentation only
+  human_direction: User requested a concrete shared interface version in the existing PR before FR-03 implementation.
+    Routine engineering choices may be selected; team confirmation and real test approvals remain distinct.
+  changes:
+  - Explicit shared record fields and callable boundaries C0-C5
+  - Separate diagnostic attempt caps from product/test limits
+  - Reduce global pre-build blockers to per-feature, pre-merge and pre-delivery checks
+  - Correct exact Feishu source hash
+  evidence: Executed 17 static documentation/schema/interface checks, all passed; 28 planned acceptance IDs remain
+    plans, not executed feature tests. No application, permission, test or CI source changed. Independent completion
+    receipt now confirms a market-only baseline flow, not all analysts; runtime diagnostic limits are separate from
+    product contracts.
+  review_status: pending human team confirmation
+- id: AI-DOC-LOCAL-REVIEW-003
+  date: '2026-11-15'
+  tool: automation tools
+  scope: Local documentation wording review and a private Chinese reading guide; no application implementation
+  base_commit: 2e1bb68aff2ca48363293ca5e1bbc43970d2fab8
+  human_direction: User requested a Chinese explanation and personal review before any further PR publication.
+  changes:
+  - Focus normative governance wording on the course OpenCode workflow without repeated auxiliary brand discussion
+  - Preserve accurate tool identities and earlier preparation records in this log
+  - Keep the five requirements and interface semantics unchanged
+  evidence: Local edits only; no new feature tests or execution evidence claimed. No push, ready-for-review transition or merge.
+  review_status: pending the user's review of the Chinese guide; not team or feature approval
+- id: AI-DOC-EDITORIAL-004
+  date: '2026-11-15'
+  tool: automation tools
+  scope: Editorial formalization of D1-D4, D9 and repository navigation; no application implementation
+  base_commit: 2e1bb68aff2ca48363293ca5e1bbc43970d2fab8
+  human_direction: Requested concise formal project specifications and delegated the local consistency review.
+  changes:
+  - Replace revision commentary in the documentation README with scope, document index and workflow
+  - Consolidate source provenance and open verification items in the PR review memo
+  - Standardize architecture and governance wording while preserving acceptance and shared records
+  - Update derived BUG-02 status from existing controlled evidence; preserve raw records
+  evidence: Local editorial validation is recorded separately against working-copy hashes. No new application tests or live calls.
+  review_status: Local editorial review; team approval and feature plan/test approval remain separate
+- id: AI-DOC-FR02-005
+  date: '2026-11-15'
+  tool: automation tools
+  scope: FR-02 documentation clarification from owner review; no application or executable test changes
+  base_commit: d2fd388cef1d318ed05644d788aefc68b5d91992
+  requirements:
+  - FR-02
+  human_direction: User authorized checking merge/comment state and incorporating applicable review feedback in a follow-up PR.
+  changes:
+  - Correct AAPL Cost of Revenue terminology and record fiscal labels/units
+  - Fix the upper-band-minus-close operand mapping and both signed expectations
+  - Separate reviewer-provided annual data from independently inspected market-tool evidence
+  evidence: Decimal recomputation, registry/schema/reference checks and preserved shared record signatures; receipts retained separately. No live calls or feature acceptance claimed.
+  review_status: Pending review of this clarification; no feature plan/test approval recorded
+
+- id: AI-FR02-IMPLEMENTATION-006
+  date: "2026-11-17"
+  tool: "OpenCode 2.3.0 course-plan/build/verify; automation tools delegated orchestration and independent local review"
+  scope: "FR-02 financial metrics, signed price gaps, approved shared hooks, offline tests; two human-maintained permission files"
+  base_commit: "5f40d2109ebe981123ff5a116308851e34e8dad5"
+  requirements: ["FR-02"]
+  human_direction: "EverForests approved FR02-PLAN-01 on 2026-11-16 at 17:00 as relayed by the owner; supplement 01 / FR02-FIX-02 confirmed, exact reply time unavailable. Owner approved actual writes and ran terminal Git/tests. Delegated rejection applied only within prior authorization."
+  session_reference: "ses_e1ca4c953ffedfymOFTCf33fiZ; same session switched from build to verify, not an independent new session; full raw transcript retained privately"
+  evidence: "Human terminal regression: .venv/bin/python -m pytest -q --tb=short tests test/offline -m 'not integration'; exit 0; 1460 passed, 1 skipped, 1 deselected, 24 warnings, 100 subtests passed in 8.48s. Ruff --no-cache: exit 0. Earlier overlapping runs: FR02 48 passed; offline 48 passed; combined 1460 passed, 1 skipped (langchain_aws missing), 1 deselected, 24 warnings, 100 subtests. No remote CI, live acceptance or integrated-team result claimed."
+  review_status: "AI read-only review completed with evidence corrections; final peer review by EverForests pending"
+  limitations: ["Frozen real-company cases embed approved operands; not historical tool-to-report reruns.", "NVDA retains SEC cache and report but lacks that run tool reply; old AAPL quote USD is the group fixture convention.", "No secrets, private transcript or complete configuration dump is included."]
+- id: AI-FR03-IMPLEMENTATION-006
+  date: '2026-11-16'
+  tool: OpenCode 2.3.0 with CS5351/DeepSeek-V4-Flash; automation tools coordination and verification commands
+  base_commit: 486a9a5d74433aedd3c858c483a8d77bf0f7b897
+  requirements:
+  - FR-03
+  contracts:
+  - C0
+  - C3
+  scope: Source collection receipts, deterministic coverage and nullable assessment, sentiment node, run identity initialization, compatibility rendering and feature tests
+  human_direction: User delegated autonomous development, routine plan/test decisions and execution to automation tools on 2026-11-16. Individual student review of the concrete plan and tests did not occur.
+  session_reference:
+    plan: ses_e1f7b6a43ffecmm2eVetv5Ay7V
+    test_design: ses_e1f7401d8ffeducdhZ9HLOoMfW
+    implementation_and_repairs: ses_e1f6630f2ffeopX5X1nTvOKFOG
+    raw_transcripts: Retained privately in the dedicated FR-03 task records
+  contributions:
+  - OpenCode generated application and executable test logic through the course roles.
+  - automation tools reviewed plans, corrected interface/test-design errors, operated test commands and maintained exact-path permissions.
+  - Ruff 0.17.5 and automation tools performed limited formatting and EOF whitespace maintenance.
+  - Two existing sentiment test files received a documented fixture-maintenance exception under the user's general authorization. The upstream baseline remains preserved.
+  evidence:
+  - Original offline baseline had 1407 passes and 6 platform/optional-dependency skips.
+  - The pre-change zero-source behavior test observed one model invocation where zero was required.
+  - Current combined offline verification has 1485 passes, 6 skips, 1 deselected case and 100 passing subtests. This includes 78 new feature cases.
+  - Changed Python files passed Ruff. The first live run exposed unsupported response_format and a fixture signature error. Both were corrected.
+  - Live r2 retained correct partial coverage with UNKNOWN and produced a measured Neutral/5.0 full-coverage control. Its tests remained failed because of the initial partial-case rubric and a client metadata-alias assertion.
+  - The final live candidate is frozen before the r3 run. Its partial-case criterion follows C3 and its full-coverage positive control still requires a measured answer.
+  limitations:
+  - Local command execution and delegated review are recorded as actions performed using automation tools. They are not student per-test approval or a human final verdict.
+  - Live model checks use fixed synthetic source receipts. Real-provider data quality and joint C1/C4 acceptance remain integration work.
+  - Transport attempts and observed model steps do not establish billed token usage.
+  - Independent OpenCode Verify completed on the published candidate and found no blocking defect. A manual malformed-outcome validation suggestion remains recorded for later hardening.
+  review_status: Draft feature verified locally, pending human PR review
+  ci_maintenance: automation tools updated the existing pytest invocation to collect tests and test/offline. This single-line maintainer change makes the new feature cases run in the existing CI matrix. Coding roles retain denied CI edits.
+  final_verification:
+    tested_code_commit: 5e118b7cc5b45831beb78c6b67363ab624a41fd1
+    offline: 1485 passed, 6 skipped, 1 deselected, 100 passing subtests
+    new_offline_cases: 78
+    live_r3: 3 passed using two HTTP attempts, with an effective limit of two
+    live_observation: Zero sources produced UNKNOWN/null with zero requests. One and three valid sources each produced measured Neutral/5.0 in the final synthetic run.
+    live_criteria_revision: Before r3, the partial-case criterion was corrected to permit the UNKNOWN branch explicitly allowed by C3. The full-source positive control still required measurement. Earlier failed test results were retained.
+    controlled_live_total_attempts: 8
+    public_code_review: OpenCode course-verify reviewed the published candidate. Its observations and the operator dispositions are retained with the private task receipts.
+    ci_run: https://github.com/EverForests/TradingAgents_Pro/actions/runs/43761048809
+    ci_conclusion: success
+    pr: https://github.com/EverForests/TradingAgents_Pro/pull/6
+- id: AI-FR03-PAIRED-007
+  date: '2026-11-17'
+  tool: OpenCode 2.3.0 with school DeepSeek; automation tools plan review, execution and records
+  base_commit: 06d160a70f41b5a7b81b5b6f7f332680b2381cc9
+  requirements:
+  - FR-03
+  contracts:
+  - C0
+  - C3
+  scope: New isolated baseline/candidate diagnostic only; no application or existing test changes
+  human_direction: User requested actual progress, evidence of changed/improved behavior and continued development under the earlier autonomous delegation. Individual student plan/test review did not occur.
+  session_reference: ses_e1f6630f2ffeopX5X1nTvOKFOG
+  contributions:
+  - OpenCode generated the new diagnostic and repaired concrete defects found in automation tools pre-execution review.
+  - automation tools fixed one joined declaration by restoring its newline, ran Ruff import formatting, froze the test hash and executed validation. No case expectation changed after execution.
+  - automation tools maintained this AI-use entry and retained raw sessions, plans, hashes and receipts privately.
+  evidence:
+  - Paired original 9fa1196fffbcfd9de5146d2dd2869df84ab99838 and current application 06d160a on 16 identical synthetic collector-boundary fixtures; 33 assertions passed.
+  - Five zero-valid-source cases rendered injected Neutral/5.0 in the baseline and UNKNOWN/null without model binding or calls in the candidate.
+  - Eleven valid-source controls retained Neutral/5.0 in both versions. Fake sentiment model calls were 16 versus 11. Report, AIMessage and actual bull prompt propagation agreed in all cases.
+  - Both workers used the same fixture digest and Python, verified their actual import paths and source hashes, and observed zero blocked network attempts. The original worktree stayed clean.
+  - The unchanged existing school harness verified the current 06d160a prompt in a new independent run; three cases passed with two actual HTTP attempts under a four-attempt cap. Zero sources made zero requests; one and three sources each measured Neutral/5.0.
+  - Observed school request settings were function-calling client, thinking disabled, 4096 output tokens and streaming. Two HTTP 200 responses were recorded; billed usage was not measured.
+  - Without an explicitly configured baseline checkout, the 33 paired checks skip clearly. Those skips are not counted as acceptance passes. Ruff and staged diff checks were run separately.
+  limitations:
+  - The paired model answer is deliberately fixed and source fetchers are replaced. This validates deterministic missing-data behavior, not natural-model error rates or a raw adapter replay.
+  - Real-model checks use synthetic source receipts and are not a paired natural-model study, real-provider quality evaluation or investment backtest.
+  - Earlier official 20-attempt and FR03 eight-attempt runs remain closed and separately recorded. The new two attempts are not charged against or used to rewrite them.
+  - Full combined regression was not repeated for this diagnostic-only addition; earlier 1485-pass evidence remains tied to its earlier code revision.
+  review_status: Operator-verified diagnostic proposed in existing draft PR; formal human and shared C1/C4 integration review remain separate
+- id: AI-FR03-HARDENING-008
+  date: '2026-11-17'
+  tool: OpenCode 2.3.0 with school DeepSeek; automation tools coordination and verification
+  base_commit: 0aebc95c8fa5c99271d624877f507c6e1ebda845
+  requirements:
+  - FR-03
+  contracts:
+  - C0
+  - C3
+  scope: Coverage-boundary validation and numeric-overflow handling in sentiment_coverage.py, plus one new independent offline test file
+  human_direction: User asked to continue until no worthwhile improvement remains. automation tools selected and reviewed the concrete bounded plan under autonomous delegation; no individual student review or execution was invented.
+  session_reference: ses_e1f6630f2ffeopX5X1nTvOKFOG
+  contributions:
+  - OpenCode generated the new tests and application patch. Existing tests, prompts, adapters, schemas and shared components were not edited.
+  - automation tools corrected fixture design before execution, froze the reviewed tests, ran and confirmed actual failing behavior, then authorized only the narrow implementation.
+  - automation tools maintained this entry and retained raw sessions, hashes and red/green evidence privately.
+  evidence:
+  - The first 40 new checks on the preceding application had 27 failures and 13 passes, including blank receipt content counted as valid and the real node binding the model when it should skip.
+  - Before implementation, two further giant-integer score cases were added as a documented design extension; both failed with OverflowError. The original 40 expectations were preserved.
+  - After implementation, all 42 frozen checks passed. Test hash stayed unchanged during the source fix.
+  - Full combined offline regression passed 1528 tests and 100 subtests, with 39 skips and one deselected integration case. The skips comprise six existing platform/optional-dependency cases and 33 paired checks requiring an explicit baseline checkout.
+  - Changed source and test passed Ruff and git diff checks. The original baseline worktree was preserved.
+  behavior:
+  - Empty or anchored error-only bodies cannot become evidence merely through metadata; the word unavailable inside genuine content remains valid.
+  - Malformed receipts, inconsistent record counts or refs, invalid contract versions and blank identities cannot inflate source coverage or cause the tested crashes.
+  - Valid mixed collections retain their valid items and additive reasons, and valid Neutral/5.0 remains supported.
+  - Oversized integer scores become UNKNOWN/null with SCORE_INVALID while valid coverage remains intact.
+  limitations:
+  - These are deterministic boundary tests, not real-market accuracy or investment-return measurements.
+  - No new runtime model or vendor call was made for this patch. Earlier online results remain attributed to their recorded revision; the prompt and model client are unchanged here.
+  - Paired replay and independent review evidence are retained separately with exact candidate revisions. Formal human and joint C1/C4 acceptance remain separate.
+  review_status: Operator-verified bounded repair proposed in the existing draft PR
+- id: AI-FR03-HARDENING-FOLLOWUP-009
+  date: '2026-11-17'
+  tool: OpenCode 2.3.0 school model; automation tools review and execution
+  base_commit: b4c057c8c8f2f085fb746802b029439c545497bf
+  requirements:
+  - FR-03
+  scope: Narrow plain no-news marker recognition and source ticker equivalence using the existing pure symbol mapper; five appended positive cases
+  human_direction: Same user instruction to continue while improvement is worthwhile; automation tools selected and reviewed the concrete follow-up under delegation. No individual student approval or execution is claimed.
+  session_reference: ses_e1f6630f2ffeopX5X1nTvOKFOG
+  review_disposition:
+  - Independent read-only OpenCode review of b4c057c was completed. Its suggestions were checked against actual code and tests rather than adopted as approval.
+  - Removing the body guard would restore a proven defect, so that suggestion was rejected. A narrower real issue was confirmed: the generic No-found regex rejected two substantive headlines.
+  - Existing node-approved raw/canonical symbol inputs were confirmed to be inconsistent with exact receipt comparisons. The actual cases were aapl/AAPL and BTCUSD/BTC-USD; the review's AAPL.US example was not assumed valid.
+  evidence:
+  - All five new positive cases failed on b4c057c before implementation: two genuine headlines, two ticker equivalents and one real lowercase-request node case.
+  - After the two bounded source changes, all 47 frozen boundary checks passed, with the original 42 assertions unchanged. The five new cases were append-only.
+  - Full combined offline verification passed 1533 tests and 100 subtests; 39 skipped and one integration case deselected. The 39 skips include 33 paired checks that require an explicit baseline checkout, not acceptance passes.
+  - Ruff, diff and YAML checks passed. Exact-revision paired replays and raw receipts are retained separately.
+  limitations:
+  - Run/outcome identity comparison remains exact. Only receipt/item ticker attribution uses the repository's existing canonical symbol mapping.
+  - No new runtime model or vendor requests were needed. Prompt/client behavior is unchanged; older school results keep their recorded revision.
+  - Real-provider quality, independently labeled semantic accuracy, investment backtests and joint C1/C4 acceptance remain separate work. No return/accuracy improvement is inferred from synthetic checks.
+  review_status: Bounded findings resolved with actual counterexamples and regressions; draft PR still requires formal review
+
+- id: AI-DOC-FR03-HANDOFF-010
+  date: '2026-11-17'
+  tool: automation tools document preparation and local OpenCode session export CLI; no code-generation session
+  base_commit: b2816ecb4b6dc465c38bd0ff213ea215a0662825
+  scope: FR-03 handoff/report section, sanitized evidence, dated review/bug/debt/trace updates and private course materials
+  human_direction: User explicitly requested completion of this feature's course documents and teammate handoff, using the existing branch and PR. Other features are unchanged.
+  contributions:
+  - automation tools authored the documentation and artifact-assembly helper; these are not relabeled as OpenCode-generated application code.
+  - Native OpenCode session exports, original per-run records and annotated actual operator interventions are retained in the private course package.
+  - Public records distinguish module verification, historical online evidence, student involvement and pending team/human acceptance.
+  evidence: Document links, trace targets, JSON, artifact hashes and secret exclusions checked separately. No application or executable test changed and no runtime model/provider request was made.
+  limitations:
+  - A report-ready module chapter is not the whole team's Report.md.
+  - Private reflection material remains AI-assisted and requires the student's own verification; no student ID, contribution ratio or historical approval is invented.
+  - The proposed review assessment is not a recorded human final verdict or a merge authorization.
+  review_status: Existing draft PR updated for teammate review; team integration and final course submission remain separate
+
+- id: AI-NFR01-PLAN-006
+  date: '2026-11-16'
+  tool: OpenCode 2.3.0 (course-plan role, read-only)
+  base_commit: 486a9a5d74433aedd3c858c483a8d77bf0f7b897
+  requirements:
+  - NFR-01
+  - INV-02
+  scope: 'Gate 1 task plan for NFR-01 only: owner module tradingagents/llm_clients/request_budget.py and offline suite test/offline/test_request_budget.py; no production wiring and no CI changes.'
+  human_direction: 'Requirement owner instructed completion of the NFR-01 deliverable against the updated baseline (message 2026-11-16). Plan produced read-only; owner reviewed the 8 open questions and issued decisions D-NFR01-01 to D-NFR01-08 before any code generation.'
+  changes:
+  - Five-section plan (traceability, interface contracts, scope, verification, steps/rollback) mapped every NFR-01 criterion and INV-02 to C4 and a frozen case ID
+  - Declared the pre-update draft implementation unapproved and scheduled a rewrite to C4 v1.0 instead of incremental patching
+  - Recorded integration exclusions explicitly (graph wiring, C0 mapping, settlement code, CI edits, new dependencies)
+  evidence: 'Plan session ses_e1cce6943ffeM6m8a640UGrQql terminated with WAITING FOR PLAN AND TEST APPROVAL. Three earlier attempts failed with provider authorization errors before the key-loading defect was fixed; they produced no file changes.'
+  session_reference: ses_e1cce6943ffeM6m8a640UGrQql (title "NFR-01 gate1 plan (baseline 486a9a5)")
+  review_status: 'Approved by owner on 2026-11-16 15:12 with decisions D-NFR01-01..08'
+  limitations:
+  - Read-only plan; no execution evidence claimed
+  - Permit configuration of the real model client (SDK retry settings) not inspected at plan time
+- id: AI-NFR01-TESTS-007
+  date: '2026-11-16'
+  tool: OpenCode 2.3.0 (course-build role)
+  base_commit: 486a9a5d74433aedd3c858c483a8d77bf0f7b897
+  requirements:
+  - NFR-01
+  - INV-02
+  scope: 'Tests first, per Prompt.md gate 2: wrote only test/offline/test_request_budget.py (38 tests) before any implementation existed.'
+  human_direction: Owner approved the Gate 1 plan and delegated test authoring to course-build with the exception that production code stay untouched.
+  changes:
+  - Inline fixtures only (LIMIT 3, thread-safe fake transport with send counter, prepared-request stub)
+  - Six frozen case IDs in test names and docstrings; module-level import so collection succeeds while the API is absent
+  - Snapshot identity assertions (charged = known + unknown; charged + active <= limit) applied on every snapshot read
+  evidence: 'Human-run pre-change baseline: 37 failed, 1 passed. The single pass is the static source guard test_t_nfr01_resume_no_settlement_coupling_in_module_source, expected green before and after; all other failures were missing-contract-API (TypeError on the run_id keyword, AttributeError on dispatch).'
+  session_reference: ses_e1cccc9f2ffeeYPMCG5yAtO7Ri (title "NFR-01 gate2 tests (C4 v1.0)")
+  review_status: 'Approved for implementation after D-NFR01-01 narrowed two false-passing assertions'
+  limitations:
+  - Pre-change failures are API-absence failures, not semantic assertion failures; semantic discrimination is evidenced later by three mutation experiments
+- id: AI-NFR01-IMPL-008
+  date: '2026-11-16'
+  tool: OpenCode 2.3.0 (course-build role)
+  base_commit: 486a9a5d74433aedd3c858c483a8d77bf0f7b897
+  requirements:
+  - NFR-01
+  - INV-02
+  scope: 'Gate 3 implementation of the single owner module tradingagents/llm_clients/request_budget.py (253 lines) against C4 v1.0.'
+  human_direction: 'Owner approved implementation after the red baseline was recorded; scope limited to one file, standard library only, no new dependencies, tests untouched.'
+  changes:
+  - RequestBudget(run_id, limit) with atomic try_reserve/charge_attempt/cancel_before_send/snapshot under one lock
+  - dispatch(prepared, budget, send) requiring READY, charging at the attempt boundary, sending exactly once, mapping failures to BudgetExhausted/ContextTooLarge/ProviderFailure
+  - Unknown-delivery accounting so an ambiguous provider error keeps the slot charged and is never refunded
+  - No UNMETERED mode, no reset/restore/refill/renew API, resume disabled by design
+  evidence: 'Human-run after implementation: pytest -q test/offline -> 38 passed; pytest -q tests test/offline -> 1450 passed, 1 skipped, 1 deselected; ruff check . -> clean.'
+  session_reference: ses_e1cc653a7ffehmuDFjT84hozEK (title "NFR-01 gate3 implement C4 metered dispatch")
+  review_status: 'Accepted after D-NFR01-05 (race assertion) and D-NFR01-06/07/08 (lint and wording) corrections'
+  limitations:
+  - Module not wired into the graph; no C0 terminal mapping yet (tracked as TD-10)
+- id: AI-NFR01-FIX-009
+  date: '2026-11-16'
+  tool: OpenCode 2.3.0 (course-build role)
+  base_commit: 486a9a5d74433aedd3c858c483a8d77bf0f7b897
+  requirements:
+  - NFR-01
+  - INV-02
+  scope: 'Post-verification corrections in the two approved files: one test assertion (D-NFR01-05) and two lint defects (D-NFR01-06).'
+  human_direction: 'Owner reviewed the human-run failure (1 failed, 37 passed) and ruled the race assertion a test defect, not an implementation bug: the worker uses the primitives and therefore bypasses dispatch() delivery confirmation.'
+  changes:
+  - 'Race test now asserts known_sends == LIMIT - 1, unknown_delivery == 1 and the identity known + unknown == LIMIT, keeping transport.send_count == LIMIT as the real INV-02 proof'
+  - Replaced try/except/pass with contextlib.suppress (SIM105) and moved Callable to collections.abc (UP035)
+  evidence: 'After correction: 38 passed; ruff clean. The agent initially declined to edit a test, citing covenant freeze, and required an explicit approval record before proceeding.'
+  session_reference: ses_e1cc528f0ffet72lN0NK1p1ohA (title "NFR-01 gate3 fix race assertion and lint")
+  review_status: 'Accepted; both changes reviewed as test/evidence corrections, not requirement changes'
+  limitations:
+  - Lint corrections were style-only and were re-run through the full suite
+- id: AI-NFR01-VERIFY-010
+  date: '2026-11-16'
+  tool: OpenCode 2.3.0 (course-verify role, read-only)
+  base_commit: 486a9a5d74433aedd3c858c483a8d77bf0f7b897
+  requirements:
+  - NFR-01
+  - INV-02
+  scope: Read-only compliance review of the NFR-01 change set against D1/D2/D4, Prompt.md and AGENTS.md.
+  human_direction: Owner supplied the human-run evidence set and requested an independent verdict with explicit overclaims and documentation deficits.
+  changes:
+  - 'Verdict: conditionally compliant; 12 findings (1 delivery blocker, 3 major, 3 minor, 5 notes)'
+  - Confirmed decisions D-NFR01-01..05 match the code and flagged that the module is not enforced in production
+  - Listed required records (AI-use, review memo, bug diary, debt register, trace matrix, transcripts) and refused to sign off six overclaims
+  evidence: 'Verify session found no code defect requiring a fix; its only actionable code item (missing ADR citation, F8) was closed by D-NFR01-08. Documentation deficits were closed by this record set.'
+  session_reference: ses_e1cc3cde9ffev4PHpzLJ9n611D (title "NFR-01 gate5 verify (read-only)")
+  review_status: 'Verdict carried into review memo PR-NFR01-001; integration items moved to the debt register'
+  limitations:
+  - Verify role is denied read access to docs/review-memo.md, docs/README.md and docs/ai-use-log.yaml by the current permission allowlist, so it could not confirm those records itself
+- id: AI-NFR01-EVIDENCE-011
+  date: '2026-11-16'
+  tool: Human-run shell (pytest 9.2.0, ruff 0.17.5, Python 3.11.18) plus OpenCode 2.3.0 docstring sessions
+  base_commit: 486a9a5d74433aedd3c858c483a8d77bf0f7b897
+  requirements:
+  - NFR-01
+  - INV-02
+  scope: 'Evidence collection and two documentation-only edits (D-NFR01-07 wording, D-NFR01-08 ADR citation) in tradingagents/llm_clients/request_budget.py.'
+  human_direction: Owner ran every check command and authorised the two docstring edits to remove the reserved decision word and add the ADR citation required by structural constraints.
+  changes:
+  - Module docstring now cites Requirement NFR-01, Invariant INV-02, Contract C4 and ADR-001
+  - Reserved decision vocabulary (hold) removed from module prose
+  evidence: 'diff --check clean; 38 offline cases collected; three mutation experiments all produced failing tests (capacity bound 8 failed, cancel neutralised 3 failed, delivery confirmation removed 1 failed, each follow-up run restored green). Mutation plugins lived only in /tmp and were deleted.'
+  session_reference: ses_e1cc4499fffeZbo0u61VgIjKcA (wording), ses_e1cc29b21ffen2sr32O58Fh5Aj (ADR citation)
+  review_status: Accepted by owner
+  limitations:
+  - Mutation evidence covers capacity, cancellation and delivery accounting only; isolation and context-first paths rely on their own negative cases
+- id: AI-NFR01-REPLAN-012
+  date: '2026-11-16'
+  tool: OpenCode 2.3.0 (course-plan role, read-only)
+  base_commit: 3d5ce620e7da497e09c986ef6cbc957b490de632
+  requirements:
+  - NFR-01
+  - INV-02
+  scope: 'Gate 1 re-plan for NFR-01 on the 3d5ce62 baseline; plan only, no file writes and no shell.'
+  human_direction: "Owner moved the branch from 486a9a5 to 3d5ce62 and required the gate sequence to be re-run with the agent reading the mandatory documents itself, because the round-1 plan session had been refused read on docs/README.md and docs/review-memo.md. Content was no longer pasted into the session."
+  changes:
+  - Read twelve required documents with its own read tool, including docs/README.md, docs/review-memo.md and docs/req/product.yaml, with no denied read
+  - Produced the seven-section plan and stopped for recorded approval, asking four questions instead of inventing the human-run results
+  - Found that all race cases exercised the primitives directly or bypassed last-slot contention, and proposed one appended dispatch-level race test
+  evidence: 'Plan session ses_e1cb0bce4ffeSMiYzgvWzPty3y read AGENTS.md, Prompt.md, docs/README.md, docs/review-memo.md, docs/req/product.yaml, requirements.yaml, invariants.md, interface-contracts.md, runtime-policy-catalog.md, verification-constraints.md, adr/001 and trace-matrix.md. No permission denial was reported, which is the direct evidence that baseline fix 1a54b9c works.'
+  session_reference: ses_e1cb0bce4ffeSMiYzgvWzPty3y (title "NFR-01 gate1 re-plan (baseline 3d5ce62)")
+  review_status: 'Plan approved 2026-11-16 15:52 with decisions D-NFR01-09..15'
+  limitations:
+  - Read-only plan; no execution evidence claimed
+  - The role ran no tests; every count quoted to it was human-run and is labelled as such
+  - An interim local edit adding the same two read entries was reverted once 1a54b9c was found to contain them, so no configuration change is claimed for this feature branch
+- id: AI-NFR01-BUILD-013
+  date: '2026-11-16'
+  tool: OpenCode 2.3.0 (course-build role)
+  base_commit: 3d5ce620e7da497e09c986ef6cbc957b490de632
+  requirements:
+  - NFR-01
+  - INV-02
+  scope: 'Two approved edits on the re-baselined tree: one module docstring line and one appended acceptance test. No other file touched.'
+  human_direction: 'Owner approved D-NFR01-09..15 and restricted writes to tradingagents/llm_clients/request_budget.py (docstring only) and test/offline/test_request_budget.py (append only, lines 1-740 frozen). Each edit was reported and stopped for human verification.'
+  changes:
+  - Appended test_t_inv02_race_dispatch_two_contenders_last_slot_once at lines 741-806, driving dispatch from two barrier-synchronised threads for the last slot
+  - Replaced the stale docstring revision string 486a9a5 with the contract label Contract C4 v1.0 (interface-v1.0), after the owner rejected the first draft wording that read revision Contract C4
+  evidence: 'The first append was refused by the permission layer because edit on the acceptance test is ask-level and this non-interactive run cannot prompt; the run was retried with auto-approval of ask-level permissions only, under the approval already recorded in the session. Human-run after the append: 39 passed, 1 test in the appended file passing alone, ruff clean. Mutation M3p then failed 5 cases including the new one, and the module was restored.'
+  session_reference: ses_e1caf1566ffeefvZW8dDBgx8mJ (title "NFR-01 gate2 add dispatch-level race test")
+  review_status: 'Approved by owner; both edits reviewed line by line before the next step'
+  limitations:
+  - The appended test was green on arrival by design; its discrimination is proven only by mutation M3p, not by a red-before run
+  - The role ran no commands, so all counts are human-run
+- id: AI-NFR01-VERIFY-014
+  date: '2026-11-16'
+  tool: OpenCode 2.3.0 (course-verify role, read-only)
+  base_commit: 3d5ce620e7da497e09c986ef6cbc957b490de632
+  requirements:
+  - NFR-01
+  - INV-02
+  scope: 'Gate 4 read-only compliance review of the owner module, the 39-case suite and the governance records at 3d5ce62.'
+  human_direction: 'Owner supplied the human-run evidence, the four mutation results, both rounds of session IDs and an explicit instruction to report any refused read instead of working around it.'
+  changes:
+  - Confirmed contract conformance for all six C4 v1.0 calls and found no bypass path inside the module
+  - Traced every frozen case ID to covering tests and found no non-discriminating case, confirming the D-NFR01-09 clarification
+  - Found three record defects: stale 486a9a5 figures, PR-NFR01-001 missing the 39th case, and two unreconciled session-ID sets
+  - Reported denied reads on five record files and refused to bypass them, so check D was returned as partial
+  evidence: 'Verdict CONDITIONALLY COMPLIANT for the owner module, not compliant for NFR-01 delivery, with eight missing items listed. Session ses_e1cab4f89ffed8ePmZwWo5Ljy0 ran no commands; the report states explicitly that the pasted results are human-run and unverified by the reviewer.'
+  session_reference: ses_e1cab4f89ffed8ePmZwWo5Ljy0 (title "NFR-01 gate4 verification (baseline 3d5ce62)")
+  review_status: 'Accepted by owner; the three record defects were fixed in PR-NFR01-002, BUG-09 and TD-15'
+  limitations:
+  - Static review only; pytest, ruff and mutation runs were not re-executed by the role
+  - Record-integrity check D covered only the files the allowlist permits, so ai-use-log, bug-diary, debt-register, transcripts and Report.md were human-reviewed instead
+
+- id: AI-COURSE-INTEGRATION-20261118
+  date: '2026-11-18'
+  tool: OpenCode course-plan/course-build using CityU CS5351/DeepSeek-V4-Flash; automation tools coordination and local validation
+  base_commit: 486a9a5d74433aedd3c858c483a8d77bf0f7b897
+  requirements: [FR-01, FR-02, FR-03, NFR-01, NFR-02, INV-01, INV-02]
+  scope: Five-PR local integration, shared graph contracts and metered course transport; offline tests, CI workflow and review record
+  human_direction: >-
+    Human approval: on 2026-11-18 the project coordinator requested local
+    integration of the five requirements and authorized the integration scope
+    and execution. Feature-level approval evidence is recorded separately.
+  session_reference:
+    plan: ses_e133bd77fffeDP0RnLi8Mat0bn
+    evidence_and_metrics_merge: ses_e13360065ffed5aGQsZTze80cD
+    metrics_state_and_import_repair: ses_e132b0c31ffe6R6c8d5lycvvuT
+    sentiment_state_merge: ses_e1322d459ffec6MLxIyGbxpZIh
+    dispatch_transport: ses_e131f2670ffepV1XcfhjS2rZXI
+    graph_and_cli: ses_e131ddc9affeEG6rkefm7GzUcB
+    scoped_context_and_fallback: ses_e131d4816ffeQMwYM6pg5qnxZP
+    sentiment_subgraph_output: ses_e131bff3fffeDvglMVbh02mCk8
+    streamed_budget_repair: ses_e131a971effeWVpNIbcSOIY3Ry
+    cityu_profile_review_patch: ses_e1314f04affeJCL2xyyYb6O8T5
+    raw_transcripts: Retained in the local OpenCode workspace
+  contributions:
+  - OpenCode produced application conflict resolutions, transport and graph wiring, integration repairs and the initial transport counterexample.
+  - Integration automation executed Git and test commands, repaired fixture assumptions for the merged candidate and sentiment interfaces, and added integration assertions for the actual SDK transport and shared graph.
+  - Integration automation maintained exact-path permissions, workflow and artifact checks, the direct HTTP dependency and documentation.
+  - OpenCode proposed the final school-profile and CLI patch. Integration automation applied the reviewed subset and simplified the conditional handling, retaining unchanged defaults for other profiles.
+  evidence: See the combined-tree review in docs/review-memo.md for observed failures, reruns and local CI evidence.
+  review_status: Coordinator authorized local integration; hosted CI and online acceptance are pending.
+- id: AI-FR01-REFERENCE-RELIABILITY-20261119
+  date: '2026-11-19'
+  tool: OpenCode course-plan/course-build/course-verify with DeepSeek; integration maintainer automation
+  base_commit: 77938d016ccf8e30e2150db1561db8026aeeb7b7
+  requirements: [FR-01, INV-01]
+  scope: Invocation-local reference selections, exact canonical resolution, rejection diagnostics and regression verification
+  human_direction: The coordinator requested live verification and a repair of long reference copying; prior integration authorization remains applicable.
+  session_reference:
+    plan: ses_e0ddee99bfferbBnNlbImAOkpM
+    tests: ses_e0dd87f8fffejh9bXrN4lwsUka
+    implementation_draft: ses_e0dd1c89fffeYgVllaKKADZsq3
+    review: ses_e0dbdf93cffeyCw1U7DBXBGU2I
+  contributions:
+  - OpenCode produced the read-only plan, the initial tests, an adapter draft and the read-only source review.
+  - Maintainer automation corrected fixtures before the recorded behavioral baseline and added three controls for the draft's collision and second-selection behavior.
+  - Maintainer automation corrected PM mapping direction and import cycles, researcher imports and schema guidance, opaque-ID collisions, and reference diagnostics; it executed verification and maintained English records.
+  evidence: Twenty alias cases passed; complete regression 1832 passed, one skipped, one deselected, and 100 passing subtests. Three real DeepSeek HTTP attempts with fixed synthetic source material returned 200 and resolved an approved canonical chain. Fresh Yahoo preflights remained rate limited, with zero model requests.
+  review_status: OpenCode found no blocking source counterexample in the corrected adapter; terminal receipts recorded in the review memo. Final independent team review and hosted CI for a future commit remain pending.
+- id: AI-FR01-PUBLISHED-LIVE-20261119
+  date: '2026-11-19'
+  tool: TradingAgents graph API with live DeepSeek and maintainer verification automation
+  base_commit: df8a9d6419dfa0aab2f4d8986d0a44060354cdb9
+  requirements: [FR-01, INV-01]
+  scope: Post-push online verification of evidence selections and official publication using real data
+  human_direction: The coordinator authorized pushing the verified reference repair and rerunning online tests.
+  contributions:
+  - The live model supplied selections; deterministic code resolved and validated their current-run references.
+  - Verification automation checked attempts, source resolution, official outputs, memory and hosted CI.
+  evidence: Fresh-cache run observed 21 HTTP 200 responses and completed blocked under Yahoo rate limiting. Real Yahoo cache replay observed 18 HTTP 200 responses, completed approved with Overweight, generated an official decision and added one memory entry. Bull/Bear E1 and manager A1/A2 resolved to canonical IDs. Push and PR CI passed.
+  review_status: Proposed approval recorded in the review memo; final team review remains pending. Real-cache replay is distinct from fresh Yahoo availability and live CLI verification.
+- id: AI-FR02-FIVE-COMPANY-CLI-20261119
+  date: '2026-11-19'
+  tool: automation tools execution and review agents; TradingAgents CLI with the CityU DeepSeek model
+  base_commit: df8a9d6419dfa0aab2f4d8986d0a44060354cdb9
+  requirements: [FR-01, FR-02]
+  scope: Repeat the five-company online batch and document publication outcomes and exported metrics.
+  human_direction: KyrieT331 requested the same five companies on the published adapter, then requested local documentation updates and English review before any push.
+  contributions:
+  - The execution agent ran the CLI once per company with separate caches. A second agent compared the saved reports and logs with the previous batch.
+  - The documentation agents drafted and checked the acceptance record, report and linked project records against the saved outputs.
+  evidence: All five CLI runs completed and published Markdown and HTML reports. AAPL published Hold after its blocked result in the previous batch. Per-company results and archive locators appear in docs/live-acceptance.md.
+  review_status: Documentation prepared for human review.
+
+- id: AI-DOC-DELIVERY-20261120
+  date: '2026-11-20'
+  tool: automation tools
+  scope: English D1-D9 documentation reconciliation, public/private report assembly, annotated transcript packaging and presentation preparation; no application implementation
+  base_commit: b8a7564ed9c2ac82d0bab92f548bbe6daea763f3
+  human_direction: Coordinator requested complete delivery documents from member collections and PR bodies, equal contribution weights, assigned circular peer review and initial presentation materials.
+  evidence: Public PR bodies and review/comment metadata retrieved on 20 November; five member collections inspected. Original raw session wording remains unchanged. Runtime prompt YAML files archive source modules at the stated historical revisions and are not new runtime behavior.
+  review_status: Documentation reconciliation with explicit D7 enforcement limits; no invented historical approval or submitted GitHub Review.
+
+- id: AI-DOC-DISTRIBUTION-SYNC-20261120
+  date: '2026-11-20'
+  tool: automation tools
+  scope: Synchronize shared public/private documentation and presentation material; publish annotated summaries without student numbers or raw session bodies
+  base_commit: b8a7564ed9c2ac82d0bab92f548bbe6daea763f3
+  human_direction: Coordinator selected synchronization of non-sensitive material while keeping student numbers and original sessions in the restricted package.
+  evidence: Shared source/documents and presentation files reconciled by file content. No application implementation, project test execution, repository visibility change or remote publication.
+  review_status: Local distribution preparation under the selected privacy boundary.
+
+- id: AI-DOC-FULL-COURSE-SYNC-20261120
+  date: '2026-11-20'
+  tool: automation tools
+  scope: Full course report and D5 synchronization; complete src snapshots; exclude presentation and packaging derivatives from the repository
+  base_commit: b8a7564ed9c2ac82d0bab92f548bbe6daea763f3
+  human_direction: Coordinator superseded the earlier privacy split, authorized full records, excluded PPT and related delivery materials, and requested the course repository structure.
+  evidence: Five named complete transcripts and original exports copied without changing source text; report/student roster synchronized; source copies byte-matched. No project tests, new model/data calls, commit, push or merge.
+  review_status: Superseded for public publication by the coordinator's later choice of GitHub identities and redacted existing session derivatives. Full originals remain private; D7 limits remain documented.

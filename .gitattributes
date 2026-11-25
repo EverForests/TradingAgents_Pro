@@ -1,0 +1,4 @@
+# Exact course source snapshots and raw evidence retain their original whitespace.
+# Runtime code linting remains unchanged; src hashes verify source-copy identity.
+src/** -whitespace
+transcripts/** -whitespace

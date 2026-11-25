@@ -1,0 +1,27 @@
+product: TradingAgents course extension
+target_user: Researcher reviewing a single-stock analysis
+baseline_tag: upstream-baseline
+goal: Produce traceable research recommendations and bound in-scope model dispatch.
+registry: requirements.yaml
+scope:
+- FR-01
+- FR-02
+- FR-03
+- NFR-01
+- NFR-02
+release_constraints:
+- INV-01
+- INV-02
+out_of_scope:
+- Brokerage execution or return prediction
+- Verification of arbitrary arithmetic in narrative text
+- New providers or orchestration redesign
+- Dedicated replay and comparison tooling
+acceptance:
+  mode: Offline fixtures and fake transport, with separate live integration checks
+  baseline_comparison: Same input, model settings and completion status recorded for both versions
+  evidence_status: Baseline observations, controlled tests and live integration results are recorded separately.
+  ready_to_build: Requires approved contracts, task plan/test revision and effective exact-path permissions.
+baseline_commit: 9fa1196fffbcfd9de5146d2dd2869df84ab99838
+status: integrated behaviors verified; delivery governance audited separately
+interface_contracts: ../architecture/interface-contracts.md

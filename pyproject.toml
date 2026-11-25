@@ -10,6 +10,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "cryptography>=42.0",
+    "httpx>=0.28.1,<1",
     "langchain-core>=1.6.5",
     "langchain-anthropic>=1.7.4",
     "langchain-google-genai>=4.4.0",
@@ -25,7 +26,8 @@ dependencies = [
     "requests>=2.32.4",
     "rich>=14.0.0",
     "typer>=0.21.0",
-    "stockstats>=0.6.5",
+    # FR-02 verifies a 20-day sample-standard-deviation Bollinger band.
+    "stockstats>=0.6.5,<0.6.14",
     "typing-extensions>=4.14.0",
     "yfinance>=1.7.0",
 ]
@@ -35,6 +37,10 @@ dev = [
     "ruff>=0.16",
     "pytest>=8.0",
     "pytest-subtests>=0.13",
+    "mypy==1.20.2",
+    "bandit==1.9.4",
+    "jsonschema>=4.23,<5",
+    "PyYAML>=6,<7",
 ]
 # Amazon Bedrock support (AWS SigV4 auth + boto3). Optional so the core install
 # stays lean: pip install "tradingagents[bedrock]".

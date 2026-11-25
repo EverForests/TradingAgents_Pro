@@ -1,43 +1,134 @@
 # TradingAgents Pro — CS5351 Group Project
 
-TradingAgents Pro is a CS5351 course project that extends TradingAgents, a multi-agent stock analysis framework. The team's enhancements and acceptance criteria will be documented here once the scope is agreed.
+TradingAgents Pro is a CS5351 course project that extends TradingAgents, a multi-agent stock analysis framework. The course extension targets traceable publication, verified metrics, explicit sentiment coverage, request budgeting and scoped message control. The five selected requirements have integrated acceptance evidence; prospective D7 repository controls and their evidence boundaries are recorded separately in the delivery audit.
 
 - **Team repository:** [EverForests/TradingAgents_Pro](https://github.com/EverForests/TradingAgents_Pro)
+- **Course artifacts:** [D1–D9 index](docs/README.md) · [Project report](Report.md) · [Annotated sessions](transcripts/README.md) · [Delivery audit](docs/delivery-readiness.md)
 - **Upstream project:** [TauricResearch/TradingAgents](https://github.com/TauricResearch/TradingAgents)
 - **Unmodified baseline:** [`9fa1196fffbcfd9de5146d2dd2869df84ab99838`](https://github.com/TauricResearch/TradingAgents/commit/9fa1196fffbcfd9de5146d2dd2869df84ab99838). Use this revision for before-and-after comparisons.
 
 ## Project scope and architecture
 
-- **Scope (D1):** Add the agreed improvements, their requirement IDs, and measurable acceptance criteria.
-- **Architecture (D2):** Summarize the affected components, the analysis workflow, and where deterministic code constrains AI output. Link to the architecture documents when ready.
+**CS5351 development workflow:** OpenCode Plan, Build and Verify roles operate under the [project permissions](docs/architecture/permission-model.md). Historical sessions retain their actual tool versions and actor attribution.
+
+- **Scope (D1):** [Requirements and acceptance criteria](docs/req/requirements.yaml) define FR-01–FR-03, NFR-01–NFR-02 and two safety invariants.
+- **Architecture (D2):** [Blueprint](architecture-blueprint.md) and [shared contracts](docs/architecture/interface-contracts.md) define component ownership, dispatch control and publication authority.
+
+**Current review status: Approved in offline team review**, confirmed by the coordinator and recorded on 21 November 2026. [Current review record](docs/governance/offline-review-20261121.md). The complete course delivery is on [`integration/course-project`](https://github.com/EverForests/TradingAgents_Pro/tree/integration/course-project); the final main merge remains subject to actual GitHub review and required checks.
+
+## Requirements and review ownership
+
+| Requirement | Implemented control | Owner | Assigned peer reviewer |
+| --- | --- | --- | --- |
+| FR-01 / INV-01 | Evidence-backed publication across CLI, API, reports and decision memory | EverForests | asling3 |
+| FR-02 | Reproducible numerical metrics and immutable record references | KyrieT331 | EverForests |
+| FR-03 | Sentiment source coverage and explicit missing-data state | wmq12138 | KyrieT331 |
+| NFR-01 / INV-02 | Shared quota for actual outbound model attempts | majiaqi-yan | wmq12138 |
+| NFR-02 | Deterministic message-byte preparation at the two scoped sites | asling3 | majiaqi-yan |
+
+EverForests coordinates integration and controls merge after acceptance. Assigned review responsibility, pre-implementation approval records and submitted GitHub Reviews are distinct evidence. The team-agreed contribution is 1.00 per member, or 20% each. [Review reconciliation](docs/review-memo.md#delivery-reconciliation--20-november-2026)
 
 ## Repository layout
 
-- `tradingagents/` — application source.
-- `cli/` — command-line interface.
-- `tests/` — existing test suite; document the course project's offline and live test locations once finalized.
-- `.github/workflows/` — GitHub Actions workflows.
+| Location | Content |
+| --- | --- |
+| Root governance and report | `AGENTS.md`, `architecture-blueprint.md`, `Prompt.md` and `Report.md` |
+| `docs/req/` | Product requirements, consolidated registry and validation schema |
+| `docs/architecture/` | Decisions, contracts C0–C5, traceability, state, permissions and runtime policies |
+| `docs/code-governance/` | Structural, tool and verification constraints |
+| `docs/` records | AI-use log, review memo, debt register, bug diary and acceptance evidence |
+| `.opencode/`, `.agent/` | Course role configuration and standing rules |
+| `.github/` | Existing CI workflows and artifact checks |
+| `prompts/` | Versioned source snapshots documenting the actual Python-assembled runtime prompts |
+| `src/` | Complete course source view, with a hash map to the inherited runnable packages |
+| `tradingagents/`, `cli/` | Runnable upstream-compatible application and CLI packages |
+| `tests/`, `test/offline/`, `test/live/` | Inherited regression tests, added deterministic tests and separately authorized API checks |
+| `transcripts/` | Five redacted annotated transcripts identified by GitHub collaborator |
 
-Add the course deliverable paths (D1–D9) as they are finalized.
+The course source view preserves identical application bytes while retaining root imports and installation. See [the source map](src/README.md) and [D1–D9 index](docs/README.md). PPT, speaker scripts, demonstration planning, report PDF and ZIP derivatives remain outside this repository. Credentials, `.env`, account state, virtual environments and runtime caches are excluded.
+
+## Recorded acceptance
+
+| Evidence | Recorded outcome and scope |
+| --- | --- |
+| Verified application/test revision | `df8a9d6419dfa0aab2f4d8986d0a44060354cdb9` |
+| Consolidated evidence baseline | `b8a7564ed9c2ac82d0bab92f548bbe6daea763f3` |
+| Complete offline regression | 1,832 passed, zero failed, one optional skip, one live-test deselection and 100 passing subtests |
+| Real-cache AAPL graph API | COMPLETED / APPROVED, Overweight, 18 successful DeepSeek HTTP responses, official decision and memory entry |
+| Five-company CLI batch | NVDA, AAPL, MSFT, GOOGL and AMZN each COMPLETED / APPROVED in one recorded batch |
+
+These are retained revision-specific results. Documentation assembly does not claim a new test run. Approval verifies the scoped publication rules, not investment correctness. Real-data cache replay, fresh per-company caches and synthetic controls retain their separate conditions. [Live evidence](docs/live-acceptance.md) · [Complete report](Report.md)
 
 ## Setup and verification
 
-See [Installation and CLI](#installation-and-cli) below for the upstream setup. Add any project-specific configuration and a reproducible demo command here.
+From the repository root, create a local virtual environment with Python 3.11 or newer. Use the same Python minor version across the team when comparing baseline and enhanced runs.
+
+**macOS / Linux**
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements-dev.txt
+```
+
+**Windows (PowerShell)**
+
+```powershell
+py -3 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
+```
+
+[`requirements-dev.txt`](requirements-dev.txt) installs the local project in editable mode plus the `dev` extras (pytest and Ruff) declared in `pyproject.toml`, like the upstream CI. It does not lock exact package versions. On Windows, use `.\.venv\Scripts\python.exe` in place of `python` in test commands if you did not activate the environment. Keep `.venv/`, `.env` and any credentials local. See [Installation and CLI](#installation-and-cli) for model and data-source setup when running live tests.
 
 | Suite | Command |
 | --- | --- |
-| Upstream baseline | `pytest -q` (used by the upstream CI workflow) |
-| Project offline tests | TBD — no API credentials required. |
-| Project live tests | TBD — document required providers and credentials. |
-| Full project suite | TBD — document how to run both suites. |
+| Upstream baseline | `python -m pytest -q tests` |
+| Project offline tests | `python -m pytest -q test/offline -m "not integration"`; no API credentials required. |
+| Full offline suite | `python -m pytest -q tests test/offline` |
+| FR-03 school controls | `python -m pytest -q test/live/test_fr03_school.py -m integration`; private credentials and a separately authorized cap are required. See [FR-03](docs/fr03.md#reproduction). |
+
+To include the fixed upstream comparison in a full offline run, set `FR03_BASELINE_ROOT` to a checkout of the pinned upstream revision before invoking the suite. The external course ZIP includes that source under `evidence/pinned-upstream-9fa1196/`. Without the comparison source, its cases can be skipped and the total differs from the recorded complete acceptance.
+
+### Integrated course run
+
+For the school DeepSeek profile, keep the application API key in your local environment
+as `OPENAI_COMPATIBLE_API_KEY`. Use the same profile for both model tiers.
+
+```bash
+export TRADINGAGENTS_LLM_PROVIDER=openai_compatible
+export TRADINGAGENTS_LLM_BACKEND_URL=https://llm.cs.cityu.edu.hk/v1
+export TRADINGAGENTS_QUICK_THINK_LLM=CS5351/DeepSeek-V4-Flash
+export TRADINGAGENTS_DEEP_THINK_LLM=CS5351/DeepSeek-V4-Flash
+export TRADINGAGENTS_REQUEST_BUDGET_ENABLED=true
+export TRADINGAGENTS_REQUEST_LIMIT=40
+export TRADINGAGENTS_CHECKPOINT_ENABLED=false
+tradingagents --ticker NVDA --date 2026-11-10 --analysts market,social,news,fundamentals --save --no-show
+```
+
+The course profile meters synchronous model requests across both tiers of each analysis.
+It disables SDK and transport retries and refuses checkpoint resume. Both configured
+CityU DeepSeek tiers explicitly request disabled thinking.
+`BUDGET_EXHAUSTED` and `CONTEXT_TOO_LARGE` end the run and block an official recommendation.
+Keep the report and the run's settings with the online verification record.
 
 ## CI and blocking gates (D7)
 
-The baseline workflow runs tests, a clean-install smoke check, and Ruff. Document the team's required checks and enforcement once configured: pre-implementation test approval evidence, static and safety checks, requirements schema validation, and semantic evaluation for prompt or model changes. Identify which checks must pass before merging or releasing.
+CI runs the upstream and course offline suites, Ruff, a clean-install smoke check,
+requirements schema and reference validation, the PR AI-use record check, and the
+fixed FR-03 comparison against the pinned upstream. The [review memo](docs/review-memo.md)
+records which course gates have execution and enforcement evidence.
+
+**D7 prospective checks are implemented.** Prior exact-test approval, source type/security budgets, safety API/permission contracts, fixed prompt/model evaluation and the required aggregate now have executable controls. Historical gaps remain documented; current hosted execution and protected-merge evidence are separate from past feature acceptance. [Detailed D7 audit](docs/delivery-readiness.md#d7-gate-audit) · [Measured verification](docs/governance/d7-verification.md)
+
+## Course report and session evidence
+
+[Report.md](Report.md) contains the engineering process, the five GitHub collaborators, contributions and personal reflections. [Redacted annotated sessions](transcripts/README.md) provide the D5 intervention records and redacted derivatives of the existing source exports. Full originals and student numbers remain in the restricted submission. Credentials, environment files, login state and runtime caches are excluded.
+
+The repository follows the course structure for D1–D9. Application source is available under `src/`, with the inherited root packages retained for runnable compatibility. Course offline and live checks are separated under `test/`. PPT, scripts, demonstration planning, report PDF and ZIP packaging derivatives remain outside the source repository in the delivery-material directory.
 
 ## Baseline comparison
 
-Record the fixed inputs, evaluation metrics, and reproduction steps here. Link the measured baseline and enhanced results once available.
+The fixed upstream revision supports the controlled FR-03 comparison. Sixteen identical synthetic inputs produced five unsupported baseline scores versus zero after repair, while all eleven valid neutral controls remained. This is a bounded program-behavior comparison, not an investment benchmark. See [comparison evidence](docs/fr03.md), [integrated report](Report.md) and [live conditions](docs/live-acceptance.md).
 
 ---
 
@@ -349,7 +440,7 @@ Insider trades are dated by when they happened, not when they were filed, so a r
 SEC asks callers to identify themselves and refuses requests that carry no contact address, so a default one is sent. Set your own so SEC can reach you rather than the project:
 
 ```bash
-SEC_EDGAR_USER_AGENT="Your Name your@email.com"
+SEC_EDGAR_USER_AGENT="Your Name [REDACTED_EMAIL]"
 ```
 
 It covers companies that file with the SEC, including foreign companies listed in the US. Anything else, such as Hong Kong or A-share listings, falls through to the next vendor in the chain. EDGAR's machine-readable filings begin in 2009, and a fourth quarter is reported as unavailable rather than derived, because filers publish it only inside the annual figure.
@@ -464,3 +555,13 @@ Please reference our work if you find *TradingAgents* provides you with some hel
       url={https://arxiv.org/abs/2412.20138}, 
 }
 ```
+
+## FR-03 review package
+
+The implemented FR-03 module has a [handoff, report-ready section and exact offline/paired/optional-live commands](docs/fr03.md), plus [sanitized result evidence](docs/fr03-evidence.json). FR-03 is included in the recorded integrated application. Its original PR remains a feature-stage handoff record; current package and review status are in the [delivery audit](docs/delivery-readiness.md).
+
+## Prospective D7 quality gates
+
+The [D7 verification record](docs/governance/d7-verification.md) links the exact implementation, measured positive/refusal controls, source-analysis debt and hosted state. CI retains the original suites and adds prior-test approval, API/permission/security contracts, type/security budgets, fixed model/prompt evaluation and the `d7-required` aggregate. Historical approvals are not reconstructed. A protected merge additionally requires a genuine independent review.
+
+Governance-only reproduction: `python -m pytest -q test/governance`. Full provenance checks require a Git clone, not a bare ZIP. The paired FR-03 comparison requires `FR03_BASELINE_ROOT` pointing to a genuine checkout at `9fa1196fffbcfd9de5146d2dd2869df84ab99838`. The source package's retained Git provenance is documented separately. No new market/model request is needed for deterministic offline checks.
